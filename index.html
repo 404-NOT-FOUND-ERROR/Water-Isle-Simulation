@@ -81,7 +81,7 @@ dialog{color:var(--ink);width:min(620px,calc(100% - 24px));max-height:calc(100dv
 
 .brand small,.home-kicker,.home-detail,#waterNote,.status-panel,.resident-line,.work-copy p,#resultDesc,#resultDialog>.result-grid{display:none!important}
 #resultLearning{display:flex;flex-wrap:wrap;gap:4px 14px}.flow-explain{padding:12px 14px}.water-report h3{margin-top:18px}.water-report details{margin:14px 0}.water-report summary{cursor:pointer;padding:10px 0;font-size:14px;color:#38664f}.water-report .report-note{margin:8px 0}.reason-card p{margin:4px 0}.water-maps svg{max-height:210px}#resultDialog{width:min(720px,calc(100% - 24px))}
-@media(min-width:901px){#chooseWork{display:none}.sidebar{justify-content:flex-start}.flow-explain{margin-top:12px}}
+@media(min-width:901px){.sidebar{justify-content:flex-start}.flow-explain{margin-top:12px}}
 @media(max-width:600px){.water-maps svg{max-height:160px}}
 #runState{display:none}.mission .caption{justify-content:flex-end}@media(min-width:901px){#zoomBtn{display:none}}@media(max-width:900px){.view-buttons #zoomBtn{display:inline-flex}}
 .phase-rail{display:flex;align-items:center;gap:7px;font-size:12px;margin:12px 0;color:#81917c}.phase-rail span{padding:4px 7px;border-radius:7px}.phase-rail span.active{background:#e1ead1;color:#28604d;font-weight:700}.phase-rail i{font-style:normal}.lesson-card{padding:16px;background:#f9f6e7;border:1px solid #d8dfc9;border-radius:18px}.lesson-heading{display:flex;flex-direction:column;gap:5px}.lesson-heading span{font-size:11px;letter-spacing:2px;color:#8a966e}.lesson-heading b{font-size:17px}.lesson-card p{font-size:13px;line-height:1.6;color:#5a705e;margin:5px 0 0}.lesson-diagram{display:block;width:100%;max-height:120px;margin:8px 0}.lesson-diagram text{fill:#476452;font-size:12px;font-family:inherit}.work-copy p{display:block!important;font-size:12px;margin-top:4px;line-height:1.4}.gate-controls{position:absolute;left:12px;bottom:12px;z-index:9;width:255px;padding:12px;background:#fffbeaee;border:1px solid #b4c8ad;box-shadow:0 6px 25px #31544322;border-radius:16px;backdrop-filter:blur(5px)}.gate-heading{display:flex;justify-content:space-between;align-items:center}.gate-heading strong{font-size:15px}.gate-heading button{padding:0;min-height:28px;width:28px;background:transparent;border:0;font-size:20px}.gate-controls .lesson-diagram{height:92px;margin:0}.gate-slider{display:flex;align-items:center;gap:10px;font-size:12px}.gate-slider input{width:100%;height:30px;min-width:0}.gate-readings{display:flex;justify-content:space-between;font-size:12px;margin-top:6px}#gateStatus{font-size:11px;margin-top:5px;color:#788565}#gateStatus.warn{color:#b35635}.gate-controls[data-alert=true]{border-color:#d38c54}.gate-controls[hidden]{display:none}.sidebar .lesson-card{flex:none}.gate-map{font-size:12px;padding:6px 10px;min-height:36px}.chapter-card.recommended{outline:2px solid #759b75}.star-criteria{font-size:12px;display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;color:#78865e}
@@ -89,19 +89,37 @@ dialog{color:var(--ink);width:min(620px,calc(100% - 24px));max-height:calc(100dv
 @media(max-height:560px) and (max-width:900px){.gate-controls{width:200px;max-height:175px}.gate-controls .lesson-diagram{height:52px}.work-copy p{display:block!important;max-height:52px;overflow:auto}.gate-readings{font-size:10px}.lesson-card{padding:10px}}
 body[data-trial=true] .work-card,body[data-trial=true] [data-tool=dig],body[data-trial=true] [data-tool=raise],body[data-trial=true] #undoBtn{display:none}body[data-trial=true] .footer{grid-template-columns:1fr}body[data-trial=true] .tools{justify-content:flex-end}
 .mobile-run:hover{background:#387b60}.mobile-summary button{white-space:nowrap}
+/* Shared drawing and control language. */
+:root{--ink:#294e46;--muted:#70877b;--paper:#f8f7ec;--blue:#368fa0;--gold:#d5ae66}
+button{transition:background .16s,border-color .16s,box-shadow .16s}button:active:not(:disabled){box-shadow:inset 0 2px 5px #294e4618}
+.water-graphic{font-family:inherit;color:var(--ink)}.water-graphic text{fill:var(--muted);font-family:inherit}.lesson-diagram text{font-size:12px}
+[data-water],[data-gate-panel]{transition:transform .28s ease-out}[data-gate-flow],[data-overflow]{transition:opacity .25s}
+.gate-controls{width:284px;max-width:calc(100% - 16px);max-height:calc(100% - 65px);overflow:auto;padding:12px;background:#f8f7ecf5;border-radius:18px}
+.gate-heading{gap:8px}.gate-heading>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.gate-heading small{width:100%;font-size:10px;letter-spacing:2px;color:var(--muted)}.gate-heading strong{font-size:16px}.gate-heading strong span{font-size:13px;color:var(--muted);margin-left:3px;font-variant-numeric:tabular-nums}.gate-heading button{width:36px;min-width:36px;min-height:44px;align-self:flex-start}.gate-pause{font-size:11px;border:1px solid var(--line);padding:2px 6px;border-radius:6px;color:var(--muted)}
+.gate-controls .lesson-diagram{height:92px;margin:3px 0}.gate-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.gate-steps button{padding:7px 2px;min-width:0;min-height:44px;font-size:12px;border-radius:9px;font-variant-numeric:tabular-nums}.gate-steps button[aria-pressed=true]{background:var(--green);border-color:var(--green);color:var(--paper);box-shadow:0 2px 5px #294e4622}.gate-steps button:disabled{opacity:.4}
+#gateHint{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.5}#gateBuild{width:100%;margin-top:10px;min-height:44px}.gate-readings{padding-top:9px;border-top:1px solid var(--line);margin-top:9px;font-variant-numeric:tabular-nums}#gateStatus{margin-top:6px;font-size:11px}.gate-tool{position:relative;background:#f3e6c7;border-color:#d5ae66;gap:1px}.gate-tool small{font-size:10px;line-height:1.2;color:var(--muted)}.gate-tool.active{background:#e3edda;border-color:var(--green)}.gate-tool.available{box-shadow:0 2px 0 #d5ae6633}.gate-map{min-height:44px;transition:background .16s}.gate-map.active{background:#e3edda;border-color:var(--green)}
+.phase-notice{position:absolute;z-index:8;top:82px;left:12px;right:12px;margin:auto;width:max-content;max-width:calc(100% - 24px);padding:10px 16px;border:1px solid #b4c8ad;border-radius:13px;background:#f8f7ecf2;box-shadow:0 5px 18px #294e4612;pointer-events:none;display:flex;align-items:center;gap:10px}.phase-notice strong{font-size:14px}.phase-notice span{font-size:12px;color:var(--muted)}
+.project-picker{display:grid;gap:8px;margin-top:18px}.project-option{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;text-align:left;width:100%;padding:14px;border-radius:14px;min-height:76px}.project-option.selected{border-color:var(--green);background:#e8efdd}.project-number{height:32px;width:32px;border-radius:50%;display:grid;place-items:center;background:#e1e9d4;font-size:12px;color:#668062}.project-option.selected .project-number{background:var(--green);color:var(--paper)}.project-option strong{font-size:15px;display:block}.project-option small{display:block;font-size:12px;line-height:1.5;color:var(--muted);font-weight:400;margin-top:4px}.project-option em{font-size:11px;font-style:normal;color:var(--muted);white-space:nowrap}.work-controls .ready{background:#e4edce;color:var(--green);border-color:#b5c898}
+.skip-intro{position:absolute;top:26px;right:24px;z-index:2;pointer-events:auto;color:#f8f7ec;background:#294e4677;border-color:#ffffff44;font-size:12px}.skip-intro:hover{background:#294e46bb}
+.report-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:none;border:0;padding:0}.report-stat{border:1px solid var(--line);background:#eaf0df;border-radius:13px;padding:12px 14px}.report-stat span{display:block;color:var(--muted);font-size:12px}.report-stat strong{display:block;font-size:24px;line-height:1.4;font-variant-numeric:tabular-nums;margin-top:4px}.report-stat strong i{font-size:16px;font-style:normal;color:var(--muted);font-weight:400;margin:0 4px}.report-stat small{font-size:12px;font-weight:400;color:var(--muted)}
+.report-legend{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 14px;padding:9px 2px;font-size:11px;color:var(--muted)}.report-legend>span{display:flex;align-items:center;gap:5px}.swatch{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block}.swatch.wet{background:#bf7355}.depth-key{width:42px;height:7px;border-radius:3px;background:linear-gradient(90deg,#d8e2bf,#82c4cc,#2d8295)}.report-caption{text-align:center;font-size:11px;color:var(--muted);margin-top:9px}.chart-legend span:first-child{color:#bf7355}.chart-legend span:nth-child(2){color:#2d8295}.depth-chart{background:#eef2e5}.reason-card{background:#eef2e5}.reason-card b{font-size:14px}.reason-card p{font-size:13px;line-height:1.65}.next-clue{font-size:13px;line-height:1.6;padding:10px 13px;border-radius:10px}.water-report details{border-top:1px solid var(--line)}.water-maps figure{background:#eef2e5}.water-report .report-note{font-size:12px}
+@media(max-width:900px){.tools{flex-wrap:wrap;gap:4px}.mobile-run{min-width:80px;font-size:12px;padding:7px}.gate-tool{flex-direction:row;flex-wrap:wrap;gap:0 4px;padding:4px}.gate-tool small{width:100%;text-align:center;line-height:1}.gate-controls{width:270px;padding:10px;bottom:8px;left:8px}.gate-controls .lesson-diagram{height:70px}.gate-heading strong{font-size:15px}.gate-readings{font-size:11px}.phase-notice{top:76px;padding:8px 12px;gap:6px;flex-wrap:wrap}.phase-notice span{font-size:11px}.work-controls button{font-size:13px}.report-stat{padding:10px}.report-stat strong{font-size:22px}}
+@media(min-width:650px) and (max-width:900px) and (min-height:360px) and (max-height:560px){.tools{grid-template-columns:repeat(3,minmax(0,1fr))}.tools .mobile-run{grid-column:1 / -1}.gate-controls{width:265px;max-height:calc(100% - 16px)}.gate-controls .lesson-diagram{height:55px}.gate-heading small{display:none}.gate-heading button{min-height:32px}.gate-steps button{min-height:40px}.gate-readings{padding-top:6px;margin-top:6px}#gateStatus{margin-top:3px}#gateHint{margin-top:6px}.work-copy p{max-height:38px}.phase-notice{top:40px}.gate-map{min-height:40px}}
+@media(max-width:420px){.project-option{gap:8px;padding:11px;grid-template-columns:30px minmax(0,1fr) auto}.project-number{width:28px;height:28px}.report-legend{gap:7px;font-size:10px}.work-number{display:none}.work-controls button{padding:6px 8px}.gate-controls{width:266px}.skip-intro{right:14px;top:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style></head><body data-mode="intro"><main id="app">
 <header><div class="brand"><span class="brand-icon" data-icon="island"></span><div><strong>给水一条路</strong></div></div><div class="header-actions"><button id="reportBtn" hidden>对比</button><button id="mapBtn">旅程</button></div></header>
 <div class="mobile-summary"><div><strong id="mobileMission"></strong><small id="mobileStat"></small></div><button id="mobileInfo">指引 ↗</button></div>
-<div class="workspace"><section class="stage-wrap" aria-label="云铃镇河谷"><div id="scene"></div><div class="map-heading play-hud"><b>云铃河谷</b><span> · 山水之间，还有人家</span></div><div class="map-weather play-hud" id="weatherText">晴朗 · 河水缓缓流动</div><div id="labels"></div><div id="spots" class="play-hud"></div><div id="workBubble" class="play-hud" hidden></div><button id="gateMapBtn" class="gate-map play-hud" hidden>闸门 50%</button><section id="gateControls" hidden aria-label="实时调闸" class="gate-controls play-hud"><div class="gate-heading"><strong>调闸 <span id="gatePercent">50%</span></strong><button id="gateClose" aria-label="收起调闸">×</button></div><div id="gateSection"></div><div class="gate-slider"><span>蓄</span><input id="gateRange" type="range" min="0" max="100" step="25" value="50" aria-label="闸门开度"><span>泄</span></div><div class="gate-readings"><span id="gateStorage"></span><span id="gateFlow"></span></div><div id="gateStatus"></div></section><div id="liveCompare" class="play-hud" role="status" hidden></div><div id="waterNote" class="play-hud">白色水迹跟着河水流动</div><div class="view-buttons play-hud"><button id="zoomBtn" class="icon-button" data-icon="zoom" aria-label="放大地图"></button><button id="fitBtn" class="icon-button" data-icon="fit" aria-label="全岛视角"></button></div><div id="toast" role="status" aria-live="polite"></div>
-<div id="opening"><div class="opening-top">云铃镇 · 一个雨天</div><div class="opening-caption"><h2 id="openingTitle">河水经过小镇，流向远方。</h2><p id="openingText">桥上的早市，刚刚开始。</p><div class="story-progress"><i id="openingProgress"></i></div></div></div>
+<div class="workspace"><section class="stage-wrap" aria-label="云铃镇河谷"><div id="scene"></div><div class="map-heading play-hud"><b>云铃河谷</b><span> · 山水之间，还有人家</span></div><div class="map-weather play-hud" id="weatherText">晴朗 · 河水缓缓流动</div><div id="labels"></div><div id="spots" class="play-hud"></div><div id="phaseNotice" class="phase-notice play-hud" hidden role="status"><strong id="phaseNoticeTitle"></strong><span id="phaseNoticeText"></span></div><div id="workBubble" class="play-hud" hidden></div><button id="gateMapBtn" class="gate-map play-hud" hidden>闸门 50%</button><section id="gateControls" hidden aria-label="水闸控制" class="gate-controls play-hud"><div class="gate-heading"><div><small>蓄水 / 下泄</small><strong>水闸 <span id="gatePercent">50%</span></strong><span id="gatePause" class="gate-pause" hidden>已暂停</span></div><button id="gateClose" aria-label="收起水闸">×</button></div><div id="gateSection"></div><div id="gateSteps" class="gate-steps" role="group" aria-label="闸门开度"><button data-opening="0" aria-label="关闸 0%">关闸</button><button data-opening="25" aria-label="开闸 25%">25%</button><button data-opening="50" aria-label="半开 50%">半开</button><button data-opening="75" aria-label="开闸 75%">75%</button><button data-opening="100" aria-label="全开 100%">全开</button></div><p id="gateHint" class="gate-hint">关小蓄水 · 开大下泄</p><button id="gateBuild" class="primary" hidden>取土筑坝 →</button><div class="gate-readings"><span id="gateStorage"></span><span id="gateFlow"></span></div><div id="gateStatus"></div></section><div id="liveCompare" class="play-hud" role="status" hidden></div><div id="waterNote" class="play-hud">白色水迹跟着河水流动</div><div class="view-buttons play-hud"><button id="zoomBtn" class="icon-button" data-icon="zoom" aria-label="放大地图"></button><button id="fitBtn" class="icon-button" data-icon="fit" aria-label="全岛视角"></button></div><div id="toast" role="status" aria-live="polite"></div>
+<div id="opening"><button id="skipIntro" class="skip-intro">跳过 →</button><div class="opening-top">云铃镇 · 一个雨天</div><div class="opening-caption"><h2 id="openingTitle">河水经过小镇，流向远方。</h2><p id="openingText">桥上的早市，刚刚开始。</p><div class="story-progress"><i id="openingProgress"></i></div></div></div>
 <div id="home" hidden><div class="home-kicker">A LITTLE RIVER. A BIG ADVENTURE.</div><h1>给水<br>一条路</h1><p>下一场雨来之前，<br>你会怎样救回云铃镇？</p><button id="beginBtn" class="primary">回到下雨前 →</button><div class="home-detail"><span>挖河道</span><span>筑护岸</span><span>给水找个家</span></div></div>
 <div id="loading" class="loading"><strong>云铃镇正在醒来</strong><p>河水流过山谷，故事就要开始。</p></div><div id="fallback" class="fallback" hidden><h2>开启岛屿画面</h2><p>请在浏览器设置中开启硬件加速，再打开小岛。</p><button onclick="location.reload()">打开小岛</button></div></section>
 <aside class="sidebar"><section class="panel mission"><div id="chapterLabel" class="eyebrow"></div><h1 id="missionTitle"></h1><div class="resident-line"><span class="portrait">☀</span><p id="missionDesc"></p></div><div id="phaseRail" class="phase-rail"></div><div id="taskText" class="goal"></div><div id="crewStatus" class="crew-status" hidden></div><button id="runBtn" class="primary" data-icon="rain">让雨来吧</button><div class="progress"><i id="progress"></i></div><div class="caption"><span id="runState">先改造，再看一场雨</span><span id="runTime"></span></div></section>
 <section id="lessonCard" class="lesson-card" aria-live="polite"></section><section class="panel status-panel"><div class="status-grid"><div>小镇人家<strong id="townStat">3 / 3</strong></div><div>下游人家<strong id="downStat">平安</strong></div><div>洼地蓄水<strong id="basinStat">0 格</strong></div><div id="extraStatName">已挖填土方<strong id="extraStat">0 格</strong></div></div></section><div class="flow-explain"><b id="scienceTitle">顺着白色水迹看</b><span id="scienceText">上游的来水经过小镇，再到下游，最后从瀑口离岛。</span></div></aside></div>
-<footer class="footer"><div class="tools"><button class="tool" data-tool="dig" aria-pressed="true" data-icon="dig">挖低</button><button class="tool" data-tool="raise" aria-pressed="false" data-icon="raise">堆高</button><button class="tool" data-tool="look" aria-pressed="false" data-icon="hand">观察</button><button id="undoBtn" class="icon-button" data-icon="undo" aria-label="撤销施工" disabled></button><button id="settingsBtn" class="icon-button" data-icon="reset" aria-label="工具箱" title="工具箱"></button><button id="mobileRun" class="mobile-run">来场雨</button></div><div class="work-card"><span id="workNumber" class="work-number">01</span><div class="work-copy"><strong id="workTitle">拓宽主河道</strong><p id="workTip">选择黄色工程标记，给水腾出一条路。</p></div><div class="work-controls"><button id="chooseWork" aria-label="切换工程">换一处</button><button id="workBtn" class="secondary">开工</button></div></div></footer>
+<footer class="footer"><div class="tools"><button class="tool" data-tool="dig" aria-pressed="true" data-icon="dig">挖低</button><button class="tool" data-tool="raise" aria-pressed="false" data-icon="raise">堆高</button><button class="tool" data-tool="look" aria-pressed="false" data-icon="hand">观察</button><button id="gateBtn" class="tool gate-tool" data-icon="gate" aria-label="水闸" aria-controls="gateControls" aria-expanded="false" hidden><span>水闸</span><small id="gateDockValue">待建</small></button><button id="undoBtn" class="icon-button" data-icon="undo" aria-label="撤销施工" disabled></button><button id="settingsBtn" class="icon-button" data-icon="toolbox" aria-label="工具箱" title="工具箱"></button><button id="mobileRun" class="mobile-run">来场雨</button></div><div class="work-card"><span id="workNumber" class="work-number">01</span><div class="work-copy"><strong id="workTitle">拓宽主河道</strong><p id="workTip">选择黄色工程标记，给水腾出一条路。</p></div><div class="work-controls"><button id="chooseWork" aria-label="切换工程">工程 ▾</button><button id="workBtn" class="secondary">开工</button></div></div></footer>
 </main>
 <dialog id="infoDialog"><div class="dialog-head"><h2 id="infoTitle"></h2><button class="icon-button close-dialog" data-icon="close" aria-label="关闭"></button></div><div id="infoBody"></div></dialog>
-<dialog id="mapDialog"><div class="dialog-head"><h2>五片河谷，五种水的难题</h2><button class="icon-button close-dialog" data-icon="close" aria-label="关闭"></button></div><p>从一处河道到一整座水库，工程逐渐丰富，目标也需要一起满足。</p><div id="levelCards" class="chapter-list"></div></dialog>
+<dialog id="mapDialog"><div class="dialog-head"><h2>河谷旅程</h2><button class="icon-button close-dialog" data-icon="close" aria-label="关闭"></button></div><div id="levelCards" class="chapter-list"></div></dialog>
 <dialog id="resultDialog"><div class="eyebrow" id="resultKicker">雨停了，小镇有话想说</div><div class="dialog-head"><h2 id="resultTitle"></h2><button class="icon-button close-dialog" data-icon="close" aria-label="关闭"></button></div><p id="resultDesc"></p><div class="result-grid"><div>小镇最高水深<strong id="resultTown"></strong></div><div id="resultOtherName">下游最高水深<strong id="resultOther"></strong></div></div><div id="resultLearning"></div><div id="resultStars" class="star-criteria"></div><div id="comparison"></div><div class="dialog-actions"><button id="retryBtn">继续改造</button><button id="nextBtn" class="primary">下一站 →</button></div></dialog>
 <dialog id="settingsDialog"><div class="dialog-head"><h2>工地工具箱</h2><button class="icon-button close-dialog" data-icon="close" aria-label="关闭"></button></div><div class="settings-row"><label for="brush">笔刷大小</label><input id="brush" type="range" min="1.2" max="5" step=".2" value="2.8"></div><div class="settings-row"><label for="weatherChoice">自由岛天气</label><select id="weatherChoice"><option value="6">阵雨</option><option value="18" selected>暴雨</option><option value="28">强降雨</option></select></div><div class="dialog-actions"><button id="pauseBtn">暂停水流</button><button id="flatBtn">平整工具</button></div><div class="dialog-actions"><button id="saveBtn">保存</button><button id="loadBtn">读取</button><button id="resetBtn">重整本关</button></div><div class="dialog-actions"><button id="helpBtn">玩法</button></div></dialog>
 <script type="module">/**
@@ -53688,51 +53706,86 @@ class ConstructionSite {
 if(typeof module!=='undefined')module.exports=ConstructionSite;
 
 
-// Contextual, visual lessons: one engineering decision at a time.
+// One palette and drawing language for lessons, live controls and reports.
+const WaterVisual={
+ colors:{ink:'#294e46',muted:'#70877b',land:'#d8e2bf',paper:'#f8f7ec',water:'#82c4cc',deep:'#2d8295',flow:'#368fa0',gold:'#d5ae66',stone:'#6d8d80',danger:'#bf7355'},
+ serial:0,
+ frame(body,label,viewBox='0 0 280 132',className='lesson-diagram'){
+  const id='water-arrow-'+(++this.serial);
+  return `<svg viewBox="${viewBox}" class="water-graphic ${className}" role="img" aria-label="${label}"><defs><marker id="${id}" markerWidth="4" markerHeight="4" refX="3.3" refY="2" orient="auto"><path d="M0 0L4 2L0 4Z" fill="${this.colors.flow}"/></marker></defs>${body.replaceAll('ARROW_ID',id)}</svg>`;
+ },
+ arrow(path,extra=''){return `<path d="${path}" class="diagram-flow ${extra}" fill="none" stroke="${this.colors.flow}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ARROW_ID)"/>`;},
+ label(x,y,text){return `<text x="${x}" y="${y}" text-anchor="middle">${text}</text>`;}
+};
+if(typeof module!=='undefined')module.exports=WaterVisual;
+
+// Contextual lessons share the drawing system with live gates and result charts.
 const WaterLearning={
+ visual:typeof module!=='undefined'?require('./visuals'):WaterVisual,
  lessons:[
-  {name:'给河流留路',text:'窄口会积水。拓宽主河道，或把一部分水引向洼地。',focus:'river',kind:'river'},
-  {name:'让急流慢下来',text:'拓宽桥下或开旁路。水位低了，也要留意桥脚的流速。',focus:'bridgebed',kind:'bridge'},
-  {name:'入口与出口一起看',text:'只开东汊入口，会把洪水送给东岸。接通出口，水才有去处。',focus:'east',kind:'split'},
-  {name:'坝蓄水，闸放水',text:'取土 → 筑坝 → 疏通下游。关小闸蓄水，开大闸泄水。',focus:'borrow',kind:'dam'},
-  {name:'留住雨，接力供田',text:'雨中泄洪，晴天关小闸留水。田边浅渠送水，排水沟防涝。',focus:'borrow',kind:'farm'},
-  {name:'自己试一条水路',text:'改河、挖湖，换一场雨。每次只改一处，更容易看出变化。',focus:'river',kind:'river'}
+  ['给河流留路','拓宽窄口，或分一条水路。','river'],
+  ['让急流慢下来','拓宽桥下，或开绕桥旁路。','bridge'],
+  ['入口，也要有出口','东汊分水，出口把水送走。','split'],
+  ['坝蓄水，闸放水','取土 → 筑坝 → 接通下游。','dam'],
+  ['雨中泄洪，晴天供田','浅渠送水，排水沟防涝。','farm'],
+  ['设计自己的水路','改一处，再用同一场雨比较。','river']
  ],
  works:{
-  river:['拓宽','水路变宽，窄口附近的水更容易排走。','river'],bypass:['分流','接通河道与洼地，让洪峰分走一部分。','split'],bank:['护岸','沿岸抬高挡水；水仍需要下游出口。','bank'],
-  relief:['旁路','从桥前分水，在桥后汇合，减少过桥急流。','bridge'],bridgebed:['扩桥孔','拓宽桥下过水空间，观察流速与桥况。','bridge'],
-  east:['开入口','让东汊分水。还要接出口，避免东岸积水。','split'],eastout:['接出口','把东汊接到岛外，让分来的水流走。','split'],west:['拓西汊','也可保留原水路，直接扩宽西汊。','river'],
-  borrow:['取土','挖出的土进入仓库，筑坝需要这些土。','earth'],dam:['筑坝','坝体抬高山口；水从闸口下泄，满过坝顶仍会溢出。','dam'],outlet:['泄洪道','接通闸后水路，避免放出的水积在村边。','dam'],
-  canal:['供水渠','连通库区和田边，晴天持续送来浅水。','farm'],drain:['排水沟','让多余的水离开田边，保护庄稼。','farm'],pond:['挖湖','湖要与河道连通，才接得到来水。','split']
+  river:['拓宽窄口','河道变宽，积水更容易排走。','river'],bypass:['分一条水路','把部分来水引向洼地。','split'],bank:['抬高河岸','挡住漫向小镇的水。','bank'],
+  relief:['旁路分水','从桥前分流，在桥后汇合。','bridge'],bridgebed:['拓宽桥下','增加过水空间，减轻桥脚冲刷。','river'],
+  east:['接通入口','让东汊分担西岸来水。','split'],eastout:['接通出口','分来的水从东汊排出。','split'],west:['拓宽西汊','拓宽原来的水路，也是一种办法。','river'],
+  borrow:['取土备料','挖出的土，用来筑坝。','earth'],dam:['筑坝蓄洪','闸口下泄，满过坝顶会溢流。','dam'],outlet:['疏通下游','给闸门放出的水留路。','dam'],
+  canal:['浅水供田','连通水库和田边。','farm'],drain:['排走余水','田边积水从这里离开。','farm'],pond:['挖湖存水','挖好后，接通河道。','split']
+ },
+ next(id,done,h){
+  if(id===3||id===4){if(!h.damBuilt)return done.has('borrow')?'dam':'borrow';if(!done.has('outlet'))return 'outlet';if(id===4&&!done.has('canal'))return 'canal';}
+  if(id===2&&done.has('east')&&!done.has('eastout'))return 'eastout';
+  return null;
  },
  svg(kind,gate=.5,up=.65,down=.2){
-  const arrow=(d)=>`<path d="${d}" fill="none" stroke="#3299ac" stroke-width="5" stroke-linecap="round" marker-end="url(#lessonArrow)"/>`;
+  const v=this.visual,c=v.colors,a=(d)=>v.arrow(d),t=(x,y,text)=>v.label(x,y,text);
   let body='';
   if(kind==='dam'){
-   const u=100-Math.min(1.2,Math.max(0,up))*75,v=100-Math.min(1.2,Math.max(0,down))*75,gap=gate*31;
-   body=`<path d="M8 ${u}H130V100H8Z M153 ${v}H270V100H153Z" fill="#8bc9d5"/><path d="M8 103H270" stroke="#a5ae7b" stroke-width="9"/><path d="M132 25V${100-gap}H152V25" fill="#6e897c"/><path d="M128 20H156" stroke="#d1a85b" stroke-width="6"/><path d="M132 26H152" stroke="#6e897c" stroke-width="12"/><text x="25" y="18">库区 · 蓄</text><text x="192" y="18">下游 · 泄</text>${gate>0&&up>0?arrow('M117 94H185'):''}${up>1?arrow('M117 12H166Q175 12 175 34'):''}<text x="121" y="119">闸门</text>`;
-  }else if(kind==='earth')body=`<path d="M8 70H60L76 98H107L121 70H150" stroke="#a9b67c" stroke-width="10" fill="none"/>${arrow('M127 47Q168 16 203 48')}<path d="M193 95L211 49L241 95Z" fill="#ba9a65"/><text x="38" y="119">挖土 +</text><text x="198" y="119">筑坝 −</text>`;
-  else if(kind==='bridge')body=`${arrow('M12 48H260')}${arrow('M65 48Q90 48 102 82Q140 120 180 82Q194 48 227 48')}<path d="M137 27V69M145 27V69M153 27V69" stroke="#af8250" stroke-width="5"/><text x="136" y="19">桥</text><text x="113" y="125">旁路分水</text>`;
-  else if(kind==='split')body=`${arrow('M10 58H70Q96 58 108 33Q141 2 174 33Q188 58 220 58H258')}${arrow('M72 59Q100 59 113 86Q143 112 178 86Q192 59 221 59')}${kind==='bridge'?'<path d="M137 48V75M145 48V75M153 48V75" stroke="#af8250" stroke-width="5"/><text x="124" y="43">桥</text><text x="113" y="123">旁路分水</text>':'<text x="43" y="23">入口</text><text x="207" y="23">出口</text><text x="110" y="69">两岸分担</text>'}`;
-  else if(kind==='farm')body=`<rect x="12" y="32" width="67" height="61" rx="16" fill="#8bc9d5"/>${arrow('M79 58H126')}<path d="M135 38V89M153 38V89M171 38V89" stroke="#b3c67f" stroke-width="8"/>${arrow('M186 66H254')}<text x="24" y="20">存水</text><text x="126" y="20">浅水供田</text><text x="217" y="112">排水</text>`;
-  else if(kind==='bank')body=`<path d="M12 76H121V100H12Z" fill="#8bc9d5"/><path d="M117 101L139 42L160 101Z" fill="#bba26d"/><path d="M191 72L211 54L233 72V101H191Z" fill="#eccb85"/><text x="17" y="40">河水</text><text x="114" y="23">护岸</text><text x="192" y="120">小镇</text>`;
-  else body=`<path d="M8 30Q88 30 120 48H157Q182 30 270 30V100Q185 100 157 79H120Q85 100 8 100Z" fill="#c6dfd5"/>${arrow('M18 65H250')}<path d="M111 37L111 24M162 37L162 24M111 91V105M162 91V105" stroke="#ac8d50" stroke-width="3"/><text x="104" y="16">拓宽窄口</text>`;
-  return `<svg viewBox="0 0 280 130" class="lesson-diagram" role="img" aria-label="${kind==='dam'?'水坝剖面：上游蓄水、闸门下泄':'工程原理图'}"><defs><marker id="lessonArrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><path d="M0 0L4 2L0 4" fill="#3299ac"/></marker></defs>${body}</svg>`;
+   const u=Math.max(0,Math.min(1.16,up)),d=Math.max(0,Math.min(1.16,down));
+   body=`<path d="M14 104H266" stroke="${c.land}" stroke-width="8" stroke-linecap="round"/>
+    <rect data-water="up" x="16" y="25" width="116" height="75" rx="3" fill="${c.water}" style="transform:scaleY(${u});transform-origin:0 100px"/>
+    <rect data-water="down" x="152" y="25" width="112" height="75" rx="3" fill="${c.water}" style="transform:scaleY(${d});transform-origin:0 100px"/>
+    <rect x="132" y="25" width="20" height="75" rx="3" fill="${c.stone}"/><rect x="132" y="68" width="20" height="32" fill="${c.paper}"/>
+    <rect data-gate-panel x="132" y="68" width="20" height="32" rx="2" fill="${c.stone}" style="transform:translateY(${-gate*32}px)"/>
+    <path d="M128 22H156" stroke="${c.gold}" stroke-width="5" stroke-linecap="round"/>
+    <g data-gate-flow opacity="${gate>0&&up>0?1:0}">${a('M116 94H189')}</g>
+    <g data-overflow opacity="${up>1?1:0}">${a('M117 13H165Q178 13 178 34')}</g>
+    ${t(55,16,'蓄水')}${t(223,16,'下泄')}${t(142,123,'水闸')}`;
+  }else if(kind==='earth')body=`<path d="M18 76H62L78 101H109L124 76H148" fill="none" stroke="${c.land}" stroke-width="9" stroke-linecap="round"/>${a('M116 48Q163 17 206 49')}<path d="M193 101L215 51L244 101Z" fill="${c.gold}" stroke-linejoin="round"/>${t(87,125,'挖土 +')}${t(218,125,'筑坝 −')}`;
+  else if(kind==='bridge')body=`<path d="M18 48H258M65 48Q89 48 101 84Q140 113 180 84Q193 48 224 48" fill="none" stroke="${c.water}" stroke-width="15" stroke-linecap="round"/>${a('M18 48H258')}${a('M65 48Q89 48 101 84Q140 113 180 84Q193 48 224 48')}<path d="M133 29V66M142 29V66M151 29V66" stroke="${c.gold}" stroke-width="5" stroke-linecap="round"/>${t(142,17,'桥')}${t(143,125,'旁路分水')}`;
+  else if(kind==='split')body=`<path d="M18 64H67Q88 64 105 36Q140 6 179 36Q194 64 221 64H259M67 64Q87 64 104 91Q141 118 178 91Q193 64 221 64" fill="none" stroke="${c.water}" stroke-width="14" stroke-linecap="round"/>${a('M18 64H67Q88 64 105 36Q140 6 179 36Q194 64 221 64H259')}${a('M67 64Q87 64 104 91Q141 118 178 91Q193 64 221 64')}${t(43,31,'入口')}${t(238,31,'出口')}${t(143,68,'分流')}`;
+  else if(kind==='farm')body=`<rect x="14" y="37" width="63" height="60" rx="16" fill="${c.water}"/>${a('M79 66H124')}<path d="M138 40V94M154 40V94M170 40V94" stroke="${c.land}" stroke-width="9" stroke-linecap="round"/>${a('M186 66H258')}${t(45,23,'存水')}${t(153,23,'浅水供田')}${t(235,116,'排水')}`;
+  else if(kind==='bank')body=`<rect x="16" y="62" width="107" height="38" rx="4" fill="${c.water}"/><path d="M116 102L140 42L164 102Z" fill="${c.gold}"/><path d="M192 77L212 59L233 77V102H192Z" fill="${c.land}" stroke="${c.stone}" stroke-width="2" stroke-linejoin="round"/>${t(58,45,'河水')}${t(140,26,'护岸')}${t(212,123,'小镇')}`;
+  else body=`<path d="M16 35Q82 35 114 51H163Q194 35 264 35V100Q190 100 163 82H114Q82 100 16 100Z" fill="${c.water}"/>${a('M21 66H256')}<path d="M113 36V23M164 36V23M113 96V109M164 96V109" stroke="${c.gold}" stroke-width="3" stroke-linecap="round"/>${t(139,15,'拓宽窄口')}`;
+  return v.frame(body,kind==='dam'?'水坝剖面：蓄水、闸口下泄与坝顶溢流':'水路原理图');
  },
- hint(id,done,h,m,phase='build'){
+ updateDam(svg,gate,up,down,flow=up-down){
+  for(const [side,value] of [['up',up],['down',down]])svg.querySelector('[data-water="'+side+'"]').style.transform='scaleY('+Math.max(0,Math.min(1.16,value))+')';
+  svg.querySelector('[data-gate-panel]').style.transform='translateY('+(-gate*32)+'px)';
+  const stream=svg.querySelector('[data-gate-flow]');stream.style.opacity=gate>0&&Math.abs(flow)>.005?1:0;stream.style.transform=flow<0?'translateX(280px) scaleX(-1)':'';
+  svg.querySelector('[data-overflow]').style.opacity=up>1?1:0;
+ },
+ hint(id,done,h,m,phase='build',selected){
+  if(phase==='result')return ['雨后的线索',this.lessons[id][1],this.lessons[id][2]];
   if(phase!=='build'){
-   if(id===4&&phase==='dry')return ['晴天接力','关小闸门留水，观察田边是否持续有浅水。','farm'];
-   if(h.damBuilt&&h.overtopFlow>.05)return ['水已越过坝顶','开大一点闸门，观察库水位是否回落。','dam'];
-   if(h.damBuilt)return [phase==='peak'?'洪峰到了':'看库区，也看下游','拖动闸门，比较水位与下泄。雨中也能调。','dam'];
-   if((id===1||id===4)&&h.scouring)return ['桥脚在受冲刷','观察桥前流速；旁路与桥下拓宽都能分担急流。','bridge'];
-   return [this.lessons[id].name,this.lessons[id].text,this.lessons[id].kind];
+   if(id===4&&phase==='dry')return ['晴天接力','关小水闸，留水供田。','farm'];
+   if(h.damBuilt&&h.overtopFlow>.05)return ['水越过了坝顶','开大一档，看看水位怎样变。','dam'];
+   if(h.damBuilt)return [phase==='peak'?'洪峰到了':'蓄水与下泄','点水闸档位，看库水与下游。','dam'];
+   if(id===1&&h.scouring)return ['桥脚在受冲刷','看桥前急流，也看旁路分水。','bridge'];
+   return this.lessons[id];
   }
-  if(id>=3&&id<=4){if(!h.damBuilt)return done.has('borrow')?['有土了，去筑坝','选择山口大坝。建好后，闸门可以随时调。','dam']:['先准备土料','选取土塘开工，土会进入仓库。','earth'];if(!done.has('outlet'))return ['给下泄留路','接通下游泄洪道，再迎接来水。','dam'];if(id===4&&!done.has('canal'))return ['给晴天留一条水路','接通田边浅渠；排水沟可减少田边积水。','farm'];return ['可以试水了',id===4?'雨中开大些，晴天关小些。留意村庄、桥和田。':'把闸门开到一半附近，来雨后观察并调整。','dam'];}
-  if(id===2&&done.has('east')&&!done.has('eastout'))return ['东汊还差出口','接通下游出口，避免把洪水困在东岸。','split'];
-  if(done.size&&id<3)return ['让雨检验你的办法',id===1?'看桥况，也看小镇。可以先试一项工程。':'来一场雨，再看改造前后的水位和两岸变化。',this.lessons[id].kind];
-  return [this.lessons[id].name,this.lessons[id].text,this.lessons[id].kind];
+  if(selected&&!done.has(selected)&&selected!==this.next(id,done,h))return this.works[selected]||this.lessons[id];
+  if(id===3||id===4){if(!h.damBuilt)return done.has('borrow')?['土料备好了','下一步：筑山口大坝。','dam']:['先取土','挖取土塘，为大坝备料。','earth'];if(!done.has('outlet'))return ['给下泄留路','接通下游泄洪道。','dam'];if(id===4&&!done.has('canal'))return ['把水送到田边','接浅渠供水，排水沟防涝。','farm'];return ['准备试水',id===4?'雨中开大些，晴天关小些。':'从半开开始，比较蓄水和下泄。','dam'];}
+  if(id===2&&done.has('east')&&!done.has('eastout'))return ['还差一个出口','接通东汊出口，带走分来的水。','split'];
+  if(done.size&&id<3)return ['让雨检验',id===1?'看小镇水位，也看桥况。':'比较改造前后的水路。',this.lessons[id][2]];
+  return this.lessons[id];
  },
- card(id,done,h,m,phase='build'){const [title,text,kind]=this.hint(id,done,h,m,phase),d=h.map?.dam,up=d?(h.upstream-d.invert)/(d.crest-d.invert):.65,down=d?(h.downstream-d.invert)/(d.crest-d.invert):.2;return `<div class="lesson-heading"><span>水的线索</span><b>${title}</b></div>${this.svg(kind,h.gate,up,down)}<p>${text}</p>`;}
+ card(id,done,h,m,phase='build',selected){const [title,text,kind]=this.hint(id,done,h,m,phase,selected),d=h.damBuilt&&h.map?.dam,up=d?(h.upstream-d.invert)/(d.crest-d.invert):.65,down=d?(h.downstream-d.invert)/(d.crest-d.invert):.2;return `<div class="lesson-heading"><span>水的线索</span><b>${title}</b></div>${this.svg(kind,h.gate,up,down)}<p>${text}</p>`;}
 };
 if(typeof module!=='undefined')module.exports=WaterLearning;
 
@@ -53824,19 +53877,23 @@ class WaterComparison {
 if(typeof module!=='undefined')module.exports=WaterComparison;
 
 const WaterReport={
+ visual:typeof module!=='undefined'?require('./visuals'):WaterVisual,
  fmt(v,d=2){return Number(v).toFixed(d);},
  delta(a,b,d=2){const n=+(b-a).toFixed(d);return n===0?'基本不变':(n>0?'增加 ':'减少 ')+Math.abs(n).toFixed(d);},
  map(snapshot,metrics,map,title){
-  const xy=(x,z)=>[100+x*2.5,100+z*2.5];
-  const tiles=snapshot.tiles.map(([x,z,d])=>{const [a,b]=xy(x,z);return `<rect x="${a-3}" y="${b-3}" width="6.2" height="6.2" fill="${d<.025?'#d5dfbc':d<.3?'#b2dce1':d<1?'#5eafc2':'#277c99'}"/>`;}).join('');
+  const c=this.visual.colors,xy=(x,z)=>[100+x*2.5,100+z*2.5];
+  const tiles=snapshot.tiles.map(([x,z,d])=>{const [a,b]=xy(x,z);return `<rect x="${a-3}" y="${b-3}" width="6.2" height="6.2" fill="${d<.025?c.land:d<.3?'#b8dedb':d<1?c.water:c.deep}"/>`;}).join('');
   const arrows=snapshot.arrows.map(([x,z,vx,vz])=>{const [a,b]=xy(x,z),ex=a+vx*5,ey=b+vz*5;return `<path d="M${a-vx*3},${b-vz*3}L${ex},${ey}m${-vx*3-vz*2},${-vz*3+vx*2}L${ex},${ey}l${-vx*3+vz*2},${-vz*3-vx*2}"/>`;}).join('');
-  const homes=map.houses.map(([x,z],i)=>{const [a,b]=xy(x,z),wet=metrics.housePeaks[i]>=.18;return `<g><circle cx="${a}" cy="${b}" r="6" fill="${wet?'#bd573c':'#397756'}" stroke="#fff9e8" stroke-width="1.5"/><text x="${a}" y="${b+2.8}" text-anchor="middle" fill="white" font-size="8">${i+1}</text></g>`;}).join('');
-  return `<figure><figcaption>${title}</figcaption><svg viewBox="0 0 200 200" role="img" aria-label="${title}水深、流向和房屋受灾位置"><circle cx="100" cy="100" r="89" fill="#e5ebd5"/>${tiles}<g fill="none" stroke="#174f65" stroke-width="1" opacity=".85">${arrows}</g>${homes}<text x="8" y="14" font-size="10" fill="#536d60">上游</text><text x="166" y="192" font-size="10" fill="#536d60">下游</text></svg></figure>`;
+  const homes=map.houses.map(([x,z],i)=>{const [a,b]=xy(x,z),wet=metrics.housePeaks[i]>=.18;return `<g><circle cx="${a}" cy="${b}" r="6" fill="${wet?c.danger:c.ink}" stroke="${c.paper}" stroke-width="1.5"/><text x="${a}" y="${b+2.8}" text-anchor="middle" style="fill:${c.paper}" font-size="8">${i+1}</text></g>`;}).join('');
+  const body=`<circle cx="100" cy="100" r="89" fill="${c.land}"/>${tiles}<g fill="none" stroke="${c.deep}" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity=".8">${arrows}</g>${homes}<text x="8" y="14" font-size="10">上游</text><text x="166" y="192" font-size="10">下游</text>`;
+  return `<figure><figcaption>${title}</figcaption>${this.visual.frame(body,title+'水深、流向和房屋受灾位置','0 0 200 200','report-map')}</figure>`;
  },
  chart(c){
-  const max=Math.max(.22,...c.history.flatMap(p=>p.slice(1))),y=v=>105-v/max*88,x=t=>35+t/c.level.duration*300;
+  const ink=this.visual.colors,max=Math.max(.22,...c.history.flatMap(p=>p.slice(1))),y=v=>105-v/max*88,x=t=>35+t/c.level.duration*300;
   const path=i=>c.history.map((p,j)=>(j?'L':'M')+x(p[0]).toFixed(1)+','+y(p[i]).toFixed(1)).join(' ');
-  return `<svg class="depth-chart" viewBox="0 0 355 135" role="img" aria-label="同场来水的小镇水深过程线，橙色为未改造，蓝色为本次方案，虚线为进水门槛"><path d="M35 12V105H335" fill="none" stroke="#a7b7a2"/><path d="M35 ${y(.18)}H335" stroke="#aa6844" stroke-dasharray="4 4"/><text x="38" y="${Math.max(12,y(.18)-4)}" font-size="10" fill="#8b553b">进水门槛 0.18</text><path d="${path(1)}" fill="none" stroke="#b76d43" stroke-width="2.5" stroke-dasharray="5 3"/><path d="${path(2)}" fill="none" stroke="#217e97" stroke-width="2.5"/><text x="3" y="17" font-size="10">${max.toFixed(2)}</text><text x="18" y="108" font-size="10">0</text><text x="35" y="125" font-size="10">0 秒</text><text x="275" y="125" font-size="10">${c.level.duration} 模拟秒</text></svg>`;
+  const grid=[0,.5,1].map(n=>`<path d="M35 ${y(max*n)}H335" stroke="${ink.land}"/>`).join('');
+  const body=`${grid}<path d="M35 12V105H335" fill="none" stroke="${ink.stone}" opacity=".5"/><path d="M35 ${y(.18)}H335" stroke="${ink.stone}" stroke-dasharray="2 4"/><text x="38" y="${Math.max(12,y(.18)-5)}" font-size="10">进水门槛 0.18</text><g fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="${path(1)}" stroke="${ink.danger}" stroke-dasharray="5 4"/><path d="${path(2)}" stroke="${ink.deep}"/></g><text x="3" y="17" font-size="10">${max.toFixed(2)}</text><text x="18" y="108" font-size="10">0</text><text x="35" y="125" font-size="10">0 秒</text><text x="275" y="125" font-size="10">${c.level.duration} 模拟秒</text>`;
+  return this.visual.frame(body,'小镇水深：橙色虚线为改造前，蓝色实线为改造后，灰色点线为进水门槛','0 0 355 135','depth-chart');
  },
  render(c,actions,previous){
   const a=c.before,b=c.after,wet=m=>m.housePeaks.filter(d=>d>=.18).length;
@@ -53845,7 +53902,7 @@ const WaterReport={
   if(c.id===1||c.id===4)rows+=row('桥下最高流速','maxSpeed',' 格/秒')+row('最终桥梁完整度','bridgeHealth','%',0);
   if(c.map.dam)rows+=row('最高蓄水','maxBasin',' 格',0)+row('最后留水','endBasin',' 格',0);
   if(c.id===4)rows+=row('晴天浅水供田','farmSeconds',' 秒',1)+row('田边最高水深','maxFarm',' 格');
-  const change=b.maxTown-a.maxTown,observation=`小镇最高水深${this.delta(a.maxTown,b.maxTown)}${Math.abs(b.maxTown-a.maxTown)<.005?'':' 格'}，进水 ${wet(a)} → ${wet(b)} 户。`;
+  const observation=`<div class="report-stat"><span>小镇最高水深</span><strong>${this.fmt(a.maxTown)}<i>→</i>${this.fmt(b.maxTown)} <small>格</small></strong></div><div class="report-stat"><span>进水房屋</span><strong>${wet(a)}<i>→</i>${wet(b)} <small>户</small></strong></div>`;
   const mechanisms=[
    '河道与分流渠为来水腾出通路，护岸挡住漫向小镇的水。',
    '旁路分走急流，桥下拓宽减轻拥堵；水越深、流得越急，桥脚越容易受损。',
@@ -53856,9 +53913,9 @@ const WaterReport={
   ];
   let next=b.maxTown>=.18?'试着疏通小镇旁的窄口和下游出口。':b.maxDown>=.18?'下游仍进水，疏通出口或调小闸门再试。':(c.id===1||c.id===4)&&b.bridgeHealth<=0?'桥仍然断裂。检查旁路是否接回下游，并观察桥下持续急流。':c.id===4&&b.maxFarm>=.5?'田边水过深。先检查排水沟，再调整闸门，观察供田时间与最高水深。':c.id===4&&b.farmSeconds<c.level.irrigation?'晴天供田时间还不够。检查浅渠是否接通，并保留晴天可用的库水。':c.map.dam&&b.maxBasin<c.level.storage?'蓄水尚未达到目标。检查大坝是否完成，再比较不同闸门开度下的蓄水与下游水位。':c.id===4&&b.endBasin<c.level.retain?'结束时留水不足。试着减少晴天后段的下泄，同时确认田边仍有浅水。':'再调整一处，看看水怎么变。';
   const facts=(c.completed||[]).map(id=>(typeof WaterLearning!=='undefined'?WaterLearning.works[id]?.[1]:null)).filter(Boolean);const explanation=(c.id>=3?mechanisms[c.id]:facts.length?facts.slice(0,2).join(' '):mechanisms[c.id]);
-  const mapHTML=c.maps?`<div class="water-maps">${this.map(c.maps[0],a,c.map,'改造前')}${this.map(c.maps[1],b,c.map,'改造后')}</div><p class="report-note">同场雨 · 第 ${c.mapTime.toFixed(0)} 秒　深蓝 = 深水，箭头 = 流向<br>橙色屋：曾进水　绿色屋：平安　1–3 小镇 / 4 ${c.id===2?'东岸':'下游'}</p>`:'';
+  const mapHTML=c.maps?`<div class="water-maps">${this.map(c.maps[0],a,c.map,'改造前')}${this.map(c.maps[1],b,c.map,'改造后')}</div><div class="report-legend"><span><i class="depth-key"></i>浅 → 深</span><span>→ 水流</span><span><i class="swatch wet"></i>曾进水 <i class="swatch"></i>平安</span></div><div class="report-caption">同场雨 · 第 ${c.mapTime.toFixed(0)} 秒 · 1–3 小镇 / 4 ${c.id===2?'东岸':'下游'}</div>`:'';
   const needsHelp=b.maxTown>=.18||b.maxDown>=.18||((c.id===1||c.id===4)&&b.bridgeHealth<=0)||(c.map.dam&&b.maxBasin<c.level.storage)||(c.id===4&&(b.maxFarm>=.5||b.farmSeconds<c.level.irrigation||b.endBasin<c.level.retain));
-  return `<section class="water-report"><div class="report-summary">${observation}</div>${mapHTML}<div class="reason-card"><b>为什么会这样？</b><p>${explanation}</p><p class="report-note">${actions}</p></div>${needsHelp?`<p>${next}</p>`:''}<details><summary>水位与数据</summary><div class="chart-legend"><span>┄ 改造前</span><span>━ 改造后</span><small>小镇水深 · 格</small></div>${this.chart(c)}<div class="report-table-wrap"><table><thead><tr><th>指标</th><th>改造前</th><th>改造后</th><th>变化</th></tr></thead><tbody>${rows}</tbody></table></div>${previous?`<p class="report-note">上次 → 本次：小镇 ${previous.maxTown.toFixed(2)} → ${b.maxTown.toFixed(2)} 格${c.sameWeather?'':' · 天气已更换'}</p>`:''}</details></section>`;
+  return `<section class="water-report"><div class="report-summary">${observation}</div>${mapHTML}<div class="reason-card"><b>为什么会这样？</b><p>${explanation}</p></div>${needsHelp?`<p class="next-clue">${next}</p>`:''}<details><summary>水位与数据</summary><div class="chart-legend"><span>┄ 改造前</span><span>━ 改造后</span><small>小镇水深 · 格</small></div>${this.chart(c)}<div class="report-table-wrap"><table><thead><tr><th>指标</th><th>改造前</th><th>改造后</th><th>变化</th></tr></thead><tbody>${rows}</tbody></table></div><p class="report-note">${actions}</p>${previous?`<p class="report-note">上次 → 本次：小镇 ${previous.maxTown.toFixed(2)} → ${b.maxTown.toFixed(2)} 格${c.sameWeather?'':' · 天气已更换'}</p>`:''}</details></section>`;
 
  }
 };
@@ -53868,6 +53925,8 @@ if(typeof module!=='undefined')module.exports=WaterReport;
 'use strict';
 const $=id=>document.getElementById(id);
 const iconPaths={
+toolbox:'<rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V3h8v4M3 13h18M10 12v4h4v-4"/>',
+gate:'<path d="M4 20V5h16v15M2 5h20M8 5v9h8V5M8 18h8M12 1v4M2 21c3-3 5 3 8 0s5 3 8 0h4"/>',
 island:'<path d="m3 15 9 6 9-6-9-5-9 5Z"/><path d="m3 15 9 10 9-10M8 13l4-10 4 10M10 8h4"/>',
 dig:'<path d="m16 3 5 5-8 8-5-5 8-8ZM8 11l-5 5v5h5l5-5M6 15l3 3"/>',
 raise:'<path d="m2 20 7-11 4 5 3-4 6 10M12 3v7m-3-4 3-3 3 3"/>',
@@ -54188,9 +54247,9 @@ function animateStructures(dt){
    if(o.material?.color)o.material.color.copy(o.userData.color).lerp(new THREE.Color(0xc5683f),damage*.45);
   }
  }
- if(m.dam){damArt.traverse(o=>{const f=h.damBuilt?1:h.builtFraction;if(o.userData.buildWall){const b=o.userData.buildWall;o.scale.y=Math.max(.025,f);o.position.y=b.floor+b.height*f/2;}if(o.userData.crestMarker){const b=o.userData.crestMarker;o.position.y=b.floor+(b.crest-b.floor)*f+.09;}if(o.material){o.material.transparent=!h.damBuilt;o.material.opacity=h.damBuilt?1:.25+f*.65;}});if(gatePanel){gatePanel.position.y=m.dam.invert+1.8+h.gate*m.dam.maxOpening;gateWheel.rotation.z=-h.gate*Math.PI*2;}if(gateJet){gateJet.visible=h.damBuilt&&Math.abs(h.gateFlow)>.02;gateJet.scale.x=Math.max(.08,Math.min(1,Math.abs(h.gateFlow)/3));gateJet.position.z=h.gateFlow>=0?1:-1;gateJet.position.y=m.dam.invert+.12+Math.min(.5,h.gate*.4);}}
+ if(m.dam){damArt.traverse(o=>{const f=h.damBuilt?1:h.builtFraction;if(o.userData.buildWall){const b=o.userData.buildWall;o.scale.y=Math.max(.025,f);o.position.y=b.floor+b.height*f/2;}if(o.userData.crestMarker){const b=o.userData.crestMarker;o.position.y=b.floor+(b.crest-b.floor)*f+.09;}if(o.material){o.material.transparent=!h.damBuilt;o.material.opacity=h.damBuilt?1:.25+f*.65;}});if(gatePanel){const opening=gatePanel.userData.opening??h.gate;gatePanel.userData.opening=opening+(h.gate-opening)*(reducedMotion?1:1-Math.exp(-dt*14));gatePanel.position.y=m.dam.invert+1.8+gatePanel.userData.opening*m.dam.maxOpening;gateWheel.rotation.z=-gatePanel.userData.opening*Math.PI*2;}if(gateJet){gateJet.visible=h.damBuilt&&Math.abs(h.gateFlow)>.02;gateJet.scale.x=Math.max(.08,Math.min(1,Math.abs(h.gateFlow)/3));gateJet.position.z=h.gateFlow>=0?1:-1;gateJet.position.y=m.dam.invert+.12+Math.min(.5,h.gate*.4);}}
  // Wet crops visibly recover; prolonged deep water flattens their leaves.
- farm.children.forEach((o,i)=>{if(o.geometry?.type==='ConeGeometry'){const fd=world.sample(world.w,...m.farm),watered=(trial?.farmSeconds||0)>2;const target=fd>.5?.25:watered?1.25:1;o.scale.y+=(target-o.scale.y)*Math.min(1,dt*2);}});
+ farm.children.forEach((o,i)=>{if(o.geometry?.type==='ConeGeometry'){const fd=world.sample(world.w,...m.farm),watered=((trial||(reviewing&&previous))?.farmSeconds||0)>2;const target=fd>.5?.25:watered?1.25:1;o.scale.y+=(target-o.scale.y)*Math.min(1,dt*2);}});
 }
 
 
@@ -54247,6 +54306,7 @@ function renderFlow(){
  trailGeo.setDrawRange(0,at/3);trailGeo.attributes.position.needsUpdate=true;trailGeo.attributes.color.needsUpdate=true;foamGeo.attributes.position.needsUpdate=true;
 }
 
+let cameraFrame=null,cameraMode='';
 const filmLength=20,viewMetrics={w:1,h:1,homeHeight:230};
 const filmShots=[
  {t:0,x:-5,z:-20,y:1.9,width:18,angle:-.38,height:44},
@@ -54259,9 +54319,10 @@ const filmShots=[
 const smooth=t=>t*t*(3-2*t);
 function overviewFrame(kind){
  const {w,h,homeHeight}=viewMetrics,sideHome=w>=650&&w<=900&&h>=360&&h<=560,narrow=w<901&&!sideHome;
- const top=kind==='play'?(h<300?8:38):25,right=kind==='home'&&!narrow?Math.min(450,w*.4):0,bottom=kind==='home'&&narrow?homeHeight+32:kind==='play'?40:16;
+ const gate=kind==='play'&&w<650&&!$('gateControls').hidden,sideGate=gate&&w>430&&h<450,left=sideGate?$('gateControls').offsetWidth+22:0;
+ const top=kind==='play'?(h<300?8:38):25,right=kind==='home'&&!narrow?Math.min(450,w*.4):0,bottom=kind==='home'&&narrow?homeHeight+32:kind==='play'?(gate&&!sideGate?Math.min(240,$('gateControls').offsetHeight+16):40):16;
  const areaH=Math.max(80,h-top-bottom);
- return {x:0,y:-1,z:0,angle:kind==='play'?angle:.18,height:70,scale:Math.min((w-right-24)/66,areaH/53)*(kind==='play'?zoom:1),cx:(w-right)/2,cy:top+areaH/2};
+ return {x:0,y:-1,z:0,angle:kind==='play'?angle:.18,height:70,scale:Math.min((w-left-right-24)/66,areaH/53)*(kind==='play'?zoom:1),cx:left+(w-left-right)/2,cy:top+areaH/2};
 }
 function shotFrame(shot){
  const {w,h}=viewMetrics,top=30,bottom=h<500?86:112,areaH=Math.max(80,h-top-bottom);
@@ -54273,10 +54334,13 @@ function cinemaFrame(time){
  let a=filmShots[0],b=filmShots[1];for(let i=0;i<filmShots.length-1;i++)if(time>=filmShots[i].t){a=filmShots[i];b=filmShots[i+1];}
  return mixFrame(shotFrame(a),shotFrame(b),smooth(Math.min(1,Math.max(0,(time-a.t)/(b.t-a.t)))));
 }
-function updateCamera(){
- const f=mode==='intro'?cinemaFrame(storyTime):overviewFrame(mode),{w,h}=viewMetrics;
+function updateCamera(dt=1/60){
+ const target=mode==='intro'?cinemaFrame(storyTime):overviewFrame(mode),{w,h}=viewMetrics;
+ const f=mode==='play'&&cameraMode===mode&&cameraFrame?mixFrame(cameraFrame,target,reducedMotion?1:1-Math.exp(-dt*12)):target;
+ const moving=!cameraFrame||Object.keys(f).some(k=>Math.abs(f[k]-cameraFrame[k])>.0001);cameraFrame=f;cameraMode=mode;
  camera.left=-f.cx/f.scale;camera.right=(w-f.cx)/f.scale;camera.top=f.cy/f.scale;camera.bottom=-(h-f.cy)/f.scale;
  camera.position.set(f.x+Math.sin(f.angle)*74,f.y+f.height,f.z+Math.cos(f.angle)*74);camera.lookAt(f.x,f.y,f.z);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+ return moving;
 }
 function resizeCinemaView(){
  const r=host.getBoundingClientRect();viewMetrics.w=Math.max(1,r.width);viewMetrics.h=Math.max(1,r.height);
@@ -54288,6 +54352,8 @@ let hydraulics=null,bridgeFall=0,comparisonRun=null,lastReportWeather=null;
 let mode='intro',chapter=0,site=null,trial=null,previous=null,levelStart=null,baselineWater=null;
 let tool='dig',brush=2.8,paused=false,angle=.18,zoom=1,paint=null,pointer=null,undoStack=[],selected=0,workPlan=null,works=[],clockTime=0,simClock=0,storyTime=0,weather=18;
 let stars=[0,0,0,0,0,0],learned=new Set(),workDone=new Set(),introMax=0,lastStats=null,noticeCooldown=0;
+let weatherBlend=0;
+const clearSky=new THREE.Color(0xd7e9dc),rainSky=new THREE.Color(0xaac3ba),weatherSky=new THREE.Color();
 const chapters=WaterCampaign.levels,labels=[
  {x:-5,z:-23,y:2,text:'上游 · 山谷来水',cls:'blue',kind:'source'},
  {x:4,z:2,y:4.8,text:'云铃镇',kind:'town'},
@@ -54324,19 +54390,20 @@ function refreshWater(){
 }
 function updateLabels(){
  const r=host.getBoundingClientRect(),occupied=[];
+ if(world.map?.dam&&mode==='play'){const d=world.map.dam,p=screenPoint(d.x,d.z,6);$('gateMapBtn').style.left=Math.max(8,Math.min(r.width-115,p.x-50))+'px';$('gateMapBtn').style.top=Math.max(70,Math.min(r.height-55,p.y))+'px';$('gateMapBtn').style.bottom='auto';}
  for(const b of $('spots').children){const p=works[+b.dataset.work]?.point;if(!p)continue;const q=screenPoint(...p,1);b.style.left=q.x+'px';b.style.top=q.y+'px';b.style.display=mode==='play'&&!trial&&((r.width>=680&&r.height>=460)||+b.dataset.work===selected)?'':'none';if(b.style.display!=='none')occupied.push(b.getBoundingClientRect());}
  for(const l of labels){const q=screenPoint(l.x,l.z,l.y);l.el.style.left=q.x+'px';l.el.style.top=q.y+'px';l.el.style.display=(l.disabled||q.x<20||q.x>r.width-20||q.y<30||q.y>r.height-32||(mode==='intro'&&!(storyTime<6?l.kind==='source':storyTime<16?l.kind==='town':['source','town','outlet'].includes(l.kind)))||(mode==='home'&&!['source','town','down','outlet'].includes(l.kind)))?'none':'';if(l.el.style.display==='none')continue;const half=l.el.offsetWidth/2;l.el.style.left='clamp('+(half+8)+'px,'+q.x+'px,calc(100% - '+(half+8)+'px))';l.el.style.top=Math.max(l.el.offsetHeight+8,q.y)+'px';const b=l.el.getBoundingClientRect();if(occupied.some(a=>b.left<a.right+4&&b.right>a.left-4&&b.top<a.bottom+4&&b.bottom>a.top-4))l.el.style.display='none';else occupied.push(b);}
 }
 function showRoute(){if(paint){routeBeads.visible=jobRing.visible=false;routeLine.visible=!!site?.job;if(site?.job){const pts=[[site.x,site.z],...site.path,[site.job.x,site.job.z]];routeGeo.setAttribute('position',new THREE.Float32BufferAttribute(pts.flatMap(([x,z])=>[x,terrainHeight(x,z)+.2,z]),3));routeLine.material.color.setHex(0xfff9dc);routeLine.computeLineDistances();}return;}routeLine.material.color.setHex(0xffd262);const work=works[selected];routeBeads.visible=routeLine.visible=jobRing.visible=mode==='play'&&!trial&&!!work;if(!work)return;const positions=[];for(const [x,z] of work.path)positions.push(x,terrainHeight(x,z)+world.sample(world.w,x,z)+.15,z);routeGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));routeLine.computeLineDistances();routeBeads.count=0;const matrix=new THREE.Matrix4();for(let n=0;n<work.path.length;n+=2){const [x,z]=work.path[n];matrix.makeTranslation(x,terrainHeight(x,z)+world.sample(world.w,x,z)+.21,z);routeBeads.setMatrixAt(routeBeads.count++,matrix);}routeBeads.instanceMatrix.needsUpdate=true;jobRing.position.set(work.point[0],terrainHeight(...work.point)+.18,work.point[1]);}
-function selectWork(i){if(workPlan||!works.length)return;selected=(i+works.length)%works.length;const w=works[selected];$('workNumber').textContent=String(selected+1).padStart(2,'0');$('workTitle').textContent=w.name;$('workTip').textContent=w.kind==='dam'?w.tip+' 需土 '+Math.ceil(hydraulics.damCost)+' 格。':w.tip;$('workBtn').textContent=w.kind==='dam'&&hydraulics?.damBuilt?'大坝已建':workDone.has(w.id)?'已完成':'开工';$('workBtn').disabled=!!trial||workDone.has(w.id)||(w.kind==='dam'&&hydraulics?.damBuilt);$('spots').querySelectorAll('button').forEach((b,k)=>{b.classList.toggle('selected',k===selected);b.classList.toggle('done',workDone.has(works[k].id));});selectTool(w.mode||'dig',false);showRoute();updateLabels();updateWorkGuide();}
+function selectWork(i){if(trial||workPlan||!works.length)return;if(reviewing)resumeBuilding();selected=(i+works.length)%works.length;const w=works[selected];$('workNumber').textContent=String(selected+1).padStart(2,'0');$('workTitle').textContent=w.name;$('workTip').textContent=w.kind==='dam'?w.tip+' 需土 '+Math.ceil(hydraulics.damCost)+' 格。':w.tip;$('workBtn').textContent=w.kind==='dam'&&hydraulics?.damBuilt?'大坝已建':workDone.has(w.id)?'已完成':'开工';$('workBtn').disabled=!!trial||workDone.has(w.id)||(w.kind==='dam'&&hydraulics?.damBuilt);$('spots').querySelectorAll('button').forEach((b,k)=>{b.classList.toggle('selected',k===selected);b.classList.toggle('done',workDone.has(works[k].id));});selectTool(w.mode||'dig',false);showRoute();updateLabels();updateWorkGuide();}
 function paintBrush(p){brushRing.visible=cursorDot.visible=!!p&&tool!=='look'&&mode==='play'&&!workPlan&&!trial;if(!p)return;for(let i=0;i<=64;i++){const a=i/64*TAU,x=p.x+Math.cos(a)*brush,z=p.z+Math.sin(a)*brush;ringPositions[i*3]=x;ringPositions[i*3+1]=terrainHeight(x,z)+world.sample(world.w,x,z)+.15;ringPositions[i*3+2]=z;}ringGeo.attributes.position.needsUpdate=true;cursorDot.position.set(p.x,terrainHeight(p.x,p.z)+.15,p.z);brushRing.material.color.setHex(tool==='raise'?0xf4ad6b:0xffeb9c);}
 function selectTool(t,explain=true){endPointer();tool=t;document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(t===b.dataset.tool)));if(explain)toast(t==='look'?'拖动地图旋转，滚轮缩放':site?'按住地面召来施工员，持续挖填；松开停工':'按住地面持续挖填，拖动换位置，松开停工');}
 function hit(e){const r=host.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);raycaster.setFromCamera(mouse,camera);return raycaster.intersectObject(terrain,false)[0]?.point||null;}
 function pushUndo(){const s=world.snapshot();s.workDone=[...workDone];s.site=site?.snapshot();s.hydraulics=hydraulics?.snapshot();undoStack.push(s);if(undoStack.length>20)undoStack.shift();$('undoBtn').disabled=false;}
 function cancelWork(){workPlan=null;site?.cancel();dust.visible=false;worker.visible=false;$('workBubble').hidden=true;$('workBtn').textContent='开工';$('chooseWork').disabled=false;}
-function undo(){if(trial||!undoStack.length)return;endPointer();cancelWork();const s=undoStack.pop();world.h.set(s.h);world.earth=s.earth;if(site)site.restore(s.site);hydraulics?.restore(s.hydraulics);workDone=new Set(s.workDone||[]);resetWater();refreshTerrain();refreshWater();showRoute();$('undoBtn').disabled=!undoStack.length;toast('已撤销上一笔施工。');}
-function startWork(){if(mode!=='play'||trial)return;if(workPlan){cancelWork();toast('工程暂停，已完成的地形保留。');return;}endPointer();const w=works[selected];if(workDone.has(w.id))return;const needed=workRequirement(w);if(needed){toast(needed);return;}if(w.kind==='dam'){if(hydraulics.damBuilt)return;const cost=hydraulics.damCost;if(site.soil<cost){toast('筑坝还需 '+Math.ceil(cost-site.soil)+' 格土料，先挖取土塘。');return;}if(site.hours<cost/18){toast('工时不足，撤销一项工程再调整。');return;}}setPaused(false);pushUndo();workPlan={work:w,index:0,fraction:0,started:false};worker.visible=true;$('chooseWork').disabled=true;$('workBtn').textContent='停工';$('workBubble').hidden=false;}
-function tickWork(dt){if(!workPlan)return;const plan=workPlan,w=plan.work,p=w.path[plan.index];if(!p){workDone.add(w.id);cancelWork();selectWork(selected);if(w.kind==='dam'){$('gateControls').hidden=false;updateGateView();}toast(w.kind==='dam'?'大坝建好了。点地图上的调闸按钮，控制下泄。':'工程完成，观察水路，再决定下一步。');return;}
+function undo(){if(trial||!undoStack.length)return;endPointer();cancelWork();const s=undoStack.pop();reviewing=false;world.h.set(s.h);world.earth=s.earth;if(site)site.restore(s.site);hydraulics?.restore(s.hydraulics);workDone=new Set(s.workDone||[]);resetWater();refreshTerrain();refreshWater();showRoute();$('undoBtn').disabled=!undoStack.length;toast('已撤销施工');}
+function startWork(){if(mode!=='play'||trial)return;if(workPlan){cancelWork();toast('施工暂停');return;}endPointer();const w=works[selected];if(workDone.has(w.id))return;const needed=workRequirement(w);if(needed){toast(needed);return;}if(w.kind==='dam'){if(hydraulics.damBuilt)return;const cost=hydraulics.damCost;if(site.soil<cost){toast('筑坝还需 '+Math.ceil(cost-site.soil)+' 格土料，先挖取土塘。');return;}if(site.hours<cost/18){toast('工时不足，撤销一项工程再调整。');return;}}resumeBuilding();pushUndo();workPlan={work:w,index:0,fraction:0,started:false};worker.visible=true;$('chooseWork').disabled=true;$('workBtn').textContent='停工';$('workBubble').hidden=false;}
+function tickWork(dt){if(!workPlan)return;const plan=workPlan,w=plan.work,p=w.path[plan.index];if(!p){workDone.add(w.id);cancelWork();selectWork(selected);if(w.kind==='dam'){setGatePanel(true);phaseNotice('水闸可以用了','点开度，看看下泄怎样变化');}else toast(w.name+' · 完成');return;}
  if(w.kind==='dam'){const d=world.map.dam;if(!plan.started){if(!plan.walking){site.sites=protection();if(!site.order(d.x-d.width/2,d.z,'dig',1.2)){const message=site.message;cancelWork();toast(message);return;}plan.walking=true;}if(site.path.length){site.tick(dt*4);worker.position.set(site.x,site.height(site.x,site.z),site.z);$('workBubble').textContent='施工员正在前往坝址';placeWorkBubble([d.x-d.width/2,d.z]);return;}site.cancel();plan.started=true;}if(hydraulics.build(dt*2,site))plan.index=w.path.length;worker.position.set(site.x,site.height(site.x,site.z),site.z);}
  else if(site){site.sites=protection();if(!plan.started){if(!site.order(...p,w.mode||'dig',w.r)){const message=site.message;cancelWork();toast(message);return;}site.job.left=w.amount;site.job.floor=w.floor;plan.started=true;}site.tick(dt*4);if(!site.job){if(site.hours<=.001||(w.mode==='raise'&&site.soil<.001)){const message=site.message;cancelWork();toast(message);return;}plan.index++;plan.started=false;}worker.position.set(site.x,site.height(site.x,site.z),site.z);}
  else{const delta=Math.min(1-plan.fraction,dt*12);world.edit(...p,w.r,w.amount*delta,w.mode||'dig',protection(),w.floor??-1.8);plan.fraction+=delta;if(plan.fraction>=.999){plan.index++;plan.fraction=0;}const target=new THREE.Vector3(p[0]-w.r-.5,terrainHeight(p[0]-w.r-.5,p[1]),p[1]);if(plan.index===0)worker.position.copy(target);else worker.position.lerp(target,Math.min(1,dt*9));}
@@ -54348,13 +54415,13 @@ function houseDepth(h){return Math.max(0,world.sample(world.h,h.x,h.z)+world.sam
 function stats(){const depths=houses.map(houseDepth),basin=basinCells.reduce((sum,k)=>sum+world.w[k]*world.area,0),farmDepth=world.sample(world.w,farm.position.x,farm.position.z);return {depths,basin,farmDepth,safe:depths.slice(0,3).filter(d=>d<.18).length};}
 function positionBridge(){const b=world.map?.bridge;bridge.visible=!!b;bridgeBases.length=0;if(!b)return;for(const side of [-1,1])bridgeBases.push({x:b.x+side*b.length/2,z:b.z,r:1.1});const left=terrainHeight(b.x-b.length/2,b.z),right=terrainHeight(b.x+b.length/2,b.z),slope=(right-left)/11;bridge.position.set(b.x+4.5*b.length/11,(left+right)/2+.5,b.z+6);bridge.scale.x=b.length/11;bridge.children.forEach(o=>{const origin=o.userData.origin||=( {x:o.position.x,y:o.position.y,z:o.position.z} );o.userData.color||=o.material.color.clone();o.position.set(origin.x,origin.y+(origin.x+4.5)*slope,origin.z);o.rotation.set(0,0,Math.atan(slope));o.userData.rest={x:o.position.x,y:o.position.y,z:o.position.z,rz:o.rotation.z};o.visible=true;});bridgeFall=0;}
 function bridgeOK(){return !world.map.bridge||hydraulics?.health>0;}
-function metrics(){const s=stats();return {maxTown:trial?.maxTown??Math.max(...s.depths.slice(0,3)),maxDown:trial?.maxDown??s.depths[3],maxBasin:trial?.maxBasin??s.basin,endBasin:s.basin,maxFarm:trial?.maxFarm??s.farmDepth,farmSeconds:trial?.farmSeconds||0,bridge:bridgeOK(),bridgeHealth:hydraulics?.health??100,damBuilt:hydraulics?.damBuilt};}
+function metrics(){if(reviewing&&previous)return previous;const s=stats();return {maxTown:trial?.maxTown??Math.max(...s.depths.slice(0,3)),maxDown:trial?.maxDown??s.depths[3],maxBasin:trial?.maxBasin??s.basin,endBasin:s.basin,maxFarm:trial?.maxFarm??s.farmDepth,farmSeconds:trial?.farmSeconds||0,bridge:bridgeOK(),bridgeHealth:hydraulics?.health??100,damBuilt:hydraulics?.damBuilt};}
 function goalMarkup(m,finished=false){return WaterCampaign.goals(chapter,m).map(g=>'<div class="goal-row '+(g.ok?'met':'')+'"><span>'+ (g.ok?'●':'○')+' '+g.name+'</span>'+(finished?'':'<small>'+g.value+'</small>')+'</div>').join('');}
 function updateStats(){const s=stats(),m=world.map||WaterCampaign.maps[chapter];lastStats=s;$('townStat').textContent=s.safe+' / 3 平安';$('townStat').classList.toggle('warn',s.safe<3);$('downStat').textContent=s.depths[3]<.18?'平安':'进水';$('downStat').classList.toggle('warn',s.depths[3]>=.18);$('basinStat').textContent=Math.round(s.basin)+' 格';$('extraStat').textContent=Math.round(world.earth)+' 格';
- $('mobileStat').textContent=site?'土料 '+site.soil.toFixed(0)+' · 工时 '+site.hours.toFixed(0)+(chapter===4?' · 供田 '+Math.min(100,Math.round((trial?.farmSeconds||0)/chapters[4].irrigation*100))+'%':''):s.safe+' 间小屋平安 · 挖填 '+Math.round(world.earth)+' 格';if(site){$('crewStatus').textContent='土料 '+site.soil.toFixed(0)+' 格 · 余 '+site.hours.toFixed(1)+' / '+site.maxHours+' 工时';soilPile.scale.setScalar(.4+Math.min(1.3,site.soil/100));}
+ $('mobileStat').textContent=site?'土料 '+site.soil.toFixed(0)+' · 工时 '+site.hours.toFixed(0)+(chapter===4?' · 供田 '+Math.min(100,Math.round((metrics().farmSeconds||0)/chapters[4].irrigation*100))+'%':''):s.safe+' 间小屋平安 · 挖填 '+Math.round(world.earth)+' 格';if(site){$('crewStatus').textContent='土料 '+site.soil.toFixed(0)+' 格 · 余 '+site.hours.toFixed(1)+' / '+site.maxHours+' 工时';soilPile.scale.setScalar(.4+Math.min(1.3,site.soil/100));}
  $('taskText').innerHTML=goalMarkup(metrics());const townLabel=labels.find(l=>l.kind==='town');townLabel.el.textContent=s.safe<3?(3-s.safe)+' 户进水':m.town;townLabel.el.classList.toggle('danger',s.safe<3);labels.find(l=>l.kind==='down').el.classList.toggle('danger',s.depths[3]>=.18);
  const bl=labels.find(l=>l.kind==='bridge');if(m.bridge){bl.el.textContent=(hydraulics?.health??100)<=0?'木桥断裂':(chapter===1||chapter===4)?'桥 '+Math.round(hydraulics?.health??100)+'% · '+(hydraulics?.speed||0).toFixed(1)+' 格/秒':'云铃桥';bl.el.classList.toggle('danger',(hydraulics?.health??100)<60);}
- $('gateMapBtn').hidden=!m.dam;$('gateMapBtn').disabled=!hydraulics?.damBuilt;$('gateMapBtn').textContent=hydraulics?.damBuilt?'调闸 '+Math.round(hydraulics.gate*100)+'%':'坝址 · 待开工';$('waterNote').hidden=!!m.dam;
+ $('waterNote').hidden=!!m.dam;
  if(trial)$('mobileStat').textContent=chapter===4?(trial.time<chapters[4].storm?'暴雨 · '+Math.ceil((chapters[4].storm-trial.time)/4)+' 秒后转晴':'晴天 · 供田 '+Math.min(100,Math.round(trial.farmSeconds/chapters[4].irrigation*100))+'% · 库水 '+Math.round(s.basin)):'来水 · 还剩 '+Math.ceil((trial.duration-trial.time)/4)+' 秒';
  if(trial&&comparisonRun){$('liveCompare').textContent='同场雨 · 小镇最高水深  未改造 '+comparisonRun.before.maxTown.toFixed(2)+' → 本次 '+comparisonRun.after.maxTown.toFixed(2)+' 格';}if(trial){$('progress').style.width=trial.time/trial.duration*100+'%';$('runTime').textContent=Math.ceil((trial.duration-trial.time)/4)+' 秒';$('mobileRun').textContent=paused?'继续':'暂停';if(chapter===4&&trial.time>=chapters[4].storm){rain.visible=false;$('weatherText').textContent='晴天 · 用存水接力';$('runState').textContent='雨停了，留水与供田';}}
  if(mode==='intro')introMax=Math.max(introMax,...s.depths.slice(0,3));
@@ -54363,13 +54430,13 @@ function updateStats(){const s=stats(),m=world.map||WaterCampaign.maps[chapter];
 function setPaused(value){paused=value;$('pauseBtn').textContent=value?'继续水流':'暂停水流';if(trial){$('runBtn').textContent=value?'继续来水':'暂停观察';$('mobileRun').textContent=value?'继续':'暂停';}}
 function resetWater(){WaterTrial.reset(world,levelStart,hydraulics);bridgeFall=0;resetFlow();refreshWater();}
 
-function enterLevel(id){endPointer();cancelWork();chapter=id;trial=null;document.body.dataset.trial='false';previous=null;comparisonRun=null;lastReportWeather=null;$('reportBtn').hidden=true;$('liveCompare').hidden=true;selected=0;workDone.clear();lessonKey='';$('gateControls').hidden=true;undoStack=[];setPaused(false);mode='play';document.body.dataset.mode=mode;$('opening').hidden=true;$('home').hidden=true;$('loading').hidden=false;
+function enterLevel(id){endPointer();cancelWork();chapter=id;trial=null;reviewing=false;phaseRailKey='';$('phaseNotice').hidden=true;document.body.dataset.trial='false';previous=null;comparisonRun=null;lastReportWeather=null;$('reportBtn').hidden=true;$('liveCompare').hidden=true;selected=0;workDone.clear();lessonKey='';setGatePanel(false);undoStack=[];setPaused(false);mode='play';document.body.dataset.mode=mode;$('opening').hidden=true;$('home').hidden=true;$('loading').hidden=false;
  levelStart=WaterCampaign.prepare(world,id);baselineWater=world.w.slice();hydraulics=new HydraulicWorks(world,world.map);populateMap(id);configureLabels();positionBridge();site=chapters[id].hours?new ConstructionSite(world,protection(),chapters[id]):null;resetFlow();
- $('crewStatus').hidden=!site;const c=chapters[id];$('chapterLabel').textContent=c.tag;$('missionTitle').textContent=c.title;$('missionDesc').textContent=c.desc;$('mobileMission').textContent=c.short;$('runState').textContent='施工 → 试水 → 看结果';$('runTime').textContent=c.duration/4+' 秒';$('runBtn').disabled=$('mobileRun').disabled=false;$('runBtn').innerHTML=svg('rain')+(id===4?'开始雨旱检验':'让雨来吧');$('mobileRun').textContent=id===4?'雨旱检验':'来场雨';$('progress').style.width='0%';$('weatherText').textContent='准备施工';$('scienceTitle').textContent=c.tag.split(' · ')[1]||'跟着水流看';$('scienceText').textContent=c.hints[0];$('undoBtn').disabled=true;
- works=WaterCampaign.works(id,world);$('spots').innerHTML=works.map((w,i)=>'<button class="spot" data-work="'+i+'" aria-label="'+w.name+'" title="'+w.name+'"><span>'+ (i+1)+'</span></button>').join('');$('spots').querySelectorAll('button').forEach(b=>b.onclick=()=>selectWork(+b.dataset.work));rain.visible=false;angle=.18;zoom=1;refreshTerrain();refreshWater();fit();selectWork(0);updateStats();$('loading').hidden=true;fit();toast(innerWidth<650?'按住施工 · 松开停工':site?'按住地面派工，松开停工；黄色数字是工程方案。':'按住地面挖填，也可以选黄色工程点开工。');}
-function startTrial(){if(mode!=='play'||trial)return;if(world.map.dam&&!hydraulics.damBuilt){toast('先取土筑坝，再检验蓄水与下泄。');selectWork(works.findIndex(w=>w.id===(site.soil<hydraulics.damCost?'borrow':'dam')));return;}endPointer();cancelWork();resetWater();comparisonRun=new WaterComparison(WaterWorld,WaterCampaign,HydraulicWorks,chapter,levelStart,houses.map(h=>h.floor));comparisonRun.weather=weather;comparisonRun.sameWeather=lastReportWeather===weather;comparisonRun.actions=describeChanges();comparisonRun.completed=[...workDone];comparisonRun.gates=hydraulics.damBuilt?[Math.round(hydraulics.gate*100)]:[];$('reportBtn').hidden=true;$('liveCompare').hidden=false;$('scienceTitle').textContent='跟着水流看';$('scienceText').textContent='看水在哪里积起，又从哪里离开。';$('toast').textContent='';setPaused(false);$('undoBtn').disabled=true;document.body.dataset.trial='true';trial={time:0,duration:chapters[chapter].duration,maxTown:0,maxDown:0,maxBasin:0,maxFarm:0,farmSeconds:0,bridge:true};$('runBtn').disabled=$('mobileRun').disabled=false;$('workBtn').disabled=$('chooseWork').disabled=true;$('runBtn').textContent='暂停观察';$('runState').textContent=world.map.dam?'雨中可以调闸':'观察水位、流向与桥况';$('weatherText').textContent='上游降雨 · 来水增加';$('waterNote').textContent='水位越过橙色门槛，小屋就会进水';rain.visible=true;routeBeads.visible=routeLine.visible=jobRing.visible=false;updateLabels();}
+ $('crewStatus').hidden=!site;const c=chapters[id];$('chapterLabel').textContent=c.tag;$('missionTitle').textContent=c.title;$('missionDesc').textContent=c.desc;$('mobileMission').textContent=c.short;$('runState').textContent='施工 → 试水 → 看结果';$('runTime').textContent=c.duration/4+' 秒';$('runBtn').disabled=$('mobileRun').disabled=false;$('runBtn').innerHTML=svg('rain')+(id===4?'开始雨旱挑战':'开始试水');$('mobileRun').textContent=id===4?'雨旱检验':'来场雨';$('progress').style.width='0%';$('weatherText').textContent='准备施工';$('scienceTitle').textContent=c.tag.split(' · ')[1]||'跟着水流看';$('scienceText').textContent=c.hints[0];$('undoBtn').disabled=true;
+ works=WaterCampaign.works(id,world);$('spots').innerHTML=works.map((w,i)=>'<button class="spot" data-work="'+i+'" aria-label="'+w.name+'" title="'+w.name+'"><span>'+ (i+1)+'</span></button>').join('');$('spots').querySelectorAll('button').forEach(b=>b.onclick=()=>selectWork(+b.dataset.work));rain.visible=false;angle=.18;zoom=1;refreshTerrain();refreshWater();fit();selectWork(0);updateStats();$('loading').hidden=true;fit();toast('选工程 → 开工 → 试水');}
+function startTrial(){if(mode!=='play'||trial)return;if(world.map.dam&&!hydraulics.damBuilt){toast('先筑坝，再试水');setGatePanel(true);selectWork(works.findIndex(w=>w.id===(site.soil<hydraulics.damCost?'borrow':'dam')));return;}endPointer();cancelWork();reviewing=false;selectTool('look',false);resetWater();comparisonRun=new WaterComparison(WaterWorld,WaterCampaign,HydraulicWorks,chapter,levelStart,houses.map(h=>h.floor));comparisonRun.weather=weather;comparisonRun.sameWeather=lastReportWeather===weather;comparisonRun.actions=describeChanges();comparisonRun.completed=[...workDone];comparisonRun.gates=hydraulics.damBuilt?[Math.round(hydraulics.gate*100)]:[];$('reportBtn').hidden=true;$('liveCompare').hidden=false;$('scienceTitle').textContent='跟着水流看';$('scienceText').textContent='看水在哪里积起，又从哪里离开。';$('toast').textContent='';setPaused(false);$('undoBtn').disabled=true;document.body.dataset.trial='true';trial={time:0,duration:chapters[chapter].duration,maxTown:0,maxDown:0,maxBasin:0,maxFarm:0,farmSeconds:0,bridge:true};$('runBtn').disabled=$('mobileRun').disabled=false;$('workBtn').disabled=$('chooseWork').disabled=true;$('runBtn').textContent='暂停观察';$('runState').textContent=world.map.dam?'雨中可以调闸':'观察水位、流向与桥况';$('weatherText').textContent='上游降雨 · 来水增加';$('waterNote').textContent='水位越过橙色门槛，小屋就会进水';rain.visible=true;routeBeads.visible=routeLine.visible=jobRing.visible=false;updateLabels();}
 function sampleTrial(dt){if(!trial)return;const s=stats();trial.maxTown=Math.max(trial.maxTown,...s.depths.slice(0,3));trial.maxDown=Math.max(trial.maxDown,s.depths[3]);trial.maxBasin=Math.max(trial.maxBasin,s.basin);trial.maxFarm=Math.max(trial.maxFarm,s.farmDepth);trial.bridge=trial.bridge&&bridgeOK();if(chapter===4&&trial.time>=chapters[4].storm&&s.farmDepth>.025&&s.farmDepth<.5&&hydraulics.irrigationFlow>.35)trial.farmSeconds+=dt;}
-function finishTrial(){const t=trial,s=stats();Object.assign(t,{earth:world.earth,endBasin:s.basin,hours:site?.hours||0,bridgeHealth:hydraulics.health,damBuilt:hydraulics.damBuilt});const g=WaterCampaign.grade(chapter,t);trial=null;document.body.dataset.trial='false';rain.visible=false;setPaused(true);stars[chapter]=Math.max(stars[chapter],g.stars);if(g.primary)learned.add(chapter);
+function finishTrial(){const t=trial,s=stats();Object.assign(t,{earth:world.earth,endBasin:s.basin,hours:site?.hours||0,bridgeHealth:hydraulics.health,damBuilt:hydraulics.damBuilt});const g=WaterCampaign.grade(chapter,t);trial=null;reviewing=true;document.body.dataset.trial='false';rain.visible=false;setPaused(true);stars[chapter]=Math.max(stars[chapter],g.stars);if(g.primary)learned.add(chapter);
  const wins=['这一次，小镇等到了晴天','赶集的人，平安过桥了','两岸都寄来了好消息','洪峰住进了湖里','雨停了，田里还有清水','这是你的河流答案'];$('resultTitle').textContent=g.primary?wins[chapter]:'再调整一下';$('resultKicker').textContent='★'.repeat(g.stars)+'☆'.repeat(3-g.stars)+' · '+world.map.name;$('resultStars').innerHTML='<span>'+ (g.primary?'★':'☆')+' 平安</span><span title="保留至少四成工时；自由挖填关土方不超过900">'+(g.primary&&g.efficient?'★':'☆')+' 省工</span><span title="护桥关桥况至少90%；雨旱关桥况85%、留水150、田水低于0.40；其他关两岸水深低于0.10">'+(g.primary&&g.resilient?'★':'☆')+' 稳健</span>';
  const failed=g.goals.find(x=>!x.ok);$('resultDesc').textContent=g.primary?chapters[chapter].why:failed.name+'还没达成。'+(!t.bridge?'桥脚受到了持续冲刷。拓宽桥下或增加分流，观察流速是否降低。':t.maxTown>=.18?'小镇旁的来水积了起来，试着疏通下游或分走洪峰。':t.maxDown>=.18?'下游来不及排水，疏通出口，并在洪峰时调小闸门。':!t.damBuilt?'先挖土，再沿山口筑坝。':t.maxFarm>=.5?'田边积水过深，给田地补一条排水路。':t.farmSeconds<chapters[chapter].irrigation?'晴天时水还没到田边，检查浅渠是否连通水库。':'把一部分水留在库里，继续调小闸门。');
  $('resultTown').textContent=t.maxTown.toFixed(2)+' 格';$('resultOtherName').firstChild.textContent=chapter===1?'木桥完整度':world.map.dam?'最后留水':'下游最高水深';$('resultOther').textContent=chapter===1?Math.round(t.bridgeHealth)+'%':world.map.dam?Math.round(t.endBasin)+' 格':t.maxDown.toFixed(2)+' 格';$('resultLearning').innerHTML=goalMarkup(t,true);$('comparison').textContent=previous?'上次小镇最高水深 '+previous.maxTown.toFixed(2)+' 格；这次 '+t.maxTown.toFixed(2)+' 格。':'同一场来水，可以检验不同的工程组合。';if(comparisonRun){const gates=comparisonRun.gates;const note=gates.length?' · 闸门 '+gates.join('% → ')+'%。':'';$('comparison').innerHTML=WaterReport.render(comparisonRun,comparisonRun.actions+note,previous);lastReportWeather=comparisonRun.weather;$('reportBtn').hidden=false;$('liveCompare').hidden=true;}previous={...t};$('nextBtn').hidden=!g.primary;$('nextBtn').textContent=g.primary&&chapter<4?'下一站 →':'打开旅程';$('nextBtn').onclick=()=>{$('resultDialog').close();if(g.primary&&chapter<4)enterLevel(chapter+1);else openMap();};$('resultDialog').showModal();$('resultDialog').scrollTop=0;saveJourney();$('runBtn').disabled=$('mobileRun').disabled=$('chooseWork').disabled=false;$('workBtn').disabled=workDone.has(works[selected]?.id);$('undoBtn').disabled=!undoStack.length;$('runBtn').textContent='再检验一次';$('mobileRun').textContent='再试一次';$('runState').textContent='回到雨前，继续改造';$('weatherText').textContent='检验完成';$('runTime').textContent='完成';}
@@ -54384,10 +54451,11 @@ function storyTick(dt){
  $('openingTitle').textContent=titles[shot];$('openingText').textContent=lines[shot];document.querySelector('.opening-top').textContent=['01 · 山谷来水','02 · 跟着河流','03 · 雨来了','04 · 小镇涨水','云铃镇 · 等你的办法'][shot];
  const start=[0,3,7,11,16][shot];document.querySelector('.opening-caption').style.opacity=.65+.35*Math.min(1,(storyTime-start)/.4);
  rain.visible=storyTime>3;const storm=smooth(Math.max(0,Math.min(1,(storyTime-3)/4)));sun.intensity=2.8-storm*.8;renderer.setClearColor(new THREE.Color(0xd7e9dc).lerp(new THREE.Color(0x9db9b2),storm),1);
- if(storyTime>=filmLength){mode='home';document.body.dataset.mode=mode;setPaused(true);rain.visible=false;$('opening').hidden=true;$('home').hidden=false;sun.intensity=2.2;fit();}
+ if(storyTime>=filmLength){mode='home';document.body.dataset.mode=mode;setPaused(true);rain.visible=false;$('opening').hidden=true;$('home').hidden=false;$('beginBtn').textContent=stars.some(Boolean)?'继续旅程 →':'开始改造 →';sun.intensity=2.2;fit();}
 }
 
 function animateScenery(dt){
+ if(mode==='play'){const wet=trial&&!(chapter===4&&trial.time>=chapters[4].storm)?1:0;weatherBlend+=(wet-weatherBlend)*(reducedMotion?1:1-Math.exp(-dt*2.5));sun.intensity=2.8-weatherBlend*.65;renderer.setClearColor(weatherSky.copy(clearSky).lerp(rainSky,weatherBlend),1);rain.material.opacity=weatherBlend*.65;rain.visible=weatherBlend>.015;}
  const s=lastStats||stats();for(let i=0;i<houses.length;i++){const g=gauges[i],h=houses[i],d=houseDepth(h);g.g.position.set(h.x-1.55,h.floor,h.z);g.level.position.y=Math.min(2.7,d+.04);g.halo.visible=d>=.18;g.halo.position.set(h.x,terrainHeight(h.x,h.z)+d+.08,h.z);g.halo.material.opacity=.55+.2*Math.sin(clockTime*4);}
  for(let i=0;i<residents.length;i++){const r=residents[i];r.navigation??=new ResidentNavigation(world,r.home,houses,houses[i].floor);const nav=r.navigation;
  if(!paused&&!document.querySelector('dialog[open]')&&mode!=='home')nav.tick(dt,houseDepth(houses[i]));
@@ -54402,22 +54470,22 @@ function animateScenery(dt){
  flowLines.visible=mode==='play'&&tool==='look';animateStructures(dt);
 }
 function mapThumbnail(id){const m=WaterCampaign.maps[id],path=f=>Array.from({length:54},(_,i)=>{const z=i-26;return (i?'L':'M')+(100+f(z)*2).toFixed(1)+','+(54+z*1.6).toFixed(1);}).join(' ');return '<svg class="map-thumb" viewBox="0 0 200 108" aria-hidden="true"><ellipse cx="100" cy="54" rx="86" ry="49" fill="'+['#a9c386','#9aa99d','#becd91','#95b9a4','#c5c891','#a8c5ac'][id]+'"/><path d="'+path(m.main)+'" fill="none" stroke="#459aab" stroke-width="7" stroke-linecap="round"/>'+(id===2?'<path d="'+path(m.branch)+'" fill="none" stroke="#459aab" stroke-width="5"/>':'')+(m.dam?'<ellipse cx="'+(100+m.basin[0]*2)+'" cy="'+(54+m.basin[1]*1.6)+'" rx="18" ry="16" fill="#70b6bc"/><path d="M'+(100+(m.dam.x-m.dam.width/2)*2)+' '+(54+m.dam.z*1.6)+' h'+m.dam.width*2+'" stroke="#a17a53" stroke-width="5"/>':'')+m.houses.map(([x,z])=>'<rect x="'+(97+x*2)+'" y="'+(51+z*1.6)+'" width="6" height="6" rx="1" fill="#f9e8b7"/>').join('')+'</svg>';}
-$('gateMapBtn').onclick=()=>{$('gateControls').hidden=!$('gateControls').hidden;updateGateView();};
 
-$('beginBtn').onclick=()=>{sun.intensity=2.8;renderer.setClearColor(0xd7e9dc,1);enterLevel(0);};
-$('mapBtn').onclick=openMap;$('workBtn').onclick=startWork;$('chooseWork').onclick=()=>selectWork(selected+1);$('undoBtn').onclick=undo;$('runBtn').onclick=$('mobileRun').onclick=()=>trial?setPaused(!paused):startTrial();
-$('helpBtn').onclick=()=>{$('settingsDialog').close();info('玩法','<p>选黄色工程点，点「开工」。也可长按地面挖填。</p><p>改好后「让雨来吧」，看水位和结果。有坝时可调闸。</p><p>「观察」拖动转向，滚轮缩放。</p>');};
-$('mobileInfo').onclick=()=>info(chapters[chapter].title,WaterLearning.card(chapter,workDone,hydraulics,metrics(),trial?WaterTrial.phase(chapter,trial.time):'build')+'<div class="goal">'+goalMarkup(metrics())+'</div>'+(trial?'':'<div class="dialog-actions">'+works.map((w,i)=>'<button data-select="'+i+'">'+(i+1)+' · '+w.name+'</button>').join('')+'</div>'));
+
+$('beginBtn').onclick=()=>{const next=stars.findIndex((s,i)=>i<5&&!s);sun.intensity=2.8;renderer.setClearColor(0xd7e9dc,1);enterLevel(next<0?5:next);};
+$('mapBtn').onclick=openMap;$('workBtn').onclick=workAction;$('chooseWork').onclick=openProjects;$('undoBtn').onclick=undo;$('runBtn').onclick=$('mobileRun').onclick=()=>trial?setPaused(!paused):startTrial();
+$('helpBtn').onclick=()=>{$('settingsDialog').close();info('怎么玩','<p>工程 → 开工 → 试水。也可长按地面挖填。</p><p>水闸：点档位控制蓄水与下泄。</p><p>观察：拖动转向，滚轮缩放。</p>');};
+$('mobileInfo').onclick=()=>info(chapters[chapter].title,WaterLearning.card(chapter,workDone,hydraulics,metrics(),trial?WaterTrial.phase(chapter,trial.time):reviewing?'result':'build',works[selected]?.id)+'<div class="goal">'+goalMarkup(metrics())+'</div>');
 $('infoBody').addEventListener('click',e=>{const b=e.target.closest('[data-select]');if(b){$('infoDialog').close();selectWork(+b.dataset.select);}});
 $('reportBtn').onclick=()=>{endPointer();$('resultDialog').showModal();};
-$('retryBtn').onclick=()=>{$('resultDialog').close();resetWater();setPaused(false);showRoute();updateLabels();};
+$('retryBtn').onclick=()=>{$('resultDialog').close();resumeBuilding();showRoute();updateLabels();};
 $('settingsBtn').onclick=()=>{endPointer();$('weatherChoice').closest('.settings-row').hidden=chapter!==5;$('weatherChoice').disabled=!!trial;$('settingsDialog').showModal();};$('pauseBtn').onclick=()=>{setPaused(!paused);$('settingsDialog').close();};$('flatBtn').onclick=()=>{selectTool('flat');$('settingsDialog').close();};$('brush').oninput=e=>brush=+e.target.value;$('weatherChoice').onchange=e=>weather=+e.target.value;$('resetBtn').onclick=()=>{$('settingsDialog').close();enterLevel(chapter);};
-$('saveBtn').onclick=()=>{try{localStorage.setItem('floating-isle-water-v6',JSON.stringify({version:6,chapter,h:Array.from(world.h),w:Array.from(world.w),qx:Array.from(world.qx),qz:Array.from(world.qz),earth:world.earth,site:site?.snapshot(),hydraulics:hydraulics.snapshot(),selected,workDone:[...workDone],stars,learned:[...learned]}));toast('地形、工程和旅程已经保存。');}catch(e){toast('存档空间已满，先继续当前旅程。');}};
-$('loadBtn').onclick=()=>{try{const s=JSON.parse(localStorage.getItem('floating-isle-water-v6'));if(!s||s.version!==6||!Number.isInteger(s.chapter)||s.chapter<0||s.chapter>5||!['h','w','qx','qz'].every(k=>s[k]?.length===world.h.length&&s[k].every(Number.isFinite))||!s.w.every(v=>v>=0&&v<50)||!s.h.every(v=>v>=-10&&v<30)||!Number.isFinite(s.earth))throw Error();enterLevel(s.chapter);for(const k of ['h','w','qx','qz'])world[k].set(s[k]);world.updateVelocity();world.earth=s.earth;world.input=world.output=0;world.initialMass=world.mass();site?.restore(s.site);hydraulics.restore(s.hydraulics);workDone=new Set((s.workDone||[]).filter(id=>works.some(w=>w.id===id)));selected=Math.max(0,Math.min(works.length-1,s.selected||0));selectWork(selected);stars=Array.from({length:6},(_,i)=>Math.max(stars[i]||0,Math.min(3,+s.stars?.[i]||0)));saveJourney();learned=new Set((s.learned||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<6));resetFlow();refreshTerrain();refreshWater();showRoute();updateStats();$('settingsDialog').close();toast('回到保存的岛屿了。');}catch(e){toast('先保存这一版岛屿，再从这里继续。');}};
+$('saveBtn').onclick=()=>{try{localStorage.setItem('floating-isle-water-v6',JSON.stringify({version:6,chapter,h:Array.from(world.h),w:Array.from(world.w),qx:Array.from(world.qx),qz:Array.from(world.qz),earth:world.earth,site:site?.snapshot(),hydraulics:hydraulics.snapshot(),selected,workDone:[...workDone],stars,learned:[...learned]}));toast('已保存');}catch(e){toast('存档空间已满，先继续当前旅程。');}};
+$('loadBtn').onclick=()=>{try{const s=JSON.parse(localStorage.getItem('floating-isle-water-v6'));if(!s||s.version!==6||!Number.isInteger(s.chapter)||s.chapter<0||s.chapter>5||!['h','w','qx','qz'].every(k=>s[k]?.length===world.h.length&&s[k].every(Number.isFinite))||!s.w.every(v=>v>=0&&v<50)||!s.h.every(v=>v>=-10&&v<30)||!Number.isFinite(s.earth))throw Error();enterLevel(s.chapter);for(const k of ['h','w','qx','qz'])world[k].set(s[k]);world.updateVelocity();world.earth=s.earth;world.input=world.output=0;world.initialMass=world.mass();site?.restore(s.site);hydraulics.restore(s.hydraulics);workDone=new Set((s.workDone||[]).filter(id=>works.some(w=>w.id===id)));selected=Math.max(0,Math.min(works.length-1,s.selected||0));selectWork(selected);stars=Array.from({length:6},(_,i)=>Math.max(stars[i]||0,Math.min(3,+s.stars?.[i]||0)));saveJourney();learned=new Set((s.learned||[]).filter(i=>Number.isInteger(i)&&i>=0&&i<6));resetFlow();refreshTerrain();refreshWater();showRoute();updateStats();$('settingsDialog').close();toast('已读取');}catch(e){toast('先保存这一版岛屿，再从这里继续。');}};
 
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>selectTool(b.dataset.tool));document.querySelectorAll('.close-dialog').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('zoomBtn').onclick=()=>{zoom=zoom>=1.6?1:zoom+.2;fit();};$('fitBtn').onclick=()=>{angle=.18;zoom=1;fit();};
-host.addEventListener('pointerdown',e=>{if(mode!=='play'||e.button!==0)return;host.setPointerCapture(e.pointerId);pointer={id:e.pointerId,x:e.clientX,y:e.clientY};if(tool==='look')return;if(trial||workPlan)return;const p=hit(e);if(!p)return;setPaused(false);pushUndo();paint={x:p.x,z:p.z};if(site){site.sites=protection();if(!site.order(p.x,p.z,tool,brush,true)){undoStack.pop();$('undoBtn').disabled=!undoStack.length;paint=null;toast(site.message);}}paintBrush(p);});
+host.addEventListener('pointerdown',e=>{if(mode!=='play'||e.button!==0)return;host.setPointerCapture(e.pointerId);pointer={id:e.pointerId,x:e.clientX,y:e.clientY};if(tool==='look')return;if(trial||workPlan)return;const p=hit(e);if(!p)return;resumeBuilding();pushUndo();paint={x:p.x,z:p.z};if(site){site.sites=protection();if(!site.order(p.x,p.z,tool,brush,true)){undoStack.pop();$('undoBtn').disabled=!undoStack.length;paint=null;toast(site.message);}}paintBrush(p);});
 host.addEventListener('pointermove',e=>{if(mode!=='play'||pointer&&pointer.id!==e.pointerId)return;if(tool==='look'&&pointer){angle-=(e.clientX-pointer.x)*.008;pointer.x=e.clientX;fit();return;}const p=hit(e);paintBrush(p);if(pointer&&p&&!workPlan&&!trial){paint={x:p.x,z:p.z};if(site){site.sites=protection();site.retarget(p.x,p.z,tool,brush);}}});
 function endPointer(){if(site?.job?.continuous){site.cancel();worker.visible=false;dust.visible=false;$('workBubble').hidden=true;}pointer=null;paint=null;brushRing.visible=cursorDot.visible=false;}
 host.addEventListener('pointerup',endPointer);host.addEventListener('pointercancel',endPointer);host.addEventListener('lostpointercapture',endPointer);window.addEventListener('blur',endPointer);host.addEventListener('pointerleave',()=>{if(!pointer)paintBrush(null);});host.addEventListener('wheel',e=>{if(mode!=='play')return;e.preventDefault();zoom=Math.max(.8,Math.min(1.8,zoom-e.deltaY*.0007));fit();},{passive:false});
@@ -54425,11 +54493,11 @@ host.addEventListener('pointerup',endPointer);host.addEventListener('pointercanc
 document.addEventListener('keydown',e=>{if(mode!=='play'||e.target.matches('input,select')||document.querySelector('dialog[open]'))return;if('123'.includes(e.key))selectTool(['dig','raise','look'][+e.key-1]);if(e.code==='Space'){e.preventDefault();setPaused(!paused);}if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}});
 let last=performance.now(),acc=0,uiAcc=0,terrainAcc=0,raf=0,contextLost=false;
 function frame(now){if(document.hidden||contextLost){raf=0;return;}const dt=Math.min(.05,(now-last)/1000);last=now;clockTime+=dt;uiAcc+=dt;terrainAcc+=dt;noticeCooldown-=dt;const dialog=!!document.querySelector('dialog[open]');
- if(mode==='intro'){storyTick(dt);updateCamera();}
+ if(mode==='intro')storyTick(dt);const cameraMoving=updateCamera(dt);
  if(mode==='play'&&!paused&&!dialog){if(workPlan)tickWork(dt);else if(site?.job){site.tick(dt);if(!site.job)toast(site.message);}if(paint&&!site&&!trial){world.edit(paint.x,paint.z,brush,dt*2.8,tool,protection());paintBrush(paint);}}
  if(!paused&&mode!=='home'&&!dialog){const speed=mode==='intro'?(storyTime>3?5.5:1):4;acc+=dt*speed;while(acc>=.08){let rate=2;if(mode==='intro'&&storyTime>3)rate=WaterCampaign.rate(0,(storyTime-3)*5.5);if(trial){trial.time+=.08;rate=WaterCampaign.rate(chapter,trial.time,comparisonRun?.weather??weather);}if(hydraulics)hydraulics.drySeason=!!trial&&chapter===4&&trial.time>=chapters[4].storm;world.step(.08,rate);hydraulics?.tick(.08,!!trial&&(chapter===1||chapter===4));advanceFlow(.08);simClock+=.08;acc-=.08;if(trial){sampleTrial(.08);comparisonRun?.step(.08,rate,trial.time,world,hydraulics);if(trial.time>=trial.duration){finishTrial();acc=0;break;}}}}
  if(paint)paintBrush(paint);refreshWater();waterMesh.material.uniforms.time.value=simClock;animateScenery(dt);
- if(uiAcc>.16){uiAcc=0;updateStats();updateLabels();}if(terrainAcc>((paint||workPlan||site?.job)? .1:.55)){terrainAcc=0;refreshTerrain();if(mode==='play')showRoute();}
+ if(cameraMoving||uiAcc>.16)updateLabels();if(uiAcc>.16){uiAcc=0;updateStats();}if(terrainAcc>((paint||workPlan||site?.job)? .1:.55)){terrainAcc=0;refreshTerrain();if(mode==='play')showRoute();}
  renderer.render(scene,camera);raf=requestAnimationFrame(frame);
 }
 renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();contextLost=true;cancelAnimationFrame(raf);$('fallback').hidden=false;});document.addEventListener('visibilitychange',()=>{endPointer();if(document.hidden){cancelAnimationFrame(raf);raf=0;}else if(!contextLost&&!raf){last=performance.now();raf=requestAnimationFrame(frame);}});
@@ -54448,51 +54516,94 @@ function describeChanges(){
  return (touched.length?touched.join('、'):'局部改造')+' · 挖土 '+dug.toFixed(0)+' / 填土 '+filled.toFixed(0)+' 格';
 }
 
-let lessonKey='',lastPhase='',gateOpenedForTrial=false;
+let lessonKey='',lastPhase='',phaseRailKey='',gateOpenedForTrial=false,reviewing=false,phaseNoticeUntil=0;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 try{const progress=JSON.parse(localStorage.getItem('water-isle-journey-v7'));if(progress?.stars)stars=Array.from({length:6},(_,i)=>Math.max(0,Math.min(3,+progress.stars[i]||0)));}catch{}
 function saveJourney(){try{localStorage.setItem('water-isle-journey-v7',JSON.stringify({stars}));}catch{}}
+function reveal(el){if(!reducedMotion)el.animate([{opacity:0,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:220,easing:'cubic-bezier(.2,.7,.3,1)'});}
+function phaseNotice(title,text){$('phaseNoticeTitle').textContent=title;$('phaseNoticeText').textContent=text;$('phaseNotice').hidden=false;phaseNoticeUntil=clockTime+4;reveal($('phaseNotice'));}
+function resumeBuilding(){if(reviewing){reviewing=false;resetWater();$('weatherText').textContent='准备施工';$('progress').style.width='0%';}setPaused(false);updateStats();}
 function workRequirement(w){
  if(!w)return '';
- if(w.kind==='dam'&&!hydraulics.damBuilt&&site?.soil<hydraulics.damCost)return '还需 '+Math.ceil(hydraulics.damCost-site.soil)+' 土料 · 先取土';
- if(site?.hours<=.001)return '工时用完 · 撤销一项工程再调整';
- if(chapter===2&&w.id==='eastout'&&!workDone.has('east')&&!site?.route(...w.path[0],w.r))return '先接通东汊入口';
+ if(w.kind==='dam'&&!hydraulics.damBuilt&&site?.soil<hydraulics.damCost)return '还差 '+Math.ceil(hydraulics.damCost-site.soil)+' 土料 · 先取土';
+ if(site?.hours<=.001)return '工时用完 · 可撤销施工';
+ if(chapter===2&&w.id==='eastout'&&!workDone.has('east')&&!site?.route(...w.path[0],w.r))return '先接东汊入口';
  return '';
 }
 function updateWorkGuide(){
- const w=works[selected];if(!w)return;const lesson=WaterLearning.works[w.id],need=workRequirement(w);
- $('workTip').textContent=need||(workDone.has(w.id)?(world.map.dam&&!hydraulics.damBuilt?'取土完成 · 选择山口大坝':'已完成 · 选择下一处，或试水'):w.kind==='dam'?'需 '+Math.ceil(hydraulics.damCost)+' 土料 · 建好后拖动闸门':lesson?.[1]||w.tip);
- if(!workPlan){$('workBtn').textContent=workDone.has(w.id)?'已完成':need?'待准备':'开工';$('workBtn').disabled=!!trial||workDone.has(w.id)||!!need;}
+ const w=works[selected];if(!w||workPlan)return;
+ const done=workDone.has(w.id),need=done?'':workRequirement(w),next=WaterLearning.next(chapter,workDone,hydraulics),nextName=works.find(x=>x.id===next)?.name;
+ $('workTip').textContent=need||(done?(nextName?'下一步 · '+nextName:'工程完成 · 可以试水'):w.kind==='dam'?'需 '+Math.ceil(hydraulics.damCost)+' 土料 · 建好后可调闸':WaterLearning.works[w.id]?.[1]||w.tip);
+ $('workBtn').textContent=done?(next?'下一步 →':'试水 →'):need?'待准备':'开工';
+ $('workBtn').disabled=!!trial||!!need;$('workBtn').classList.toggle('ready',done&&!trial);
+}
+function workAction(){
+ if(trial)return;
+ if(workPlan){startWork();return;}
+ if(workDone.has(works[selected]?.id)){const next=WaterLearning.next(chapter,workDone,hydraulics);if(next)selectWork(works.findIndex(w=>w.id===next));else startTrial();return;}
+ startWork();
+}
+function openProjects(){
+ if(trial||workPlan)return;
+ const next=WaterLearning.next(chapter,workDone,hydraulics);
+ info('选择工程','<div class="project-picker">'+works.map((w,i)=>{const done=workDone.has(w.id),need=done?'':workRequirement(w);return '<button class="project-option '+(i===selected?'selected':'')+'" data-select="'+i+'"><span class="project-number">'+(done?'✓':String(i+1).padStart(2,'0'))+'</span><span><strong>'+w.name+'</strong><small>'+(need||WaterLearning.works[w.id]?.[1]||w.tip)+'</small></span><em>'+(done?'完成':w.id===next?'下一步':'选择')+'</em></button>';}).join('')+'</div>');
+}
+function setGatePanel(open){
+ const el=$('gateControls'),changed=el.hidden===open;el.hidden=!open;
+ for(const id of ['gateBtn','gateMapBtn']){$(id).setAttribute('aria-expanded',String(open));$(id).classList.toggle('active',open);}
+ if(open){updateGateView();if(changed)reveal(el);}if(changed)fit();
 }
 function setGate(value){
- if(!hydraulics?.damBuilt)return;hydraulics.gate=Math.max(0,Math.min(1,Math.round(value*4)/4));
- if(trial&&comparisonRun&&comparisonRun.gates.at(-1)!==Math.round(hydraulics.gate*100))comparisonRun.gates.push(Math.round(hydraulics.gate*100));
- updateGateView();animateStructures(0);
+ if(!hydraulics?.damBuilt)return;
+ const next=Math.max(0,Math.min(1,Math.round(value*4)/4));if(hydraulics.gate===next)return;
+ hydraulics.gate=next;
+ if(trial&&comparisonRun&&comparisonRun.gates.at(-1)!==Math.round(next*100))comparisonRun.gates.push(Math.round(next*100));
+ updateGateView();updateGateDock();
+}
+function updateGateDock(){
+ const h=hydraulics,d=world.map?.dam,percent=Math.round(h.gate*100);
+ $('gateBtn').hidden=$('gateMapBtn').hidden=!d;
+ if(!d)return;
+ $('gateDockValue').textContent=h.damBuilt?percent+'%':'待建';
+ $('gateMapBtn').disabled=false;$('gateMapBtn').textContent=h.damBuilt?'调水闸 ↗':'坝址 ↗';
+ $('gateBtn').classList.toggle('available',h.damBuilt);
 }
 function updateGateView(){
  const h=hydraulics,d=world.map?.dam;if(!d)return;
- const open=Math.round(h.gate*100);$('gateRange').value=open;$('gatePercent').textContent=open+'%';$('gateRange').setAttribute('aria-valuetext',open+'% 开度');
- $('gateSection').innerHTML=WaterLearning.svg('dam',h.gate,(h.upstream-d.invert)/(d.crest-d.invert),(h.downstream-d.invert)/(d.crest-d.invert));
- const overflow=h.overtopFlow>.05;$('gateStatus').textContent=overflow?'坝顶溢流 '+h.overtopFlow.toFixed(1):'距坝顶 '+Math.max(0,d.crest-h.upstream).toFixed(2)+' 格';$('gateStatus').classList.toggle('warn',overflow);
- $('gateFlow').textContent='下泄 '+Math.max(0,h.gateFlow).toFixed(1)+' 格/秒';$('gateStorage').textContent='库水 '+Math.round(lastStats?.basin||0)+' 格';
- $('gateControls').dataset.alert=String(overflow);
+ const built=h.damBuilt,open=Math.round(h.gate*100),up=built?(h.upstream-d.invert)/(d.crest-d.invert):.65,down=built?(h.downstream-d.invert)/(d.crest-d.invert):.2,flow=built&&open?h.gateFlow:0;
+ $('gatePercent').textContent=built?open+'%':'待建';$('gatePause').hidden=!paused;
+ const section=$('gateSection');if(!section.firstElementChild)section.innerHTML=WaterLearning.svg('dam',h.gate,up,down);WaterLearning.updateDam(section.firstElementChild,h.gate,up,down,built?flow:1);
+ for(const b of $('gateSteps').children){b.disabled=!built;b.setAttribute('aria-pressed',String(built&&+b.dataset.opening===open));}
+ $('gateHint').textContent=built?(flow<-.01?'下游水位更高 · 河水回流':open===0?'关闭闸孔 · 留水蓄洪':open===100?'全开下泄 · 库水排出更快':open<=25?'小开度 · 留水供田':open>=75?'大开度 · 给洪峰留空间':'半开 · 蓄水与下泄'):'先取土筑坝，再调节开度';
+ $('gateBuild').hidden=built;$('gateBuild').disabled=!!workPlan;
+ $('gateBuild').textContent=workPlan?'施工中':site?.soil<h.damCost?'去取土 →':'去筑坝 →';
+ $('gateStorage').parentElement.hidden=!built;$('gateStatus').hidden=!built;
+ if(!built)return;
+ const overflow=h.overtopFlow>.05;$('gateStatus').textContent=overflow?'越坝溢流 '+h.overtopFlow.toFixed(1)+' 格/秒':'距坝顶 '+Math.max(0,d.crest-h.upstream).toFixed(2)+' 格';$('gateStatus').classList.toggle('warn',overflow);
+ $('gateFlow').textContent=(flow<-.01?'回流 ':'下泄 ')+Math.abs(flow).toFixed(1)+' 格/秒';$('gateStorage').textContent='库水 '+Math.round(lastStats?.basin||0)+' 格';$('gateControls').dataset.alert=String(overflow);
 }
-$('gateRange').oninput=e=>setGate(+e.target.value/100);
-$('gateClose').onclick=()=>{$('gateControls').hidden=true;};
+$('gateSteps').onclick=e=>{const b=e.target.closest('[data-opening]');if(b)setGate(+b.dataset.opening/100);};
+$('gateSteps').onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)||!hydraulics.damBuilt)return;e.preventDefault();setGate(e.key==='Home'?0:e.key==='End'?1:hydraulics.gate+(e.key==='ArrowRight'?.25:-.25));$('gateSteps').querySelector('[data-opening="'+Math.round(hydraulics.gate*100)+'"]').focus();};
+$('gateClose').onclick=()=>{setGatePanel(false);$('gateBtn').focus();};
+$('gateControls').onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();setGatePanel(false);$('gateBtn').focus();}};
+$('gateBtn').onclick=$('gateMapBtn').onclick=()=>setGatePanel($('gateControls').hidden);
+$('gateBuild').onclick=()=>{const id=site?.soil<hydraulics.damCost?'borrow':'dam';setGatePanel(false);selectWork(works.findIndex(w=>w.id===id));};
 function updateGuidance(){
- const phase=trial?WaterTrial.phase(chapter,trial.time):'build',h=hydraulics;
- const hint=WaterLearning.hint(chapter,workDone,h,metrics(),phase),key=hint.join('|');
- if(key!==lessonKey){lessonKey=key;$('lessonCard').innerHTML=WaterLearning.card(chapter,workDone,h,metrics(),phase);}
- $('phaseRail').innerHTML=(chapter===4?[['build','施工'],['rain','暴雨'],['dry','晴天']]:[['build','施工'],['rain','来雨'],['result','对比']]).map(([id,label])=>'<span class="'+((id===phase||(id==='rain'&&['rising','peak','falling'].includes(phase)))?'active':'')+'">'+label+'</span>').join('<i>→</i>');
+ const phase=trial?WaterTrial.phase(chapter,trial.time):reviewing?'result':'build',h=hydraulics,m=metrics(),job=works[selected]?.id;
+ const hint=WaterLearning.hint(chapter,workDone,h,m,phase,job),key=hint.join('|');
+ if(key!==lessonKey){lessonKey=key;$('lessonCard').innerHTML=WaterLearning.card(chapter,workDone,h,m,phase,job);reveal($('lessonCard'));}
+ const railKey=chapter+'|'+phase;
+ if(railKey!==phaseRailKey){phaseRailKey=railKey;$('phaseRail').innerHTML=(chapter===4?[['build','施工'],['rain','暴雨'],['dry','晴天']]:[['build','施工'],['rain','试水'],['result','对比']]).map(([id,label])=>'<span class="'+(id===phase||(id==='rain'&&['rising','peak','falling'].includes(phase))?'active':reviewing?'done':'')+'">'+label+'</span>').join('<i>→</i>');}
  if(trial){
-  if(phase!==lastPhase){lastPhase=phase;if(phase==='dry'){toast('雨停了 · 关小闸门留水，看田边供水');$('gateControls').hidden=false;}else if(phase==='peak'&&h.damBuilt)toast('洪峰到了 · 看库水位和下游');}
-  if(h.damBuilt&&!gateOpenedForTrial){$('gateControls').hidden=false;gateOpenedForTrial=true;}
+  if(phase!==lastPhase){lastPhase=phase;if(phase==='dry'){phaseNotice('雨停了','关小水闸，留水供田');setGatePanel(true);}else if(phase==='peak'&&h.damBuilt)phaseNotice('洪峰到了','看库水，也看下游');}
+  if(h.damBuilt&&!gateOpenedForTrial){setGatePanel(true);gateOpenedForTrial=true;}
  }else{lastPhase='';gateOpenedForTrial=false;updateWorkGuide();}
- if(!h.damBuilt)$('gateControls').hidden=true;else if(!$('gateControls').hidden)updateGateView();
- const wm=world.map;
- $('liveCompare').textContent=trial&&comparisonRun?'同场雨 · 小镇水深 '+comparisonRun.before.maxTown.toFixed(2)+' → '+comparisonRun.after.maxTown.toFixed(2):'';
- $('gateMapBtn').disabled=!h.damBuilt;$('gateMapBtn').textContent=h.damBuilt?'闸门 '+Math.round(h.gate*100)+'%':(site?.soil<h.damCost?'坝址 · 先取土':'坝址 · 待筑坝');
- if(wm.dam){const p=screenPoint(wm.dam.x,wm.dam.z,6),r=host.getBoundingClientRect();$('gateMapBtn').style.left=Math.max(8,Math.min(r.width-135,p.x-60))+'px';$('gateMapBtn').style.top=Math.max(56,Math.min(r.height-55,p.y))+'px';$('gateMapBtn').style.bottom='auto';}
+ if(!world.map.dam)setGatePanel(false);else if(!$('gateControls').hidden)updateGateView();
+ if(clockTime>phaseNoticeUntil)$('phaseNotice').hidden=true;
+ updateGateDock();
+ $('liveCompare').textContent=trial&&comparisonRun?'小镇峰值 · 改造前 '+comparisonRun.before.maxTown.toFixed(2)+' → 后 '+comparisonRun.after.maxTown.toFixed(2):'';
 }
+$('skipIntro').onclick=()=>{storyTime=filmLength;storyTick(0);};
 
 })();
 </script></body></html>

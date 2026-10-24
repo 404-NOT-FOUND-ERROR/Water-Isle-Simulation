@@ -25,12 +25,12 @@ Then visit `http://localhost:8080/`. Add `?level=1` through `?level=6` to open a
 ## Controls and engineering
 
 - **Press and hold to build.** Summon the crew to a reachable position and keep digging or filling while held. Drag to change the work site; release to stop. One continuous gesture is one undo step.
-- **Choose a yellow project marker.** Start the highlighted engineering plan with the bottom action button. Stop it at any point and keep the completed terrain changes.
+- **Choose a yellow marker or the bottom project menu.** The menu shows every project, prerequisites, and progress at every screen size. Start the highlighted plan; stop to keep partial changes. Completed projects offer the next step or a storm test.
 - **Manage soil and work hours.** Excavation adds soil to storage; filling and dam construction consume it. Traveling 20 distance units or moving 18 volume units of earth costs one work hour. Each crew challenge has its own budget.
 - **Inspect the island.** The observation tool supports dragging to rotate. Use the mouse wheel or zoom button to move closer, and the overview button to return to the whole island.
 - **Test a storm.** Watch water levels, flow traces, bridge condition, and the objective checklist. The last challenge continues from rain into a dry spell.
-- **Operate the gate.** After building a dam, adjust its opening to 0, 25, 50, 75, or 100 percent, including during a test. The live cross-section shows water on both sides, discharge, storage, and overtopping. Pause a trial to inspect it, then resume.
-- **Follow contextual diagrams.** Guidance changes after borrowing soil, building the dam, connecting an outlet, and entering the dry season. On mobile, open the guidance panel to read the diagram and select a project.
+- **Operate the gate.** A persistent bottom gate button opens five clearly labeled settings: closed, 25%, half, 75%, and fully open. Left/right keys change settings. Before construction, the panel links to soil collection and dam building. The live cross-section and island gate animate together, showing storage, discharge, and overtopping. Pause to adjust, then resume.
+- **Follow contextual diagrams.** Guidance changes after borrowing soil, building the dam, connecting an outlet, and entering the dry season. Mobile guidance uses the same diagrams. The gate panel opens after dam completion, when a trial starts, and when rain gives way to dry weather.
 - **Improve your result.** Earn stars for meeting objectives, conserving resources, and retaining a safety margin. Best scores save automatically; construction undo remains available after a trial.
 - **Save your island.** Terrain, water, momentum, resources, engineering structures, gate settings, and campaign progress are stored in the browser.
 
@@ -47,7 +47,7 @@ Then visit `http://localhost:8080/`. Add `?level=1` through `?level=6` to open a
 
 Windmill Plain combines six objectives: protect the town, keep the bridge open, protect downstream homes, reach 500 water units in storage, supply shallow irrigation during the dry spell, and finish with at least 100 water units remaining. Irrigation requires 24 cumulative simulated seconds; field depth must stay below 0.50 units throughout the test. Crops consume water during the dry spell, so a stagnant puddle cannot earn unlimited irrigation time. Tests run at four times simulation speed.
 
-![Before and after the same storm](screenshots/gameplay-result.png)
+![Before and after a complete simulation regression](screenshots/gameplay-result.png)
 
 ## Compare and learn
 
@@ -86,7 +86,7 @@ This regenerates the standalone `index.html`. Initial river states are precomput
 | `scenery.js`, `map-art.js` | Bridges, dams, settlements, vegetation, crops, and construction feedback |
 | `camera.js` | Cinematic introduction and viewport-aware framing |
 | `experience.js`, `gameplay.js` | Input, construction, objectives, live gates, phase guidance, and saves |
-| `learning.js` | Contextual lessons and original SVG diagrams |
+| `styles.css`, `visuals.js`, `learning.js` | Responsive controls, motion, shared graphics, and contextual diagrams |
 | `trial.js`, `comparison.js`, `report.js` | Repeatable trials, independent reference, result charts |
 | `resident-navigation.js` | Dry-land evacuation and return routes |
 | `sim.js`, `hydraulics.js` | Water dynamics, bridge damage, and sluice boundaries |

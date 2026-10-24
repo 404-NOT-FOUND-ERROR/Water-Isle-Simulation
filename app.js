@@ -2,6 +2,8 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const iconPaths={
+toolbox:'<rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V3h8v4M3 13h18M10 12v4h4v-4"/>',
+gate:'<path d="M4 20V5h16v15M2 5h20M8 5v9h8V5M8 18h8M12 1v4M2 21c3-3 5 3 8 0s5 3 8 0h4"/>',
 island:'<path d="m3 15 9 6 9-6-9-5-9 5Z"/><path d="m3 15 9 10 9-10M8 13l4-10 4 10M10 8h4"/>',
 dig:'<path d="m16 3 5 5-8 8-5-5 8-8ZM8 11l-5 5v5h5l5-5M6 15l3 3"/>',
 raise:'<path d="m2 20 7-11 4 5 3-4 6 10M12 3v7m-3-4 3-3 3 3"/>',
