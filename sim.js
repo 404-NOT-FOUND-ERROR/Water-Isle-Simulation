@@ -44,14 +44,14 @@ class WaterWorld {
     for(let k=0;k<this.w.length;k++){const d=this.w[k];this.vx[k]=d>this.dry?this.qx[k]/d:0;this.vz[k]=d>this.dry?this.qz[k]/d:0;}
   }
   step(dt,rate=2){
-    let left=dt;
+    this.control?.beginStep?.();let left=dt;
     while(left>1e-9){
       let signal=1;
       for(let k=0;k<this.w.length;k++)if(this.w[k]>this.dry){const c=Math.sqrt(this.gravity*this.w[k]);signal=Math.max(signal,Math.abs(this.qx[k]/this.w[k])+c,Math.abs(this.qz[k]/this.w[k])+c);}
       const sub=Math.min(left,.035,.22*this.dx/signal);
       this.substep(sub,rate);left-=sub;
     }
-    this.updateVelocity();
+    this.updateVelocity();this.control?.endStep?.(dt);
   }
   substep(dt,rate){
     const {n,h,w,qx,qz,delta,dqx,dqz,mask,gravity:g,dry}=this,ratio=dt/this.dx;
@@ -82,6 +82,7 @@ class WaterWorld {
         dtan[k]-=ratio*cross;dtan[l]+=ratio*cross;
       }
     }
+    this.control?.recordSurface?.();
     // Reflecting outer grid walls; the island's masked lip acts as a free outfall.
     for(let a=0;a<n;a++){dqx[a*n]+=ratio*.5*g*w[a*n]**2;dqx[a*n+n-1]-=ratio*.5*g*w[a*n+n-1]**2;dqz[a]+=ratio*.5*g*w[a]**2;dqz[(n-1)*n+a]-=ratio*.5*g*w[(n-1)*n+a]**2;}
     for(let k=0;k<w.length;k++){

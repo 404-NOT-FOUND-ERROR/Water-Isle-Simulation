@@ -1,7 +1,8 @@
 // Game-scale bridge scour and an internal, conservative sluice boundary.
 // Scour exposure uses depth * velocity² over time, not a universal failure speed.
 class HydraulicWorks {
- constructor(w,map){this.w=w;this.map=map;this.health=100;this.speed=0;this.load=0;this.scouring=false;this.damBuilt=false;this.gate=.25;this.gateFlow=0;this.builtFraction=0;this.damCells=[];this.gatePairs=[];w.control=this;
+ constructor(w,map){this.w=w;this.map=map;this.health=100;this.speed=0;this.load=0;this.scouring=false;this.damBuilt=false;this.gate=.5;this.gateVolume=0;this.surfaceVolume=0;this.overtopFlow=0;this.gateFlow=0;this.builtFraction=0;this.damCells=[];this.gatePairs=[];this.cropCells=[];this.drySeason=false;this.irrigationFlow=0;this.irrigationVolume=0;w.control=this;
+  if(w.mapId===4)for(let k=0;k<w.w.length;k++)if(Math.hypot(k%w.n*w.dx-32-map.farm[0],Math.floor(k/w.n)*w.dx-32-map.farm[1])<1.9)this.cropCells.push(k);
   if(map.dam){const d=map.dam;for(let j=0;j<w.n;j++)for(let i=0;i<w.n;i++){const k=j*w.n+i,x=i*w.dx-32,z=j*w.dx-32;if(Math.abs(x-d.x)<=d.width/2&&Math.abs(z-d.z)<1.05)this.damCells.push(k);}
    const used=new Set();for(let x=d.x-d.gateWidth/2+w.dx/2;x<d.x+d.gateWidth/2;x+=w.dx){const a=w.index(x,d.z-2),b=w.index(x,d.z+2);if(!used.has(a)){used.add(a);this.gatePairs.push([a,b]);}}
   }
@@ -11,10 +12,16 @@ class HydraulicWorks {
   let used=0;for(const k of this.damCells){const fill=Math.max(0,d.crest-w.h[k])*fraction;w.h[k]+=fill;used+=fill*w.area;}w.earth+=used;if(crew){crew.soil=Math.max(0,crew.soil-used);crew.hours=Math.max(0,crew.hours-used/18);}
   this.builtFraction=1-this.damCost/(this.originalCost||=cost);const remaining=this.damCost;if(remaining<.5&&(!crew||(crew.soil>=remaining&&crew.hours*18>=remaining))){for(const k of this.damCells)w.h[k]=Math.max(w.h[k],d.crest);w.earth+=remaining;if(crew){crew.soil-=remaining;crew.hours-=remaining/18;}this.damBuilt=true;this.builtFraction=1;}return this.damBuilt;
  }
- transfer(dt){this.gateFlow=0;if(!this.damBuilt||!this.gate)return;const w=this.w,d=this.map.dam;
+ beginStep(){this.gateVolume=0;this.surfaceVolume=0;this.irrigationVolume=0;}
+ endStep(dt){this.gateFlow=this.gateVolume/dt;this.overtopFlow=this.surfaceVolume/dt;this.irrigationFlow=this.irrigationVolume/dt;}
+ get upstream(){const d=this.map.dam;if(!d)return 0;return this.gatePairs.reduce((s,[a])=>s+this.w.h[a]+this.w.w[a],0)/this.gatePairs.length;}
+ get downstream(){const d=this.map.dam;if(!d)return 0;return this.gatePairs.reduce((s,[a,b])=>s+this.w.h[b]+this.w.w[b],0)/this.gatePairs.length;}
+ recordSurface(){if(!this.damBuilt)return;const w=this.w;for(const k of this.damCells){const next=k+w.n;if(next<w.w.length&&!this.damCells.includes(next))this.surfaceVolume+=Math.max(0,w.fz[k])*w.area;}}
+ consume(dt){if(!this.drySeason||!this.cropCells.length)return;const w=this.w,each=.45*dt/this.cropCells.length;for(const k of this.cropCells){const vol=Math.min(w.w[k]*w.area,each),old=w.w[k];w.w[k]-=vol/w.area;const ratio=w.w[k]/(old||1);w.qx[k]*=ratio;w.qz[k]*=ratio;w.output+=vol;this.irrigationVolume+=vol;}}
+ transfer(dt){this.consume(dt);this.gateFlow=0;if(!this.damBuilt||!this.gate)return;const w=this.w,d=this.map.dam;
   for(const [a,b] of this.gatePairs){const ea=w.h[a]+w.w[a],eb=w.h[b]+w.w[b],from=ea>=eb?a:b,to=ea>=eb?b:a,up=Math.max(ea,eb),down=Math.min(ea,eb);const opening=Math.min(d.maxOpening*this.gate,Math.max(0,up-d.invert)),head=Math.max(0,up-Math.max(down,d.invert+opening*.5));if(!opening||!head)continue;
    const speed=.62*Math.sqrt(2*w.gravity*head),volume=Math.min(w.w[from]*w.area*.25,w.dx*opening*speed*dt),depth=volume/w.area;if(!depth)continue;
-   const retain=1-depth/w.w[from];w.w[from]-=depth;w.qx[from]*=retain;w.qz[from]*=retain;w.w[to]+=depth;w.qz[to]+=depth*Math.min(6,speed)*(from===a?1:-1);this.gateFlow+=volume/dt*(from===a?1:-1);
+   const retain=1-depth/w.w[from];w.w[from]-=depth;w.qx[from]*=retain;w.qz[from]*=retain;w.w[to]+=depth;w.qz[to]+=depth*Math.min(6,speed)*(from===a?1:-1);this.gateFlow+=volume/dt*(from===a?1:-1);this.gateVolume+=volume*(from===a?1:-1);
   }
  }
  tick(dt,expose=true){const b=this.map.bridge;if(!b){this.speed=this.load=0;return;}const w=this.w;let speed=0,load=0;
@@ -22,8 +29,8 @@ class HydraulicWorks {
   this.speed=speed;this.load=load;this.scouring=load>b.resistance;
   if(expose)this.health=Math.max(0,this.health-Math.max(0,load-b.resistance)*dt*1.6);
  }
- reset(){this.health=100;this.scouring=false;this.gateFlow=0;}
- snapshot(){return {health:this.health,damBuilt:this.damBuilt,gate:this.gate,builtFraction:this.builtFraction};}
- restore(s){if(!s)return;this.health=Math.max(0,Math.min(100,Number(s.health)||0));this.damBuilt=!!s.damBuilt;this.gate=Math.max(0,Math.min(1,Number(s.gate)||0));this.builtFraction=Math.max(0,Math.min(1,Number(s.builtFraction)||0));}
+ reset(){this.health=100;this.scouring=false;this.gateFlow=this.gateVolume=this.surfaceVolume=this.overtopFlow=this.irrigationFlow=this.irrigationVolume=0;this.drySeason=false;}
+ snapshot(){return {health:this.health,damBuilt:this.damBuilt,gate:this.gate,builtFraction:this.builtFraction,originalCost:this.originalCost};}
+ restore(s){if(!s)return;this.health=Math.max(0,Math.min(100,Number(s.health)||0));this.damBuilt=!!s.damBuilt;this.gate=Math.max(0,Math.min(1,Number(s.gate)||0));this.builtFraction=Math.max(0,Math.min(1,Number(s.builtFraction)||0));this.originalCost=Number(s.originalCost)||undefined;}
 }
 if(typeof module!=='undefined')module.exports=HydraulicWorks;
