@@ -1,0 +1,21 @@
+// Construction rules shared by the browser and deterministic tests.
+class ConstructionSite {
+ constructor(w,sites,options={}){this.w=w;this.sites=sites;this.soil=options.soil??0;this.hours=this.maxHours=options.hours??80;[this.x,this.z]=w.map?.spawn||[-12,-6];this.job=null;this.path=[];this.message='按住地面派工，松开停工';this.initial=w.h.slice();this.bridge=w.map?.bridge;}
+ deck(x){const b=this.bridge;if(!b)return 0;const left=this.w.sample(this.initial,b.x-b.length/2,b.z),right=this.w.sample(this.initial,b.x+b.length/2,b.z);return left+.5+(right-left)*Math.max(0,Math.min(1,(x-b.x+b.length/2)/b.length));}
+ bridgeOK(){const b=this.bridge;return !!b&&(this.w.control?.health??100)>0&&[-1,1].every(side=>{const x=b.x+side*b.length/2;return Math.abs(this.w.sample(this.w.h,x,b.z)-this.w.sample(this.initial,x,b.z))<.65&&this.w.sample(this.w.h,x,b.z)+this.w.sample(this.w.w,x,b.z)<this.deck(x)+.1;});}
+ onBridge(x,z){const b=this.bridge;return !!b&&Math.abs(x-b.x)<=b.length/2&&Math.abs(z-b.z)<1.2&&this.bridgeOK();}
+ height(x,z){return this.onBridge(x,z)?this.deck(x):this.w.sample(this.w.h,x,z);}
+ walkable(x,z){return Math.hypot(x,z)<26.5&&(this.onBridge(x,z)||this.w.sample(this.w.w,x,z)<.22);}
+ route(x,z,r=2.8){const n=65,step=.8,coord=k=>[(k%n)*step-25.6,Math.floor(k/n)*step-25.6],idx=(x,z)=>Math.round((z+25.6)/step)*n+Math.round((x+25.6)/step);const start=idx(this.x,this.z),prev=new Int32Array(n*n).fill(-1),queue=[start];prev[start]=start;let end=-1;
+ for(let a=0;a<queue.length;a++){const k=queue[a],[px,pz]=coord(k);if(this.walkable(px,pz)&&Math.hypot(px-x,pz-z)>r+.35&&Math.hypot(px-x,pz-z)<r+2.2){end=k;break;}for(const [di,dj] of [[1,0],[-1,0],[0,1],[0,-1]]){const i=k%n+di,j=Math.floor(k/n)+dj;if(i<0||j<0||i>=n||j>=n)continue;const q=j*n+i;if(prev[q]>=0)continue;const [qx,qz]=coord(q);if(!this.walkable(qx,qz)||Math.abs(this.height(px,pz)-this.height(qx,qz))>.85)continue;prev[q]=k;queue.push(q);}}
+ if(end<0)return null;const path=[];while(end!==start){path.push(coord(end));end=prev[end];}return path.reverse();}
+ order(x,z,mode,r,continuous=false){if(this.hours<=0){this.message='工时用完，检验方案或撤销上一笔';return false;}if(mode==='raise'&&this.soil<.01){this.message='先挖土入库，再填土筑岸';return false;}const path=this.route(x,z,r);if(!path){this.message='把施工点移近岸边，施工员需要一处站位';return false;}this.path=path;this.job={x,z,mode,r:Math.min(r,5),left:continuous?Infinity:.7,continuous};this.message=path.length?'按住等待施工员到达':'持续施工 · 松开停工';return true;}
+ retarget(x,z,mode,r){if(this.job&&Math.hypot(x-this.job.x,z-this.job.z)<.65)return true;this.cancel();return this.order(x,z,mode,r,true);}
+ cancel(){this.job=null;this.path=[];}
+ tick(dt){if(!this.job)return;const j=this.job;if(this.path.length){const [x,z]=this.path[0];if(!this.walkable(x,z)||Math.abs(this.height(x,z)-this.height(this.x,this.z))>1){this.message='前路被水或陡坡阻断，重新选择工地';this.cancel();return;}const d=Math.hypot(x-this.x,z-this.z),move=Math.min(d,dt*14,this.hours*20);this.hours=Math.max(0,this.hours-move/20);if(d){this.x+=(x-this.x)*move/d;this.z+=(z-this.z)*move/d;}if(d<.05||move>=d)this.path.shift();if(this.hours<=0)this.cancel();return;}
+ const amount=Math.min(j.left,dt*1.5),old=this.w.h.slice(),oldEarth=this.w.earth;this.w.edit(j.x,j.z,j.r,amount,j.mode,this.sites,j.floor??-1.8);let dug=0,fill=0;for(let k=0;k<old.length;k++){const d=(this.w.h[k]-old[k])*this.w.area;if(d>0)fill+=d;else dug-=d;}const total=dug+fill;let ratio=Math.min(1,this.hours*18/(total||1));if(fill>dug)ratio=Math.min(ratio,this.soil/(fill-dug));for(let k=0;k<old.length;k++)this.w.h[k]=old[k]+(this.w.h[k]-old[k])*ratio;this.w.earth=oldEarth+total*ratio;this.soil=Math.max(0,this.soil+(dug-fill)*ratio);this.hours=Math.max(0,this.hours-total*ratio/18);j.left-=amount;this.message=j.mode==='dig'?'挖土入库 · 松开停工':'填土筑岸 · 松开停工';if(j.left<=.001||ratio<.999||total<.00001){this.message=ratio<.999?(this.soil<.01?'土料用完，先挖再填':'工时已用完'):'此处已完成，移动到下一处';this.cancel();}}
+ snapshot(){return {soil:this.soil,hours:this.hours,x:this.x,z:this.z};}
+ restore(s){if(s&&['soil','hours','x','z'].every(k=>Number.isFinite(s[k]))&&s.soil>=0&&s.hours>=0&&s.hours<=this.maxHours&&Math.hypot(s.x,s.z)<28){Object.assign(this,s);this.cancel();return true;}return false;}
+}
+if(typeof module!=='undefined')module.exports=ConstructionSite;
+

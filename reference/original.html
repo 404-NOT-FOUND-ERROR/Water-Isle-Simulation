@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>浮屿工坊 · 无方块沙盒</title>
+<style>
+  :root{--ink:#202820;--paper:#fff9e9;--lemon:#ffd84d;--leaf:#79c54f;--teal:#38b6a5;--coral:#ff715d;--snow:#fdfdf8;--shadow:6px 6px 0 var(--ink)}
+  *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#ccefe7;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:0}
+  #app{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;outline:0}
+  #panel{position:fixed;z-index:3;top:18px;left:18px;width:min(350px,calc(100vw - 36px));padding:15px;background:rgba(255,249,233,.96);border:3px solid var(--ink);box-shadow:var(--shadow);max-height:calc(100vh - 36px);overflow:auto}
+  h1{font-size:22px;line-height:1;margin:0 0 4px;font-weight:900;text-transform:uppercase} .eyebrow{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.72;margin-bottom:10px}
+  .rule{height:3px;background:var(--ink);margin:10px 0 12px}.row{display:flex;gap:8px;align-items:center;margin:8px 0}.row>*{min-width:0}.grow{flex:1}
+  label{font-size:12px;font-weight:850;display:block;margin-bottom:4px}.small{font-size:11px;line-height:1.35;opacity:.82}.field{width:100%;height:34px;border:2px solid var(--ink);background:#fffef7;padding:5px 8px;color:var(--ink);font:700 13px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;outline:0}.field:focus{box-shadow:3px 3px 0 var(--teal)}
+  button{border:2px solid var(--ink);background:var(--lemon);color:var(--ink);font:850 12px/1.2 Inter,ui-sans-serif,system-ui,"Microsoft YaHei",sans-serif;padding:7px 9px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s;white-space:nowrap}button:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}button.secondary{background:var(--snow)}button.teal{background:var(--teal)}button.coral{background:var(--coral)}
+  .toggle{display:flex;align-items:center;justify-content:space-between;border:2px solid var(--ink);padding:6px 8px;background:#fffef7;font-size:12px;font-weight:850}.toggle input{appearance:none;width:34px;height:18px;background:#c2cec6;border:2px solid var(--ink);position:relative;cursor:pointer}.toggle input:after{content:"";position:absolute;width:12px;height:12px;left:1px;top:1px;background:var(--ink);transition:left .12s}.toggle input:checked{background:var(--teal)}.toggle input:checked:after{left:17px}
+  input[type=range]{accent-color:var(--coral);width:100%;cursor:pointer}.value{font:900 12px ui-monospace,SFMono-Regular,Consolas,monospace;min-width:38px;text-align:right}
+  .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.chip{border:2px solid var(--ink);background:#fffef7;padding:6px 5px;text-align:center;font-size:11px;font-weight:850}.chip b{display:block;font-size:18px;line-height:1}.swatch{display:inline-block;width:11px;height:11px;border:1px solid var(--ink);vertical-align:-1px;margin-right:4px}
+  #weather{font-weight:850}.weather-row{display:grid;grid-template-columns:1fr;gap:3px}.weather-row label{display:flex;justify-content:space-between;align-items:center}.weather-row select{height:32px}
+  #ride{width:100%}.ride-nearby{background:var(--teal)!important}
+  #hint{position:fixed;z-index:2;right:18px;bottom:18px;max-width:min(360px,calc(100vw - 36px));background:rgba(255,249,233,.93);border:3px solid var(--ink);box-shadow:var(--shadow);padding:10px 12px;font-size:12px;font-weight:750;line-height:1.4}#hint b{display:block;font-size:13px;margin-bottom:2px}#locationStatus{display:block;margin-top:4px;padding-top:4px;border-top:2px solid rgba(32,40,32,.2);font-size:11px;font-weight:900}
+  #toast{position:fixed;z-index:5;left:50%;top:22px;transform:translateX(-50%) translateY(-12px);background:var(--ink);color:var(--paper);padding:9px 15px;border:2px solid var(--ink);box-shadow:4px 4px 0 rgba(32,40,32,.28);opacity:0;pointer-events:none;font-weight:850;font-size:13px;transition:.2s}.show{opacity:1!important;transform:translateX(-50%) translateY(0)!important}
+  #reticle{position:fixed;z-index:1;left:50%;top:50%;width:12px;height:12px;transform:translate(-50%,-50%);pointer-events:none}.reticle-line{position:absolute;background:rgba(32,40,32,.65)}.reticle-line.h{left:0;top:5px;width:12px;height:2px}.reticle-line.v{left:5px;top:0;width:2px;height:12px}
+  #importFile{display:none}
+  #touchControls{display:none;position:fixed;z-index:2;left:12px;bottom:14px;gap:12px;align-items:end;touch-action:none}.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:3px}.pad button,.touch-actions button{padding:0;min-width:44px;min-height:44px;font-size:17px;background:rgba(255,249,233,.88);backdrop-filter:blur(3px);user-select:none;touch-action:none}.pad button[data-dir=up]{grid-column:2;grid-row:1}.pad button[data-dir=left]{grid-column:1;grid-row:2}.pad button[data-dir=down]{grid-column:2;grid-row:3}.pad button[data-dir=right]{grid-column:3;grid-row:2}.touch-actions{display:flex;flex-direction:column;gap:5px}.touch-actions button{font-size:11px;font-weight:900;padding:3px}
+  @media (max-width:680px){#panel{top:10px;left:10px;padding:11px;max-height:52vh;width:min(330px,calc(100vw - 20px));}.rule{margin:7px 0 9px}.row{margin:6px 0}#hint{right:10px;bottom:10px;font-size:11px;padding:8px 9px;max-width:calc(100vw - 24px)}.chips{gap:4px}.chip{padding:4px 3px}.chip b{font-size:15px}}
+  @media (pointer:coarse){#touchControls{display:flex}#hint{bottom:230px;right:10px;max-width:220px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<section id="panel" aria-label="浮屿工坊控制面板">
+  <div class="eyebrow">NO CUBES · TOON ISLAND · SANDBOX</div><h1>浮屿工坊</h1><div class="small">把一座会呼吸的岛，变成你的手办世界。</div>
+  <div class="rule"></div>
+  <label for="seed">世界种子</label><div class="row"><input id="seed" class="field grow" value="LUMEN-07" maxlength="22" aria-label="世界种子"/><button id="regen" class="coral">重新生成</button></div>
+  <div class="row"><button id="save" class="secondary grow">保存进度</button><button id="load" class="secondary grow">读取进度</button><button id="shot" class="teal">截图</button></div>
+  <div class="row"><button id="export" class="secondary grow">导出 JSON</button><button id="import" class="secondary grow">导入 JSON</button><input id="importFile" type="file" accept="application/json"/></div>
+  <div class="rule"></div>
+  <div class="toggle"><span>反向外壳描边</span><input id="outline" type="checkbox" checked aria-label="反向外壳描边"/></div>
+  <div class="row"><button id="camera" class="secondary grow">视角：跟随</button><button id="autoTime" class="secondary grow">时间：自动</button></div>
+  <label for="time">昼夜时间 <span id="timeLabel" class="value">10:30</span></label><input id="time" type="range" min="0" max="24" step="0.05" value="10.5"/>
+  <div class="weather-row"><label for="weather">天气</label><select id="weather" class="field" aria-label="选择天气"><option value="clear">晴朗</option><option value="cloudy">多云</option><option value="rain">细雨</option><option value="snow">落雪</option><option value="stardust">星辉</option></select></div>
+  <label for="vehicle" style="margin-top:12px">出行方式</label><div class="row"><select id="vehicle" class="field grow" aria-label="选择载具"><option value="cart">林叶邮车</option><option value="bus">云铃小巴</option><option value="airship">星帆艇</option></select><button id="summon" class="teal">召回</button></div>
+  <div class="row"><button id="ride" class="secondary">步行 · V 附近乘车</button></div><div class="small">WASD / 方向键行走或驾驶 · V 上下车<br>星帆艇：空格上升 · Shift 下降</div>
+  <label for="zoom" style="margin-top:10px">视野 <span class="small">近看 ↔ 远眺</span></label><input id="zoom" type="range" min="52" max="132" step="2" value="86" aria-label="视野缩放"/>
+  <details id="workshop"><summary>营地工坊 · 塑形与制作</summary>
+  <div class="row"><button id="raise" class="secondary grow">抬升地形</button><button id="lower" class="secondary grow">降低地形</button><button id="smooth" class="secondary grow">平滑地形</button></div>
+  <div class="rule"></div>
+  <div class="chips"><div class="chip"><span class="swatch" style="background:#c48a52"></span>木材<b id="wood">0</b></div><div class="chip"><span class="swatch" style="background:#8a8d82"></span>石头<b id="stone">0</b></div><div class="chip"><span class="swatch" style="background:#ffca45"></span>种子<b id="seedCount">0</b></div></div>
+  <div class="row"><button id="campfire" class="teal grow">制作篝火 <span class="small">3木·2石</span></button><button id="bench" class="teal grow">制作长凳 <span class="small">4木·1石</span></button></div>
+  <div class="row"><button id="plant" class="secondary grow">种下花种</button><span class="small grow">岛屿心愿：点亮营地，再让花朵在坡地扎根。</span></div>
+  </details>
+</section>
+<div id="hint"><b>岛屿日记</b><span id="progress">找到木材、石头与发光种子，给岛屿添一处温暖的落脚点。</span><span id="locationStatus">云铃镇 · 晴朗 · 10:30</span></div>
+<div id="touchControls" aria-label="触屏控制"><div class="pad"><button data-dir="up" aria-label="向前">↑</button><button data-dir="left" aria-label="向左">←</button><button data-dir="down" aria-label="向后">↓</button><button data-dir="right" aria-label="向右">→</button></div><div class="touch-actions"><button data-action="jump" aria-label="跳跃">跳跃</button><button data-action="collect" aria-label="采集">采集</button><button data-action="plant" aria-label="种植">种植</button><button data-action="ride" aria-label="乘坐载具">乘车</button></div></div>
+<div id="toast" role="status"></div><div id="reticle"><i class="reticle-line h"></i><i class="reticle-line v"></i></div>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const app = $('app'), toastEl = $('toast');
+  const TAU = Math.PI * 2;
+  const state = { seed:'LUMEN-07', outline:true, camera:'follow', autoTime:true, time:10.5, weather:'clear', riding:'', wood:0, stone:0, seeds:0, crafted:0, planted:0, terrainEdits:0, jumped:false, terrainOps:[], placed:[], collected:[] };
+  const keys = new Set(); let seedHash = 1, rng, world = null, player, playerVelocity = new THREE.Vector3(), onGround = true, elapsed = 0, toastTimer = 0, weatherEffect = null, weatherClock = 0, skyClock = 0, statusClock = 0;
+  const outlines = [], dynamic = [], pickups = [], props = [], plants = [], landmarks = [], roads = [], vehicles = [], lanterns = [], residents = [];
+  const clock = new THREE.Clock();
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xbfeae3); scene.fog = new THREE.Fog(0xbfeae3, 45, 130);
+  const renderer = new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,1.65)); renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFShadowMap; renderer.outputColorSpace=THREE.SRGBColorSpace; app.appendChild(renderer.domElement);
+  let cameraSpan=86;const cameraHeight=cameraSpan/(innerWidth/innerHeight);const camera = new THREE.OrthographicCamera(-cameraSpan/2,cameraSpan/2,cameraHeight/2,-cameraHeight/2,0.1,260); camera.position.set(52,48,52); camera.lookAt(0,0,0);
+  const hemi = new THREE.HemisphereLight(0xfff8d8,0x5d9b8c,1.55); scene.add(hemi); const ambient = new THREE.AmbientLight(0xfff5d2,.32); scene.add(ambient);
+  const sun = new THREE.DirectionalLight(0xfff2c3,2.6); sun.castShadow=true; sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.left=-48;sun.shadow.camera.right=48;sun.shadow.camera.top=48;sun.shadow.camera.bottom=-48;sun.shadow.camera.near=1;sun.shadow.camera.far=150; scene.add(sun); scene.add(sun.target);
+  const gradientCanvas=document.createElement('canvas'); gradientCanvas.width=3;gradientCanvas.height=1; const gc=gradientCanvas.getContext('2d'); gc.fillStyle='#4b4b4b';gc.fillRect(0,0,1,1);gc.fillStyle='#9a9a9a';gc.fillRect(1,0,1,1);gc.fillStyle='#f7f7f7';gc.fillRect(2,0,1,1); const gradientMap=new THREE.CanvasTexture(gradientCanvas); gradientMap.minFilter=THREE.NearestFilter;gradientMap.magFilter=THREE.NearestFilter;
+  const toon = (color, extra={}) => new THREE.MeshToonMaterial({color,gradientMap,...extra});
+  const outlineMat = new THREE.ShaderMaterial({side:THREE.BackSide,transparent:true,uniforms:{lineColor:{value:new THREE.Color(0x202820)}},vertexShader:'varying float vHeight; void main(){vHeight=position.y; vec3 p=position+normal*0.055; gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}',fragmentShader:'uniform vec3 lineColor; varying float vHeight; void main(){if(vHeight < -2.0) discard; gl_FragColor=vec4(lineColor,1.0);}'});
+  const mats={terrain:toon(0xffffff,{vertexColors:true}), water:toon(0x75d7d0,{transparent:true,opacity:.52,side:THREE.DoubleSide}), trunk:toon(0x91552d), leaf:toon(0x4ca85b), pine:toon(0x147b6f), rock:toon(0x858b82), flower:toon(0xffbd3f), cloud:toon(0xfdfdf8), clay:toon(0xff8068), fire:toon(0xff6449), wood:toon(0xa86c3c), bench:toon(0xc7864d), seed:toon(0xffd75a), crystal:toon(0x54d8cb,{emissive:0x15594f,emissiveIntensity:.65}), mushroom:toon(0xd778a2), mushroomLight:toon(0xffd986,{emissive:0x795323,emissiveIntensity:.25}), roadEdge:toon(0xd1b982,{side:THREE.DoubleSide}), road:toon(0x8b6c64,{side:THREE.DoubleSide}), wall:toon(0xffe7ba), roof:toon(0x4fa89b), moon:toon(0xf9e5ab), lantern:new THREE.MeshBasicMaterial({color:0xffcb69}), stars:new THREE.PointsMaterial({color:0xfff1bd,size:1.7,transparent:true,opacity:0,depthWrite:false}), rain:new THREE.LineBasicMaterial({color:0x9dd6ec,transparent:true,opacity:.56}), snow:new THREE.PointsMaterial({color:0xf8fbff,size:4,transparent:true,opacity:.9,depthWrite:false}), stardust:new THREE.PointsMaterial({color:0xffe18b,size:3,transparent:true,opacity:.88,depthWrite:false})};
+  function hashString(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+  function rand(){seedHash=(seedHash*1664525+1013904223)>>>0;return seedHash/4294967296}
+  function hash2(x,y){let n=Math.sin(x*127.1+y*311.7+hashString(state.seed)*.001)*43758.5453;return n-Math.floor(n)}
+  function fade(t){return t*t*t*(t*(t*6-15)+10)}
+  function gradientDot(ix,iy,x,y){const angle=hash2(ix,iy)*TAU;return Math.cos(angle)*(x-ix)+Math.sin(angle)*(y-iy)}
+  function noise(x,y){const xi=Math.floor(x), yi=Math.floor(y), xf=x-xi,yf=y-yi;const u=fade(xf),v=fade(yf);const a=gradientDot(xi,yi,x,y),b=gradientDot(xi+1,yi,x,y),c=gradientDot(xi,yi+1,x,y),d=gradientDot(xi+1,yi+1,x,y);return THREE.MathUtils.lerp(THREE.MathUtils.lerp(a,b,u),THREE.MathUtils.lerp(c,d,u),v)*1.45}
+  function fbm(x,y){let value=0,amp=.5,freq=1;for(let i=0;i<5;i++){value+=noise(x*freq,y*freq)*amp;freq*=2.03;amp*=.5}return value}
+  function baseHeight(x,z){const r=Math.hypot(x,z),island=THREE.MathUtils.smoothstep(r,33,43);const base=fbm(x*.045,z*.045)*3.7+fbm(x*.11+14,z*.11-5)*1.3;const ridge=8.4*Math.exp(-((x+18)**2+(z+15)**2)/128);const peak=3.2*Math.exp(-((x+24)**2+(z+20)**2)/26);let height=(base+ridge+peak)*(1-island)-island*4.5;const town=1-THREE.MathUtils.smoothstep(Math.hypot(x-9,z-5),5,12);height=THREE.MathUtils.lerp(height,.9,town*.88);return height}
+  function terrainHeight(x,z){let h=baseHeight(x,z);for(const op of state.terrainOps){const d=Math.hypot(x-op.x,z-op.z);if(d>=op.radius)continue;const fall=(Math.cos(d/op.radius*Math.PI)*.5+.5);if(op.type==='raise'||op.type==='lower')h+=op.amount*fall;else h+=(op.target-baseHeight(x,z))*op.amount*fall}return h}
+  function zoneColor(h,x=0,z=0){const c=new THREE.Color();if(h<-.6)c.set('#f5d24d');else if(h<3.2)c.set('#74c44f');else if(h<7)c.set('#34b5a4');else c.set('#fff9e9');if(h>-.5){const crystal=1-THREE.MathUtils.smoothstep(Math.hypot(x+18,z+10),3,11),mushroom=1-THREE.MathUtils.smoothstep(Math.hypot(x+13,z-17),3,10);c.lerp(new THREE.Color('#93b5ba'),crystal*.68);c.lerp(new THREE.Color('#6aab9a'),mushroom*.65)}return c}
+  function meshWithOutline(root, scale=1.035){root.traverse(mesh=>{if(!mesh.isMesh||mesh.userData.outline||mesh.userData.isOutline)return;const hull=new THREE.Mesh(mesh.geometry.clone(),outlineMat);hull.userData.isOutline=true;hull.scale.setScalar(scale);hull.renderOrder=mesh.renderOrder-1;hull.name='inverted-hull';mesh.add(hull);mesh.userData.outline=hull;outlines.push(hull)});return root}
+  function makeTerrain(){const seg=96,size=130;const geo=new THREE.PlaneGeometry(size,size,seg,seg);geo.rotateX(-Math.PI/2);const pos=geo.attributes.position;const colors=[];for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i),h=terrainHeight(x,z);pos.setY(i,h);const c=zoneColor(h,x,z);colors.push(c.r,c.g,c.b)}geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));const flat=geo.toNonIndexed();flat.computeVertexNormals();const m=new THREE.Mesh(flat,mats.terrain);m.receiveShadow=true;m.name='continuous-faceted-terrain';meshWithOutline(m,1.008);scene.add(m);return m}
+  function makeWater(){const water=new THREE.Mesh(new THREE.CircleGeometry(62,96),mats.water);water.rotation.x=-Math.PI/2;water.position.y=-2.1;water.receiveShadow=true;scene.add(water);dynamic.push(water);const rings=[];for(let i=0;i<3;i++){const ring=new THREE.Mesh(new THREE.RingGeometry(32+i*2,32.12+i*2,96),new THREE.MeshBasicMaterial({color:0xffdf69,transparent:true,opacity:.18,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=-1.95+i*.02;scene.add(ring);dynamic.push(ring);rings.push(ring)}return {water,rings}}
+  function makeTree(x,z,pine=false){const g=new THREE.Group();const y=terrainHeight(x,z);g.position.set(x,y,z);const trunk=new THREE.Mesh(new THREE.CylinderGeometry(pine?.22:.28,pine?.34:.42,pine?2.7:2.2,8),mats.trunk);trunk.position.y=1.1;trunk.castShadow=true;g.add(trunk);if(pine){for(let i=0;i<3;i++){const cone=new THREE.Mesh(new THREE.ConeGeometry(1.55-i*.27,2.35-i*.4,8),mats.pine);cone.position.y=2.15+i*.75;cone.castShadow=true;g.add(cone)}}else{const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(1.65,1),mats.leaf);crown.scale.set(1.1,.95,1);crown.position.y=2.55;crown.castShadow=true;g.add(crown);const crown2=new THREE.Mesh(new THREE.IcosahedronGeometry(1.05,1),mats.leaf);crown2.position.set(.65,3.15,.18);crown2.castShadow=true;g.add(crown2)}meshWithOutline(g,1.045);scene.add(g);props.push(g);return g}
+  function makeRock(x,z){const g=new THREE.Group();g.position.set(x,terrainHeight(x,z),z);const r=new THREE.Mesh(new THREE.IcosahedronGeometry(.65+rand()*.45,1),mats.rock);r.scale.y=.6;r.rotation.set(rand(),rand(),rand());r.castShadow=true;g.add(r);meshWithOutline(g,1.07);scene.add(g);props.push(g);return g}
+  function makeCloud(x,y,z,s){const g=new THREE.Group();g.position.set(x,y,z);for(let i=0;i<4;i++){const p=new THREE.Mesh(new THREE.DodecahedronGeometry(s*(.6+rand()*.35),1),mats.cloud);p.position.set((i-1.5)*s*.7,rand()*s*.3,Math.sin(i)*s*.35);g.add(p)}g.userData.baseX=x;g.userData.speed=.5+rand();scene.add(g);dynamic.push(g);return g}
+  function makeFlower(x,z,kind='resource'){const g=new THREE.Group();g.position.set(x,terrainHeight(x,z),z);const stem=new THREE.Mesh(new THREE.CylinderGeometry(.045,.06,.45,6),mats.trunk);stem.position.y=.22;g.add(stem);for(let i=0;i<5;i++){const petal=new THREE.Mesh(new THREE.SphereGeometry(.17,7,5),kind==='plant'?mats.flower:mats.seed);petal.scale.set(.8,.45,1);petal.position.set(Math.cos(i*TAU/5)*.16,.48,Math.sin(i*TAU/5)*.16);g.add(petal)}const center=new THREE.Mesh(new THREE.SphereGeometry(.13,7,5),mats.flower);center.position.y=.48;g.add(center);g.userData.kind=kind;meshWithOutline(g,1.12);scene.add(g);return g}
+  function makePickup(type,x,z,id){const g=new THREE.Group();g.position.set(x,terrainHeight(x,z)+.5,z);let mesh;if(type==='wood'){mesh=new THREE.Mesh(new THREE.CylinderGeometry(.17,.22,1.1,7),mats.wood);mesh.rotation.z=Math.PI/2}else if(type==='stone'){mesh=new THREE.Mesh(new THREE.DodecahedronGeometry(.42,1),mats.rock)}else{mesh=new THREE.Mesh(new THREE.SphereGeometry(.25,10,7),mats.seed)}mesh.castShadow=true;g.add(mesh);meshWithOutline(g,1.12);g.userData.type=type;g.userData.id=id;g.userData.baseY=g.position.y;scene.add(g);pickups.push(g);dynamic.push(g);return g}
+  function makePlayer(){const g=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.55,1.05,8,14),mats.clay);body.castShadow=true;body.position.y=.85;g.add(body);const face=new THREE.Mesh(new THREE.SphereGeometry(.32,10,8),mats.snow);face.scale.set(1,.7,.45);face.position.set(0,1.1,.48);g.add(face);const eyeMat=toon(0x202820);for(const x of [-.12,.12]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.055,8,6),eyeMat);eye.position.set(x,1.16,.76);g.add(eye)}meshWithOutline(g,1.06);g.castShadow=true;scene.add(g);return g}
+  // Fantasy scenery is generated from the seed; only the three vehicles carry mutable state.
+  const fantasyBuildings = [], fantasyFloaters = [];
+  const fantasyPalette = {
+    stone: toon(0x9c8cae, {side: THREE.DoubleSide}),
+    paleStone: toon(0xdfc8aa, {side: THREE.DoubleSide}),
+    starRoad: toon(0x699cb8, {emissive: 0x17455b, emissiveIntensity: .28, side: THREE.DoubleSide}),
+    starEdge: toon(0xc3ded6, {side: THREE.DoubleSide}),
+    timber: toon(0xaa7950, {side: THREE.DoubleSide}),
+    timberEdge: toon(0x684c45, {side: THREE.DoubleSide}),
+    gold: toon(0xffd46e), ink: toon(0x304658),
+    walls: [toon(0xffe6bb), toon(0xffcaa7), toon(0xc1e8cf)],
+    roofs: [toon(0x519e9d), toon(0xcc7499), toon(0x678eb4)],
+    crystal: toon(0x80e4d9, {emissive: 0x216e76, emissiveIntensity: .38}),
+    lilacCrystal: toon(0xc3adfa, {emissive: 0x4c326f, emissiveIntensity: .3}),
+    mushroom: toon(0xe784ae), mushroomStem: toon(0xffe2b7),
+    crystalSoil: toon(0x9aaf9d, {side: THREE.DoubleSide}),
+    mushroomSoil: toon(0x7daf93, {side: THREE.DoubleSide})
+  };
+
+  function addProp(group, groundOffset = 0) {
+    group.userData.fantasyGround = groundOffset;
+    scene.add(group);
+    props.push(group);
+    return group;
+  }
+
+  function fantasyMesh(group, geometry, material, x = 0, y = 0, z = 0) {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    group.add(mesh);
+    return mesh;
+  }
+
+  function fantasyGlow(group, geometry, color, x, y, z, phase = 0) {
+    const material = toon(color, {emissive: color, emissiveIntensity: .15});
+    const mesh = fantasyMesh(group, geometry, material, x, y, z);
+    lanterns.push({mesh, material, phase});
+    return mesh;
+  }
+
+  function makeGroundDisc(x, z, radius, material) {
+    const geometry = new THREE.CircleGeometry(radius, 36);
+    geometry.rotateX(-Math.PI / 2);
+    const positions = geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      positions.setY(i, terrainHeight(x + positions.getX(i), z + positions.getZ(i)) + .035);
+      positions.setX(i, positions.getX(i) + x);
+      positions.setZ(i, positions.getZ(i) + z);
+    }
+    geometry.computeVertexNormals();
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.receiveShadow = true;
+    mesh.userData.groundDisc = true;
+    addProp(mesh);
+    return mesh;
+  }
+
+  function makeFantasySign(text, x, z, color = '#fff2cc') {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z);
+    fantasyMesh(group, new THREE.CylinderGeometry(.065, .1, 1.65, 6), mats.wood, 0, .83, 0);
+    const canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 144;
+    const context = canvas.getContext('2d');
+    context.fillStyle = color; context.strokeStyle = '#273a36'; context.lineWidth = 12;
+    context.beginPath(); context.roundRect(8, 8, 496, 128, 36); context.fill(); context.stroke();
+    context.fillStyle = '#273a36'; context.textAlign = 'center'; context.textBaseline = 'middle';
+    context.font = '900 56px "Microsoft YaHei", sans-serif'; context.fillText(text, 256, 75);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    const sign = new THREE.Sprite(new THREE.SpriteMaterial({map: texture, depthTest: true}));
+    sign.position.y = 1.95; sign.scale.set(3.7, 1.04, 1); group.add(sign);
+    meshWithOutline(group, 1.025);
+    return addProp(group);
+  }
+
+  function makeCrystal(x, z, scale = 1, lilac = false) {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z);
+    for (let i = 0; i < 4; i++) {
+      const height = (1.35 + rand() * 2.2) * scale;
+      const crystal = fantasyMesh(group,
+        new THREE.CylinderGeometry(.035, (.35 + rand() * .12) * scale, height, 5),
+        lilac ? fantasyPalette.lilacCrystal : fantasyPalette.crystal,
+        (i - 1.5) * .48 * scale, height * .49, (rand() - .5) * .8 * scale);
+      crystal.rotation.set((rand() - .5) * .24, rand() * TAU, (rand() - .5) * .3);
+    }
+    meshWithOutline(group, 1.025);
+    return addProp(group);
+  }
+
+  function makeMushroom(x, z, scale = 1) {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z);
+    fantasyMesh(group, new THREE.CylinderGeometry(.18 * scale, .32 * scale, 1.65 * scale, 7),
+      fantasyPalette.mushroomStem, 0, .81 * scale, 0);
+    const cap = fantasyMesh(group, new THREE.SphereGeometry(.94 * scale, 11, 7),
+      fantasyPalette.mushroom, 0, 1.64 * scale, 0);
+    cap.scale.y = .43;
+    const skirt = fantasyGlow(group, new THREE.TorusGeometry(.61 * scale, .07 * scale, 5, 12),
+      0xffd993, 0, 1.43 * scale, 0, rand() * TAU);
+    skirt.rotation.x = Math.PI / 2;
+    for (let i = 0; i < 3; i++) {
+      const a = i * TAU / 3 + .5;
+      const dot = fantasyMesh(group, new THREE.SphereGeometry(.14 * scale, 6, 4),
+        fantasyPalette.mushroomStem, Math.cos(a) * .49 * scale,
+        1.94 * scale, Math.sin(a) * .49 * scale);
+      dot.scale.y = .32;
+    }
+    meshWithOutline(group, 1.02);
+    return addProp(group);
+  }
+
+  function makeRuneArch(x, z) {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z);
+    for (const side of [-1, 1]) {
+      fantasyMesh(group, new THREE.CylinderGeometry(.43, .61, 2.7, 7),
+        fantasyPalette.stone, side * 1.55, 1.35, 0);
+      fantasyMesh(group, new THREE.CylinderGeometry(.65, .71, .18, 7),
+        fantasyPalette.paleStone, side * 1.55, .09, 0);
+    }
+    fantasyMesh(group, new THREE.TorusGeometry(1.55, .34, 6, 18, Math.PI),
+      fantasyPalette.stone, 0, 2.65, 0);
+    const rune = fantasyGlow(group, new THREE.TorusGeometry(.69, .065, 6, 24),
+      0x9bf4dd, 0, 2.1, .05);
+    fantasyFloaters.push({kind: 'rune', mesh: rune, phase: 0});
+    meshWithOutline(group, 1.02);
+    return addProp(group);
+  }
+
+  function makeScenery() {
+    makeGroundDisc(-18, -10, 4.9, fantasyPalette.crystalSoil);
+    const crystal = makeCrystal(-18, -10, 1.18);
+    makeCrystal(-21.3, -11.3, .75, true);
+    makeCrystal(-16.2, -13.2, .65, true);
+    makeCrystal(-21, -7.3, .5);
+    landmarks.push({id: 'crystal', name: '水晶谷', x: -18, z: -10, radius: 6, group: crystal});
+    makeFantasySign('水晶谷', -15.2, -7.6, '#d7f8ef');
+
+    makeGroundDisc(-13, 17, 5.7, fantasyPalette.mushroomSoil);
+    const mushroom = makeMushroom(-15.1, 18.7, 1.72);
+    for (let i = 0; i < 7; i++) {
+      const angle = i * TAU / 7, radius = 3.3 + (i % 2) * .8;
+      makeMushroom(-13 + Math.cos(angle) * radius, 17 + Math.sin(angle) * radius,
+        .63 + (i % 3) * .17);
+    }
+    landmarks.push({id: 'mushroom', name: '蘑菇幽谷', x: -13, z: 17, radius: 6.3, group: mushroom});
+    makeFantasySign('蘑菇幽谷', -8.1, 15.4, '#ffe0ea');
+    for (let i = 0; i < 12; i++) {
+      const light = new THREE.Group(), phase = i * 2.14;
+      const x = -13 + Math.cos(phase) * (2 + (i % 3));
+      const z = 17 + Math.sin(phase) * (2 + (i % 3));
+      light.position.set(x, terrainHeight(x, z) + 1.6, z);
+      fantasyGlow(light, new THREE.SphereGeometry(.055 + (i % 2) * .025, 5, 4),
+        0xffe696, 0, 0, 0, phase);
+      addProp(light, 1.6);
+      fantasyFloaters.push({kind: 'firefly', mesh: light, x, z, phase});
+    }
+
+    const arch = makeRuneArch(19, 15);
+    landmarks.push({id: 'ruins', name: '风铃遗迹', x: 19, z: 15, radius: 5.7, group: arch});
+    for (const [x, z, height] of [[16.2, 18.2, 1.3], [22, 18.3, 2.1], [22.5, 13, .9]]) {
+      const pillar = new THREE.Group();
+      pillar.position.set(x, terrainHeight(x, z), z);
+      fantasyMesh(pillar, new THREE.CylinderGeometry(.42, .61, height, 7),
+        fantasyPalette.stone, 0, height / 2, 0);
+      meshWithOutline(pillar, 1.025); addProp(pillar);
+    }
+    makeFantasySign('风铃遗迹', 17.3, 11.4, '#e8e0fa');
+  }
+
+  function makeHouse(x, z, angle, variant) {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z); group.rotation.y = angle;
+    const wall = fantasyPalette.walls[variant % 3], roof = fantasyPalette.roofs[variant % 3];
+    fantasyMesh(group, new THREE.CylinderGeometry(1.57, 1.68, 1.15, 10),
+      fantasyPalette.paleStone, 0, -.26, 0);
+    fantasyMesh(group, new THREE.CylinderGeometry(1.42, 1.56, 1.9, 12), wall, 0, .95, 0);
+    if (variant % 2) {
+      const dome = fantasyMesh(group, new THREE.SphereGeometry(1.8, 12, 8), roof, 0, 2.0, 0);
+      dome.scale.y = .56;
+      fantasyMesh(group, new THREE.ConeGeometry(.23, .65, 7), fantasyPalette.gold, 0, 3.13, 0);
+    } else {
+      fantasyMesh(group, new THREE.ConeGeometry(1.94, 1.58, 10), roof, 0, 2.56, 0);
+      fantasyMesh(group, new THREE.SphereGeometry(.13, 6, 5), fantasyPalette.gold, 0, 3.43, 0);
+    }
+    const door = fantasyMesh(group, new THREE.CapsuleGeometry(.3, .52, 4, 8),
+      fantasyPalette.ink, 0, .56, 1.48);
+    door.scale.z = .12;
+    for (const side of [-1, 1]) {
+      const window = fantasyGlow(group, new THREE.SphereGeometry(.29, 8, 6),
+        0xffdb8f, side * .83, 1.17, 1.25, variant * .6);
+      window.scale.set(1, 1, .18); window.rotation.y = side * .55;
+    }
+    const chimney = fantasyMesh(group, new THREE.CylinderGeometry(.16, .2, .75, 7),
+      fantasyPalette.stone, -.85, 2.7, -.35);
+    chimney.rotation.z = -.06;
+    meshWithOutline(group, 1.022);
+    group.userData.townBuilding = true;
+    fantasyBuildings.push({group, x, z, radius: 1.66, height: 3.55, kind: 'house'});
+    return addProp(group);
+  }
+
+  function makeLantern(x, z, variant = 0) {
+    const group = new THREE.Group();
+    group.position.set(x, terrainHeight(x, z), z);
+    fantasyMesh(group, new THREE.CylinderGeometry(.065, .12, 2.05, 6),
+      fantasyPalette.ink, 0, 1.03, 0);
+    fantasyGlow(group, new THREE.SphereGeometry(.22, 8, 6), 0xffd278, 0, 2.12, 0, variant);
+    fantasyMesh(group, new THREE.ConeGeometry(.36, .28, 7),
+      fantasyPalette.roofs[variant % 3], 0, 2.43, 0);
+    meshWithOutline(group, 1.025);
+    return addProp(group);
+  }
+
+  function makeResident(index) {
+    const group = new THREE.Group(), phase = index * TAU / 3;
+    fantasyMesh(group, new THREE.CapsuleGeometry(.3, .43, 4, 8),
+      fantasyPalette.roofs[index], 0, .56, 0);
+    fantasyMesh(group, new THREE.SphereGeometry(.28, 9, 6), mats.wall, 0, 1.15, 0);
+    fantasyMesh(group, new THREE.ConeGeometry(.4, .44, 8),
+      fantasyPalette.gold, 0, 1.5, 0);
+    for (const side of [-1, 1]) {
+      fantasyMesh(group, new THREE.SphereGeometry(.034, 5, 4),
+        fantasyPalette.ink, side * .09, 1.18, .258);
+    }
+    group.position.set(9 + Math.cos(phase) * 2.8, 0, 5 + Math.sin(phase) * 2.8);
+    group.position.y = terrainHeight(group.position.x, group.position.z);
+    meshWithOutline(group, 1.025); addProp(group);
+    residents.push({group, phase, speed: .13 + index * .028});
+  }
+
+  function makeTown() {
+    const town = {x: 9, z: 5};
+    makeGroundDisc(town.x, town.z, 2.15, fantasyPalette.paleStone);
+    const fountain = new THREE.Group();
+    fountain.position.set(town.x, terrainHeight(town.x, town.z), town.z);
+    fantasyMesh(fountain, new THREE.CylinderGeometry(.83, 1.05, .43, 12),
+      fantasyPalette.stone, 0, .21, 0);
+    fantasyMesh(fountain, new THREE.CylinderGeometry(.7, .7, .055, 16),
+      mats.water, 0, .45, 0);
+    const bell = fantasyGlow(fountain, new THREE.OctahedronGeometry(.45),
+      0x99e9d4, 0, 1.42, 0);
+    fantasyFloaters.push({kind: 'bell', mesh: bell, phase: .2});
+    fantasyMesh(fountain, new THREE.CylinderGeometry(.12, .2, .56, 7),
+      fantasyPalette.paleStone, 0, .7, 0);
+    meshWithOutline(fountain, 1.02); addProp(fountain);
+    fantasyBuildings.push({group: fountain, x: town.x, z: town.z, radius: 1.05, height: 1.8, kind: 'fountain'});
+    for (let i = 0; i < 6; i++) {
+      const a = i * TAU / 6;
+      makeHouse(town.x + Math.cos(a) * 6.55, town.z + Math.sin(a) * 6.55,
+        Math.atan2(-Math.cos(a), -Math.sin(a)), i);
+      const lampAngle = a + Math.PI / 6;
+      makeLantern(town.x + Math.cos(lampAngle) * 4.65,
+        town.z + Math.sin(lampAngle) * 4.65, i);
+    }
+    makeFantasySign('云铃镇', 3.1, -1.9);
+    makeFantasySign('浮云车站', 8.5, -6.7, '#fff0bb');
+    for (let i = 0; i < 3; i++) makeResident(i);
+    return town;
+  }
+
+  function ribbonGeometry(points, halfWidth, heightOffset) {
+    const vertices = [], indices = [];
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i], previous = points[Math.max(0, i - 1)];
+      const next = points[Math.min(points.length - 1, i + 1)];
+      const dx = next.x - previous.x, dz = next.z - previous.z;
+      const length = Math.hypot(dx, dz) || 1, nx = -dz / length, nz = dx / length;
+      for (const side of [-1, 1]) {
+        const x = point.x + nx * halfWidth * side, z = point.z + nz * halfWidth * side;
+        vertices.push(x, terrainHeight(x, z) + heightOffset, z);
+      }
+      if (i < points.length - 1) {
+        const n = i * 2;
+        indices.push(n, n + 2, n + 1, n + 1, n + 2, n + 3);
+      }
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    return geometry;
+  }
+
+  function roadMarkGeometry(points, type, width) {
+    const vertices = [], indices = [];
+    for (let i = 2; i < points.length - 2; i += type === 'wood' ? 2 : 5) {
+      const a = points[i], b = points[Math.min(points.length - 1, i + (type === 'wood' ? 1 : 2))];
+      const dx = b.x - a.x, dz = b.z - a.z, length = Math.hypot(dx, dz) || 1;
+      const half = type === 'wood' ? width * .44 : .065;
+      const nx = -dz / length * half, nz = dx / length * half;
+      const base = vertices.length / 3;
+      for (const [point, side] of [[a, -1], [a, 1], [b, -1], [b, 1]]) {
+        const x = point.x + nx * side, z = point.z + nz * side;
+        vertices.push(x, terrainHeight(x, z) + .112, z);
+      }
+      indices.push(base, base + 2, base + 1, base + 1, base + 2, base + 3);
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    return geometry;
+  }
+
+  function makeRoad(id, anchors, type = 'stone', width = 2, closed = false) {
+    const curve = new THREE.CatmullRomCurve3(anchors.map(point => new THREE.Vector3(point[0], 0, point[1])), closed, 'centripetal');
+    const points = curve.getPoints(Math.max(28, Math.ceil(curve.getLength() / .48)));
+    const materials = type === 'star'
+      ? [fantasyPalette.starRoad, fantasyPalette.starEdge, fantasyPalette.gold]
+      : type === 'wood'
+        ? [fantasyPalette.timber, fantasyPalette.timberEdge, fantasyPalette.paleStone]
+        : [mats.road, fantasyPalette.paleStone, fantasyPalette.gold];
+    const shoulder = new THREE.Mesh(ribbonGeometry(points, width / 2 + .22, .048), materials[1]);
+    const mesh = new THREE.Mesh(ribbonGeometry(points, width / 2, .082), materials[0]);
+    const markings = new THREE.Mesh(roadMarkGeometry(points, type, width), materials[2]);
+    for (const part of [shoulder, mesh, markings]) {
+      part.receiveShadow = true; part.userData.fantasyRoad = true; addProp(part);
+    }
+    roads.push({id, type, width, points, mesh, shoulder, markings});
+    return mesh;
+  }
+
+  function makeRoads(town) {
+    const loop = Array.from({length: 12}, (_, i) => [town.x + Math.cos(i * TAU / 12) * 3.65,
+      town.z + Math.sin(i * TAU / 12) * 3.65]);
+    makeRoad('town-ring', loop, 'stone', 1.35, true);
+    makeRoad('town-entry', [[0, 0], [3, 1.2], [5.4, 2.5], [7, 3.8]], 'stone', 2.05);
+    makeRoad('crystal-path', [[0, 0], [-5, -2.8], [-10, -4.2], [-14, -7], [-17.6, -8]], 'star', 1.8);
+    makeRoad('mushroom-path', [[9, 7], [9, 11.9], [5, 15], [-2, 16.3], [-10.6, 16.6]], 'wood', 1.9);
+    makeRoad('ruins-path', [[11.8, 6.8], [15.4, 9], [19.2, 11.5], [19, 14]], 'stone', 1.85);
+    makeRoad('station-path', [[2, .6], [3.6, -2.8], [7.2, -4.2], [13.2, -4.2]], 'stone', 2.2);
+    for (let i = 0; i < 6; i++) {
+      const a = i * TAU / 6;
+      makeRoad('door-' + i, [[9 + Math.cos(a) * 3.75, 5 + Math.sin(a) * 3.75],
+        [9 + Math.cos(a) * 4.94, 5 + Math.sin(a) * 4.94]], 'stone', .9);
+    }
+    for (const [x, z] of [[-7, -3.3], [-13.6, -6], [5, 14.1], [-3, 15.3], [16.5, 10.2]]) makeLantern(x, z);
+  }
+
+  function vehicleWheel(group, x, z, radius) {
+    const wheel = fantasyMesh(group, new THREE.TorusGeometry(radius, .12, 7, 14),
+      fantasyPalette.ink, x, .03, z);
+    wheel.rotation.y = Math.PI / 2;
+    const hub = fantasyMesh(wheel, new THREE.CylinderGeometry(radius * .5, radius * .5, .14, 8),
+      fantasyPalette.gold, 0, 0, 0);
+    hub.rotation.x = Math.PI / 2;
+    return wheel;
+  }
+
+  function makeFantasyVehicle(id, x, z) {
+    const group = new THREE.Group(), wheels = [];
+    const isBus = id === 'bus', isAirship = id === 'airship';
+    const record = {id, name: isAirship ? '星帆艇' : isBus ? '云铃小巴' : '林叶邮车',
+      group, wheels, speed: isAirship ? 11 : isBus ? 9 : 12, radius: isBus ? 1 : .72,
+      altitude: isAirship ? 3 : 0, groundOffset: isBus ? .48 : .38,
+      seatHeight: isAirship ? .6 : isBus ? .86 : .57, mounted: false,
+      distance: 0, lastTravel: 0};
+    group.userData.vehicle = record;
+    if (isAirship) {
+      const hull = fantasyMesh(group, new THREE.SphereGeometry(1, 12, 8),
+        fantasyPalette.roofs[2], 0, .28, 0);
+      hull.scale.set(.96, .49, 1.85);
+      const sail = fantasyMesh(group, new THREE.SphereGeometry(1, 12, 8),
+        fantasyPalette.crystal, 0, 3.3, 0);
+      sail.scale.set(1.22, .97, 2.16);
+      for (const side of [-1, 1]) {
+        const strut = fantasyMesh(group, new THREE.CylinderGeometry(.045, .055, 2.45, 6),
+          fantasyPalette.paleStone, side * .72, 1.76, 0);
+        strut.rotation.z = side * -.13;
+      }
+      const mast = fantasyMesh(group, new THREE.ConeGeometry(.34, .92, 5),
+        fantasyPalette.gold, 0, .9, -1.43);
+      mast.rotation.x = -.4;
+      const propeller = new THREE.Group(); propeller.position.set(0, .5, -1.88);
+      const blade = fantasyMesh(propeller, new THREE.CapsuleGeometry(.08, 1.2, 3, 6),
+        fantasyPalette.paleStone, 0, 0, 0);
+      blade.rotation.z = Math.PI / 2; group.add(propeller); record.propeller = propeller;
+      fantasyGlow(group, new THREE.SphereGeometry(.18, 7, 5), 0xffda8a, 0, .45, 1.76);
+    } else {
+      const body = fantasyMesh(group, new THREE.SphereGeometry(1, 12, 8),
+        isBus ? fantasyPalette.roofs[0] : mats.wood, 0, isBus ? .5 : .25, 0);
+      body.scale.set(isBus ? .98 : .69, isBus ? .72 : .42, isBus ? 1.76 : 1.22);
+      const seat = fantasyMesh(group, new THREE.CapsuleGeometry(isBus ? .65 : .38, isBus ? 1.8 : .65, 5, 10),
+        isBus ? fantasyPalette.walls[0] : fantasyPalette.roofs[1], 0, isBus ? 1.17 : .6, -.2);
+      seat.rotation.x = Math.PI / 2; seat.scale.z = isBus ? .7 : .28;
+      const roof = fantasyMesh(group, new THREE.SphereGeometry(1, 12, 6),
+        isBus ? fantasyPalette.gold : fantasyPalette.roofs[0], 0, isBus ? 1.88 : 1.5, -.18);
+      roof.scale.set(isBus ? 1.09 : .85, .18, isBus ? 1.8 : .93);
+      for (const side of [-1, 1]) {
+        fantasyMesh(group, new THREE.CylinderGeometry(.045, .055, isBus ? 1.28 : .96, 6),
+          mats.wood, side * (isBus ? .85 : .61), isBus ? 1.28 : 1.03, -.35);
+        for (const wheelZ of isBus ? [-1.04, 1.04] : [-.42, .6]) {
+          wheels.push(vehicleWheel(group, side * (isBus ? .96 : .74), wheelZ, isBus ? .43 : .36));
+        }
+        fantasyGlow(group, new THREE.SphereGeometry(.13, 6, 5),
+          0xffdc96, side * (isBus ? .58 : .38), .55, isBus ? 1.62 : 1.1);
+      }
+      if (isBus) {
+        for (const side of [-1, 1]) for (const windowZ of [-.9, -.1, .7]) {
+          const window = fantasyMesh(group, new THREE.SphereGeometry(.3, 8, 6),
+            fantasyPalette.ink, side * .77, 1.25, windowZ);
+          window.scale.set(.11, .8, 1);
+        }
+      } else {
+        const flag = fantasyMesh(group, new THREE.ConeGeometry(.26, .5, 3),
+          fantasyPalette.gold, -.63, 1.99, -.39);
+        flag.rotation.z = -Math.PI / 2;
+      }
+    }
+    meshWithOutline(group, 1.018);
+    group.position.set(x, terrainHeight(x, z) + (isAirship ? record.altitude : record.groundOffset), z);
+    addProp(group, isAirship ? record.altitude : record.groundOffset);
+    vehicles.push(record);
+    return record;
+  }
+
+  function buildFantasyWorld() {
+    fantasyBuildings.length = 0; fantasyFloaters.length = 0;
+    const town = makeTown();
+    makeRoads(town); makeScenery();
+    makeFantasyVehicle('cart', 2.2, -1.4);
+    makeFantasyVehicle('bus', 7.8, -5.1);
+    makeFantasyVehicle('airship', 13, -5.2);
+  }
+
+  function resolveTownCollision(position, previous = position, radius = .5) {
+    let collided = false;
+    for (let pass = 0; pass < 2; pass++) for (const building of fantasyBuildings) {
+      if (position.y > building.group.position.y + building.height + .65) continue;
+      const dx = position.x - building.x, dz = position.z - building.z;
+      const distance = Math.hypot(dx, dz), limit = building.radius + radius;
+      if (distance >= limit) continue;
+      let nx = dx, nz = dz, length = distance;
+      if (length < .001) {
+        nx = previous.x - building.x; nz = previous.z - building.z;
+        length = Math.hypot(nx, nz) || 1;
+        if (nx === 0 && nz === 0) nx = 1;
+      }
+      position.x = building.x + nx / length * limit;
+      position.z = building.z + nz / length * limit;
+      collided = true;
+    }
+    return collided;
+  }
+
+  function activeFantasyVehicle() {
+    return vehicles.find(vehicle => vehicle.id === state.riding || vehicle.name === state.riding);
+  }
+
+  function selectedFantasyVehicle() {
+    return vehicles.find(vehicle => vehicle.id === $('vehicle')?.value) || vehicles[0];
+  }
+
+  function nearestVehicle() {
+    if (!player) return null;
+    const candidates = vehicles.filter(vehicle => vehicle.group.parent &&
+      Math.hypot(player.position.x - vehicle.group.position.x, player.position.z - vehicle.group.position.z) < (vehicle.id === 'airship' ? 4.6 : 3.6));
+    const selected = selectedFantasyVehicle();
+    if (candidates.includes(selected)) return selected;
+    candidates.sort((a, b) => player.position.distanceToSquared(a.group.position) - player.position.distanceToSquared(b.group.position));
+    return candidates[0] || null;
+  }
+
+  function syncFantasyRider(vehicle) {
+    if (!player || !vehicle?.mounted) return;
+    player.position.copy(vehicle.group.position);
+    player.position.y += vehicle.seatHeight;
+    player.rotation.y = vehicle.group.rotation.y;
+  }
+
+  function moveFantasyVehicle(dt) {
+    const vehicle = activeFantasyVehicle();
+    if (!vehicle || !player) return false;
+    vehicle.mounted = true; state.riding = vehicle.id;
+    let x = 0, z = 0;
+    if (keys.has('KeyW') || keys.has('ArrowUp')) z--;
+    if (keys.has('KeyS') || keys.has('ArrowDown')) z++;
+    if (keys.has('KeyA') || keys.has('ArrowLeft')) x--;
+    if (keys.has('KeyD') || keys.has('ArrowRight')) x++;
+    const length = Math.hypot(x, z) || 1, group = vehicle.group;
+    const previous = group.position.clone();
+    group.position.x += x / length * vehicle.speed * dt;
+    group.position.z += z / length * vehicle.speed * dt;
+    const radius = Math.hypot(group.position.x, group.position.z);
+    if (radius > 39) { group.position.x *= 39 / radius; group.position.z *= 39 / radius; }
+    if (vehicle.id === 'airship') {
+      if (keys.has('Space')) vehicle.altitude += dt * 4;
+      if (keys.has('ShiftLeft') || keys.has('ShiftRight')) vehicle.altitude -= dt * 4;
+      vehicle.altitude = THREE.MathUtils.clamp(vehicle.altitude, 3, 14);
+    }
+    group.position.y = terrainHeight(group.position.x, group.position.z) +
+      (vehicle.id === 'airship' ? vehicle.altitude : vehicle.groundOffset);
+    resolveTownCollision(group.position, previous, vehicle.radius);
+    group.position.y = terrainHeight(group.position.x, group.position.z) +
+      (vehicle.id === 'airship' ? vehicle.altitude : vehicle.groundOffset);
+    vehicle.lastTravel = Math.hypot(group.position.x - previous.x, group.position.z - previous.z);
+    vehicle.distance += vehicle.lastTravel;
+    if (x || z) group.rotation.y = Math.atan2(x, z);
+    syncFantasyRider(vehicle);
+    return true;
+  }
+
+  function updateVehicles(dt, t = elapsed) {
+    for (const vehicle of vehicles) {
+      const group = vehicle.group;
+      if (!group?.parent) continue;
+      const offset = vehicle.id === 'airship' ? vehicle.altitude : vehicle.groundOffset;
+      group.position.y = terrainHeight(group.position.x, group.position.z) + offset;
+      if (vehicle.id === 'airship') {
+        if (!vehicle.mounted) group.position.y += Math.sin(t * 1.15) * .13;
+        vehicle.propeller.rotation.z += dt * (vehicle.mounted ? 15 : 3);
+      }
+      for (const wheel of vehicle.wheels) wheel.rotation.z = -vehicle.distance / (vehicle.id === 'bus' ? .43 : .36);
+      syncFantasyRider(vehicle);
+    }
+  }
+
+  function findFantasyParking(x, z, heading = 0, radius = .6) {
+    for (let i = 0; i < 10; i++) {
+      const angle = heading + Math.PI / 2 + i * TAU / 10;
+      const candidate = new THREE.Vector3(x + Math.sin(angle) * 2.7, 0, z + Math.cos(angle) * 2.7);
+      if (Math.hypot(candidate.x, candidate.z) > 38) continue;
+      candidate.y = terrainHeight(candidate.x, candidate.z);
+      const collision = fantasyBuildings.some(building => Math.hypot(candidate.x - building.x, candidate.z - building.z) < building.radius + radius + .25);
+      if (!collision) return candidate;
+    }
+    const fallback = new THREE.Vector3(x, terrainHeight(x, z), z);
+    resolveTownCollision(fallback, fallback.clone(), radius);
+    fallback.y = terrainHeight(fallback.x, fallback.z);
+    return fallback;
+  }
+
+  function toggleRide() {
+    if (!player) return;
+    const mounted = activeFantasyVehicle();
+    if (mounted) {
+      const landing = findFantasyParking(mounted.group.position.x, mounted.group.position.z,
+        mounted.group.rotation.y, .55);
+      mounted.mounted = false; state.riding = ''; player.visible = true; player.position.copy(landing);
+      player.position.y += .03;
+      keys.delete('Space'); keys.delete('ShiftLeft'); keys.delete('ShiftRight');
+      toast('已离开' + mounted.name + '，回到地面步行');
+    } else {
+      const vehicle = nearestVehicle();
+      if (!vehicle) {
+        toast('靠近载具按 V；可用“召回”让选中载具停到身旁');
+        updateRideUI(); return;
+      }
+      for (const item of vehicles) item.mounted = item === vehicle;
+      state.riding = vehicle.id;
+      player.visible = false;
+      if ($('vehicle')) $('vehicle').value = vehicle.id;
+      syncFantasyRider(vehicle);
+      toast(vehicle.id === 'airship'
+        ? '已登上星帆艇：WASD 航行 · 空格升高 · Shift 降低 · V 下艇'
+        : '已乘坐' + vehicle.name + '：WASD 驾驶 · V 下车');
+    }
+    updateRideUI();
+  }
+
+  function summonVehicle() {
+    if (!player) return;
+    if (activeFantasyVehicle()) { toast('先按 V 下车，再召回其他载具'); return; }
+    const vehicle = selectedFantasyVehicle();
+    if (!vehicle) return;
+    const parking = findFantasyParking(player.position.x, player.position.z, player.rotation.y, vehicle.radius);
+    vehicle.group.position.copy(parking); vehicle.group.rotation.y = player.rotation.y;
+    if (vehicle.id === 'airship') vehicle.altitude = 3;
+    vehicle.group.position.y += vehicle.id === 'airship' ? vehicle.altitude : vehicle.groundOffset;
+    vehicle.mounted = false; vehicle.lastTravel = 0;
+    toast(vehicle.name + '已停靠身旁，靠近按 V 乘坐'); updateRideUI();
+  }
+
+  function updateRideUI() {
+    const button = $('ride');
+    if (!button || !player) return;
+    const mounted = activeFantasyVehicle(), nearby = nearestVehicle();
+    button.textContent = mounted ? '离开' + mounted.name + ' · V' : nearby ? '乘坐' + nearby.name + ' · V' : '靠近载具乘坐 · V';
+    button.classList.toggle('ride-nearby', !!(mounted || nearby));
+    const selected = selectedFantasyVehicle();
+    if (selected) {
+      const dx = selected.group.position.x - player.position.x, dz = selected.group.position.z - player.position.z;
+      const direction = Math.abs(dx) < 1.4 && Math.abs(dz) < 1.4 ? '身旁' :
+        (dz < -1.4 ? '北' : dz > 1.4 ? '南' : '') + (dx > 1.4 ? '东' : dx < -1.4 ? '西' : '');
+      const hint = selected.name + ' · ' + direction + '约 ' + Math.round(Math.hypot(dx, dz)) + ' 米' +
+        (selected.id === 'airship' ? ' · 高度 ' + selected.altitude.toFixed(1) : '');
+      button.title = hint + '；选择列表只提供导航，不会移动角色';
+      const status = $('vehicleStatus') || $('vehicleHint');
+      if (status) status.textContent = hint;
+    }
+  }
+
+  function captureVehicles() {
+    return vehicles.map(vehicle => ({id: vehicle.id, x: vehicle.group.position.x,
+      z: vehicle.group.position.z, heading: vehicle.group.rotation.y, altitude: vehicle.altitude}));
+  }
+
+  function restoreVehicles(data) {
+    if (Array.isArray(data)) for (const saved of data) {
+      const vehicle = vehicles.find(item => item.id === saved?.id);
+      if (!vehicle || !Number.isFinite(saved.x) || !Number.isFinite(saved.z)) continue;
+      const radius = Math.hypot(saved.x, saved.z), scale = radius > 39 ? 39 / radius : 1;
+      vehicle.group.position.x = saved.x * scale; vehicle.group.position.z = saved.z * scale;
+      vehicle.group.rotation.y = Number.isFinite(saved.heading) ? saved.heading : 0;
+      vehicle.altitude = vehicle.id === 'airship' && Number.isFinite(saved.altitude)
+        ? THREE.MathUtils.clamp(saved.altitude, 3, 14) : vehicle.id === 'airship' ? 3 : 0;
+      vehicle.group.position.y = terrainHeight(vehicle.group.position.x, vehicle.group.position.z) +
+        (vehicle.id === 'airship' ? vehicle.altitude : vehicle.groundOffset);
+      resolveTownCollision(vehicle.group.position, vehicle.group.position.clone(), vehicle.radius);
+    }
+    const active = activeFantasyVehicle();
+    state.riding = active?.id || '';
+    for (const vehicle of vehicles) vehicle.mounted = vehicle === active;
+    if (player) player.visible = !active;
+    updateVehicles(0); updateRideUI();
+  }
+
+  function refreshFantasyGround() {
+    for (const prop of props) {
+      if (prop.userData.fantasyGround === undefined) continue;
+      if (prop.userData.fantasyRoad || prop.userData.groundDisc) prop.position.set(0, 0, 0);
+      else prop.position.y = terrainHeight(prop.position.x, prop.position.z) + prop.userData.fantasyGround;
+      if (prop.userData.groundDisc) {
+        const positions = prop.geometry.attributes.position;
+        for (let i = 0; i < positions.count; i++) positions.setY(i,
+          terrainHeight(positions.getX(i), positions.getZ(i)) + .035);
+        positions.needsUpdate = true; prop.geometry.computeVertexNormals();
+      }
+    }
+    for (const road of roads) {
+      const replacements = [ribbonGeometry(road.points, road.width / 2 + .22, .048),
+        ribbonGeometry(road.points, road.width / 2, .082), roadMarkGeometry(road.points, road.type, road.width)];
+      [road.shoulder, road.mesh, road.markings].forEach((mesh, i) => {
+        mesh.geometry.dispose(); mesh.geometry = replacements[i]; mesh.position.set(0, 0, 0);
+      });
+    }
+    updateVehicles(0);
+  }
+
+  function updateFantasyWorld(dt, t = elapsed, nightAmount = 0) {
+    const night = THREE.MathUtils.clamp(nightAmount, 0, 1);
+    for (const lamp of lanterns) {
+      lamp.mesh.material.emissiveIntensity = .1 + night * (1.7 + Math.sin(t * 1.7 + lamp.phase) * .16);
+    }
+    fantasyPalette.crystal.emissiveIntensity = .16 + night * .85;
+    fantasyPalette.lilacCrystal.emissiveIntensity = .12 + night * .8;
+    fantasyPalette.starRoad.emissiveIntensity = .08 + night * .8;
+    for (const item of fantasyFloaters) {
+      if (item.kind === 'firefly') {
+        item.mesh.position.set(item.x + Math.sin(t * .7 + item.phase) * .48,
+          terrainHeight(item.x, item.z) + 1.5 + Math.sin(t * 1.3 + item.phase) * .42,
+          item.z + Math.cos(t * .58 + item.phase) * .4);
+        item.mesh.scale.setScalar(.55 + night * .65);
+      } else if (item.kind === 'rune') {
+        item.mesh.rotation.z = t * .28; item.mesh.position.y = 2.1 + Math.sin(t * 1.5) * .13;
+      } else if (item.kind === 'bell') {
+        item.mesh.rotation.y = t * .45; item.mesh.position.y = 1.42 + Math.sin(t * 1.1) * .14;
+      }
+    }
+    for (const resident of residents) {
+      const angle = resident.phase + t * resident.speed;
+      resident.group.position.x = 9 + Math.cos(angle) * 2.75;
+      resident.group.position.z = 5 + Math.sin(angle) * 2.75;
+      resident.group.position.y = terrainHeight(resident.group.position.x, resident.group.position.z) + Math.abs(Math.sin(t * 5)) * .035;
+      resident.group.rotation.y = -angle;
+    }
+    updateVehicles(dt, t);
+  }
+
+  function getFantasyStats() {
+    return {landmarks: landmarks.length, roads: roads.length, vehicles: vehicles.length,
+      residents: residents.length, buildings: fantasyBuildings.filter(item => item.kind === 'house').length};
+  }
+
+  function updateLocationStatus() {
+    if (!player) return;
+    const weatherNames = {clear: '晴朗', cloudy: '多云', rain: '细雨', snow: '落雪', stardust: '星辉', storm: '雷雨', mist: '薄雾'};
+    const landmark = landmarks.find(place => Math.hypot(player.position.x - place.x, player.position.z - place.z) < place.radius);
+    const inTown = Math.hypot(player.position.x - 9, player.position.z - 5) < 9.5;
+    const height = terrainHeight(player.position.x, player.position.z);
+    const place = landmark?.name || (inTown ? '云铃镇' : height < -.5 ? '海滨浅滩' : height > 3.5 ? '松石山坡' : '苹果绿草甸');
+    const mounted = activeFantasyVehicle();
+    const status = $('locationStatus');
+    if (status) status.textContent = place + ' · ' + (weatherNames[state.weather] || '晴朗') + ' · ' + timeText(state.time) +
+      (mounted ? ' · ' + mounted.name + (mounted.id === 'airship' ? ' ↑' + mounted.altitude.toFixed(1) : '') : '');
+    updateRideUI();
+  }
+
+  function disposeWeather(){if(!weatherEffect)return;scene.remove(weatherEffect);weatherEffect.traverse(item=>{item.geometry?.dispose();if(Array.isArray(item.material))item.material.forEach(material=>material.dispose());else item.material?.dispose()});weatherEffect=null}
+  function makeWeatherPoints(count, seed, yMin, yMax, radius, material, vertexColors=false){let value=hashString(seed)||1;const positions=new Float32Array(count*3),colors=vertexColors?new Float32Array(count*3):null;for(let i=0;i<count;i++){value=(Math.imul(value,1664525)+1013904223)>>>0;const x=value/4294967296;value=(Math.imul(value,1664525)+1013904223)>>>0;const y=value/4294967296;value=(Math.imul(value,1664525)+1013904223)>>>0;const z=value/4294967296;positions[i*3]=(x*2-1)*radius;positions[i*3+1]=yMin+y*(yMax-yMin);positions[i*3+2]=(z*2-1)*radius;if(colors){colors[i*3]=i%2?.45:1;colors[i*3+1]=i%2?1:.83;colors[i*3+2]=i%2?.88:.48}}const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));if(colors)geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));const points=new THREE.Points(geometry,material);points.frustumCulled=false;return points}
+  function rebuildWeather(){disposeWeather();weatherEffect=new THREE.Group();weatherEffect.name='weather-atmosphere';weatherEffect.userData.kind='weather';scene.add(weatherEffect);const seeded=state.seed+':weather-v2';
+    const stars=makeWeatherPoints(240,seeded+':stars',28,64,72,new THREE.PointsMaterial({color:0xfff1c5,size:2.2,sizeAttenuation:false,transparent:true,opacity:0,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending}));stars.name='stars';weatherEffect.add(stars);
+    const moon=new THREE.Mesh(new THREE.SphereGeometry(2.45,16,10),new THREE.MeshBasicMaterial({color:0xffefc2,transparent:true,opacity:0,depthTest:false,depthWrite:false}));moon.name='moon';weatherEffect.add(moon);
+    const halo=new THREE.Mesh(new THREE.SphereGeometry(3.8,14,8),new THREE.MeshBasicMaterial({color:0x9bb9ed,transparent:true,opacity:0,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending}));halo.name='moon-halo';weatherEffect.add(halo);
+    const rainPositions=new Float32Array(360*6);let rainSeed=hashString(seeded+':rain')||1;for(let i=0;i<360;i++){rainSeed=(Math.imul(rainSeed,1664525)+1013904223)>>>0;const x=rainSeed/4294967296*90-45;rainSeed=(Math.imul(rainSeed,1664525)+1013904223)>>>0;const y=rainSeed/4294967296*26+8;rainSeed=(Math.imul(rainSeed,1664525)+1013904223)>>>0;const z=rainSeed/4294967296*90-45;const j=i*6;rainPositions[j]=x;rainPositions[j+1]=y;rainPositions[j+2]=z;rainPositions[j+3]=x-.18;rainPositions[j+4]=y-.9;rainPositions[j+5]=z-.1}const rainGeometry=new THREE.BufferGeometry();rainGeometry.setAttribute('position',new THREE.BufferAttribute(rainPositions,3));const rain=new THREE.LineSegments(rainGeometry,new THREE.LineBasicMaterial({color:0x9fd7e8,transparent:true,opacity:.62,depthWrite:false}));rain.name='rain';rain.visible=false;rain.frustumCulled=false;weatherEffect.add(rain);
+    const snow=makeWeatherPoints(320,seeded+':snow',5,34,48,new THREE.PointsMaterial({color:0xf7fcff,size:4,sizeAttenuation:false,transparent:true,opacity:.92,depthWrite:false}));snow.name='snow';snow.visible=false;weatherEffect.add(snow);
+    const stardust=makeWeatherPoints(180,seeded+':stardust',8,42,50,new THREE.PointsMaterial({color:0xffffff,size:3.2,sizeAttenuation:false,vertexColors:true,transparent:true,opacity:.82,depthWrite:false,blending:THREE.AdditiveBlending}));stardust.name='stardust';stardust.visible=false;weatherEffect.add(stardust);
+    const auroraGeometry=new THREE.BufferGeometry();const auroraPoints=[];for(let i=0;i<50;i++){const u=i/49;auroraPoints.push(new THREE.Vector3(-55+u*110,30+Math.sin(u*TAU*1.5)*2.2,-38+Math.sin(u*TAU)*3))}auroraGeometry.setFromPoints(auroraPoints);const aurora=new THREE.Line(auroraGeometry,new THREE.LineBasicMaterial({color:0x71edc8,transparent:true,opacity:.58,depthTest:false,blending:THREE.AdditiveBlending}));aurora.name='aurora';aurora.visible=false;aurora.frustumCulled=false;weatherEffect.add(aurora);
+    setWeather(state.weather,false);updateLighting(0)}
+  function clearWorld(){for(const item of [world?.terrain,world?.water?.water,...(world?.water?.rings||[]),...props,...pickups,...plants,...dynamic])if(item?.parent)item.parent.remove(item);disposeWeather();outlines.length=0;props.length=0;pickups.length=0;plants.length=0;dynamic.length=0;landmarks.length=0;roads.length=0;vehicles.length=0;lanterns.length=0;residents.length=0;fantasyBuildings.length=0;fantasyFloaters.length=0}
+  function buildWorld(reset=true){clearWorld();state.seed=$('seed').value.trim()||'LUMEN-07';if(reset){state.terrainOps=[];state.placed=[];state.collected=[];state.wood=0;state.stone=0;state.seeds=0;state.crafted=0;state.planted=0;state.terrainEdits=0;state.riding='';if(player)player.visible=true}seedHash=hashString(state.seed);rng=rand;world={terrain:makeTerrain(),water:makeWater()};buildFantasyWorld();for(let i=0;i<38;i++){const a=rand()*TAU,r=18+rand()*17,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.abs(terrainHeight(x,z))<-.65)continue;if(rand()<.68)makeTree(x,z,terrainHeight(x,z)>3.4);else makeRock(x,z)}let pickupId=0;for(const type of ['wood','stone','seed']){for(let n=0;n<8;n++){let x=0,z=0,tries=0;do{const a=rand()*TAU,r=14+rand()*24;x=Math.cos(a)*r;z=Math.sin(a)*r;tries++}while(terrainHeight(x,z)<-.5&&Math.hypot(x-9,z-5)<14&&tries<40);makePickup(type,x,z,pickupId++)}}for(let i=0;i<8;i++){const a=rand()*TAU,r=16+rand()*28;makeCloud(Math.cos(a)*r,18+rand()*8,Math.sin(a)*r,1.4+rand())}if(player){player.position.set(0,terrainHeight(0,0)+.03,0)}if(!reset){for(const p of state.placed){if(p.type==='flower')plant(p);else placeCraft(p.type,p)}for(const id of state.collected){const g=pickups.find(item=>item.userData.id===id&&item.parent);if(g){g.parent.remove(g);const i=pickups.indexOf(g);if(i>=0)pickups.splice(i,1)}}}if(player)player.traverse(m=>{if(m.userData.outline&&!outlines.includes(m.userData.outline))outlines.push(m.userData.outline)});rebuildWeather();updateResourceUI();toggleOutlines();updateRideUI();updateLocationStatus();if(reset)toast('新岛屿已生成：'+state.seed)}
+  function updateResourceUI(){$('wood').textContent=state.wood;$('stone').textContent=state.stone;$('seedCount').textContent=state.seeds;$('progress').textContent=state.crafted>=2&&state.planted>=3?'岛屿已拥有自己的小小生活。截图留住它吧。':state.crafted>=1?'篝火亮起来了，再种下三朵花完成你的第一处营地。':'找到木材、石头与发光种子，给岛屿添一处温暖的落脚点。'}
+  function toast(s){toastEl.textContent=s;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2200)}
+  function timeText(t){const h=Math.floor(t)%24,m=Math.floor((t-Math.floor(t))*60);return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')}
+  function setTime(t){state.time=((t%24)+24)%24;$('time').value=state.time;$('timeLabel').textContent=timeText(state.time)}
+  let nightAmount=1;
+  function setWeather(value,announce=true){const valid=['clear','cloudy','rain','snow','stardust'];state.weather=valid.includes(value)?value:'clear';const select=$('weather');if(select&&select.value!==state.weather)select.value=state.weather;if(weatherEffect){for(const item of weatherEffect.children){if(item.name==='rain')item.visible=state.weather==='rain';if(item.name==='snow')item.visible=state.weather==='snow';if(item.name==='stardust'||item.name==='aurora')item.visible=state.weather==='stardust'}}if(announce)toast('天气：'+({clear:'晴朗',cloudy:'多云',rain:'细雨',snow:'落雪',stardust:'星辉'}[state.weather]));updateLocationStatus();return state.weather}
+  function updateLighting(dt){if(state.autoTime&&dt>0)setTime(state.time+dt*.16);const hour=state.time,angle=(hour/24)*TAU-Math.PI/2,sunY=Math.sin(angle);let daylight=THREE.MathUtils.clamp((sunY+.12)/.38,0,1);daylight=daylight*daylight*(3-2*daylight);nightAmount=1-daylight;const dawn=THREE.MathUtils.clamp(1-Math.abs(hour-6)/2.4,0,1),dusk=THREE.MathUtils.clamp(1-Math.abs(hour-18)/2.4,0,1),twilight=Math.max(dawn,dusk);sun.position.set(Math.cos(angle)*34,sunY*35+6,Math.sin(angle*.75)*26);sun.target.position.set(0,0,0);const sky=new THREE.Color(0x17264b).lerp(new THREE.Color(0xbfe9e0),daylight);sky.lerp(new THREE.Color(0xf0a178),twilight*.72);if(state.weather==='cloudy')sky.lerp(new THREE.Color(0x7b939c),.25);if(state.weather==='rain')sky.lerp(new THREE.Color(0x526f88),.46);if(state.weather==='snow')sky.lerp(new THREE.Color(0xb8d5df),.28);if(state.weather==='stardust')sky.lerp(new THREE.Color(0x233868),nightAmount*.43);scene.background.copy(sky);scene.fog.color.copy(sky);const fog={clear:[45,136],cloudy:[36,112],rain:[28,94],snow:[32,106],stardust:[40,122]}[state.weather]||[45,136];scene.fog.near=fog[0];scene.fog.far=fog[1];const dim={clear:1,cloudy:.78,rain:.62,snow:.88,stardust:.94}[state.weather]||1;sun.intensity=.02+daylight*2.55*dim+twilight*.18;sun.color.set(state.weather==='snow'?0xdde9ff:twilight>.3?0xffb17d:0xffedcb);hemi.intensity=.12+daylight*1.02*dim+nightAmount*.1;hemi.color.set(nightAmount>.6?0x7189b2:0xfff3db);hemi.groundColor.set(nightAmount>.6?0x35506c:0x5d887e);ambient.intensity=.07+daylight*.24+nightAmount*.08;ambient.color.set(nightAmount>.5?0x8ea8c7:0xffefc4);mats.water.color.set(state.weather==='rain'?0x4e91a4:state.weather==='snow'?0x9bc1cb:0x75d7d0);mats.cloud.color.set(state.weather==='rain'?0x8999a7:state.weather==='cloudy'?0xb5c0be:state.weather==='snow'?0xd6e4e4:0xfdfdf8);if(weatherEffect){const center=player||{position:{x:0,z:0}},originX=center.position.x,originZ=center.position.z;weatherEffect.position.set(originX,0,originZ);const stars=weatherEffect.getObjectByName('stars'),moon=weatherEffect.getObjectByName('moon'),halo=weatherEffect.getObjectByName('moon-halo'),starFactor={clear:1,cloudy:.34,rain:.04,snow:.48,stardust:1}[state.weather]||1;if(stars)stars.material.opacity=nightAmount*starFactor*.9;if(moon){const moonAngle=angle+Math.PI;moon.position.set(Math.cos(moonAngle)*39,Math.sin(moonAngle)*31+16,Math.sin(moonAngle*.75)*34);moon.material.opacity=nightAmount*.96;moon.visible=nightAmount>.02}if(halo){halo.position.copy(moon.position);halo.material.opacity=nightAmount*.12;halo.visible=nightAmount>.02}}}
+  function updateAtmosphere(dt,t){if(!weatherEffect)return;const rain=weatherEffect.getObjectByName('rain');if(rain?.visible){const positions=rain.geometry.attributes.position.array;for(let i=0;i<positions.length;i+=6){positions[i+1]-=dt*19;positions[i+4]-=dt*19;if(positions[i+1]<1){positions[i+1]=27+(i%17)*.13;positions[i+4]=positions[i+1]-.9}}rain.geometry.attributes.position.needsUpdate=true}const snow=weatherEffect.getObjectByName('snow');if(snow?.visible){const positions=snow.geometry.attributes.position.array;for(let i=0;i<positions.length;i+=3){positions[i+1]-=dt*(1.2+(i%7)*.12);positions[i]+=Math.sin(t*.6+i)*dt*.3;if(positions[i+1]<1)positions[i+1]=34+(i%13)*.18}snow.geometry.attributes.position.needsUpdate=true}const stars=weatherEffect.getObjectByName('stars');if(stars)stars.rotation.y=t*.003;const dust=weatherEffect.getObjectByName('stardust');if(dust?.visible){dust.rotation.y=t*.025;dust.rotation.x=Math.sin(t*.08)*.04}const aurora=weatherEffect.getObjectByName('aurora');if(aurora?.visible){const p=aurora.geometry.attributes.position;for(let i=0;i<p.count;i++){const u=i/(p.count-1);p.setY(i,30+Math.sin(u*TAU*1.5+t*.2)*2.2);p.setZ(i,-38+Math.sin(u*TAU+t*.14)*3)}p.needsUpdate=true}}
+  function nearest(list,max=2.3){let best=null,bd=max;for(const g of list){if(!g.parent)continue;const d=player.position.distanceTo(g.position);if(d<bd){bd=d;best=g}}return best}
+  function collect(){const g=nearest(pickups,2.4);if(!g){toast('靠近发光物件再按 E');return}state[g.userData.type==='seed'?'seeds':g.userData.type]++;state.collected.push(g.userData.id);g.parent.remove(g);const idx=pickups.indexOf(g);if(idx>=0)pickups.splice(idx,1);toast('收集 '+(g.userData.type==='wood'?'木材':g.userData.type==='stone'?'石头':'发光种子'));updateResourceUI()}
+  function placeCraft(type,restore=null){const cost=type==='campfire'?{wood:3,stone:2}:{wood:4,stone:1};if(!restore&&(state.wood<cost.wood||state.stone<cost.stone)){toast('资源还不够：需要 '+cost.wood+'木 · '+cost.stone+'石');return}if(!restore){state.wood-=cost.wood;state.stone-=cost.stone;state.crafted++}const g=new THREE.Group();const x=restore?.x??player.position.x,z=restore?.z??player.position.z;g.position.set(x,terrainHeight(x,z),z);if(type==='campfire'){for(let i=0;i<6;i++){const log=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.9,7),mats.wood);log.rotation.set(0, i*TAU/6,Math.PI/2);log.position.y=.18;g.add(log)}const fire=new THREE.Mesh(new THREE.SphereGeometry(.3,8,6),mats.fire);fire.scale.y=1.7;fire.position.y=.7;g.add(fire);g.userData.fire=fire;dynamic.push(g)}else{const seat=new THREE.Mesh(new THREE.CylinderGeometry(.24,.28,1.5,8),mats.bench);seat.rotation.z=Math.PI/2;seat.position.y=.55;g.add(seat);for(const x of [-.53,.53]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.1,.12,.6,7),mats.wood);leg.position.set(x,.22,0);g.add(leg)}}g.userData.placeType=type;meshWithOutline(g,1.07);scene.add(g);props.push(g);if(!restore)state.placed.push({type,x,z});if(!restore)toast(type==='campfire'?'篝火已点亮':'长凳已放下');updateResourceUI()}
+  function plant(restore=null){if(!restore&&state.seeds<1){toast('还没有发光种子');return}const x=restore?.x??player.position.x+(rand()-.5)*1.8,z=restore?.z??player.position.z+(rand()-.5)*1.8;if(Math.hypot(x,z)>37){toast('请在岛屿内部种植');return}if(!restore){state.seeds--;state.planted++;state.placed.push({type:'flower',x,z})}const flower=makeFlower(x,z,'plant');plants.push(flower);if(!restore)toast('一朵花在这里扎根');updateResourceUI()}
+  function sculpt(mode){if(activeFantasyVehicle()){toast('请先下车再塑形');return}const cx=player.position.x,cz=player.position.z;if(Math.hypot(cx,cz)>37){toast('海浪边缘无法塑形');return}const radius=5;if(mode==='smooth'){let total=0,count=0;for(let a=0;a<12;a++){const ang=a*TAU/12;total+=terrainHeight(cx+Math.cos(ang)*radius*.65,cz+Math.sin(ang)*radius*.65);count++}state.terrainOps.push({type:'smooth',x:cx,z:cz,radius,amount:.3,target:total/count})}else state.terrainOps.push({type:mode,x:cx,z:cz,radius,amount:mode==='raise'?.45:-.45});const pos=world.terrain.geometry.attributes.position;for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrainHeight(x,z))}pos.needsUpdate=true;world.terrain.geometry.computeVertexNormals();const hull=world.terrain.userData.outline;if(hull){hull.geometry.dispose();hull.geometry=world.terrain.geometry.clone()}for(const g of [...props,...plants]){if(g.userData.fantasyGround===undefined)g.position.y=terrainHeight(g.position.x,g.position.z)}for(const g of pickups)g.userData.baseY=terrainHeight(g.position.x,g.position.z)+.5;refreshFantasyGround();state.terrainEdits++;toast(mode==='raise'?'地形向上长了一点':mode==='lower'?'地形向下沉了一点':'地形变得更柔和了');}
+  function jump(){if(!activeFantasyVehicle()&&onGround){playerVelocity.y=8.2;onGround=false;state.jumped=true}}
+  function movePlayer(dt){if(moveFantasyVehicle(dt))return;let x=0,z=0;if(keys.has('KeyW')||keys.has('ArrowUp'))z-=1;if(keys.has('KeyS')||keys.has('ArrowDown'))z+=1;if(keys.has('KeyA')||keys.has('ArrowLeft'))x-=1;if(keys.has('KeyD')||keys.has('ArrowRight'))x+=1;const previous=player.position.clone();const len=Math.hypot(x,z)||1;const speed=8;player.position.x+=x/len*speed*dt;player.position.z+=z/len*speed*dt;resolveTownCollision(player.position,previous);const r=Math.hypot(player.position.x,player.position.z);if(r>40){player.position.x*=40/r;player.position.z*=40/r}playerVelocity.y-=21*dt;player.position.y+=playerVelocity.y*dt;const floor=terrainHeight(player.position.x,player.position.z)+.03;if(player.position.y<=floor){player.position.y=floor;playerVelocity.y=0;onGround=true}else onGround=false;if(x||z)player.rotation.y=Math.atan2(x,z);}
+  const cameraTarget=new THREE.Vector3(),cameraPosition=new THREE.Vector3();
+  function updateCamera(dt){if(state.camera==='follow'){cameraTarget.set(player.position.x,player.position.y+1,player.position.z);cameraPosition.set(player.position.x+48,player.position.y+43,player.position.z+48);camera.position.lerp(cameraPosition,1-Math.pow(.001,dt));camera.lookAt(cameraTarget)}else{const ang=elapsed*.085;cameraPosition.set(Math.cos(ang)*75,51,Math.sin(ang)*75);camera.position.lerp(cameraPosition,1-Math.pow(.001,dt));camera.lookAt(0,1,0)}}
+  function updateDynamics(t){for(const g of dynamic){if(g===world?.water?.water){g.material.opacity=.46+Math.sin(t*1.4)*.05;g.scale.setScalar(1+Math.sin(t*.8)*.006)}else if(g.userData.baseX!==undefined){g.position.x=g.userData.baseX+Math.sin(t*g.userData.speed*.18)*3;g.position.y+=Math.sin(t*.3+g.position.z)*.0005}else if(g.userData.type){g.position.y=g.userData.baseY+Math.sin(t*2.8+g.position.x)*.16}else if(g.userData.fire){g.userData.fire.scale.y=1.55+Math.sin(t*8)*.22}}for(let i=0;i<world.water.rings.length;i++)world.water.rings[i].scale.setScalar(1+Math.sin(t*1.4+i)*.018)}
+  function snapshot(){return {...state,version:2,seed:state.seed,vehicles:captureVehicles(),player:{x:player.position.x,y:player.position.y,z:player.position.z},collected:[...state.collected]}}
+  function save(){localStorage.setItem('floating-isle-save',JSON.stringify(snapshot()));toast('进度已保存到本机')}
+  function restoreData(data){if(!data||typeof data!=='object'||typeof data.seed!=='string')throw new Error('invalid save');Object.assign(state,data);state.terrainOps=Array.isArray(data.terrainOps)?data.terrainOps:[];state.placed=Array.isArray(data.placed)?data.placed:[];state.collected=Array.isArray(data.collected)?data.collected:[];state.weather=['clear','cloudy','rain','snow','stardust'].includes(data.weather)?data.weather:'clear';state.riding=typeof data.riding==='string'?data.riding:'';state.time=Number.isFinite(data.time)?data.time:10.5;$('seed').value=state.seed;buildWorld(false);if(data.player&&Number.isFinite(data.player.x)&&Number.isFinite(data.player.z))player.position.set(THREE.MathUtils.clamp(data.player.x,-40,40),Number.isFinite(data.player.y)?data.player.y:2,THREE.MathUtils.clamp(data.player.z,-40,40));restoreVehicles(Array.isArray(data.vehicles)?data.vehicles:[]);state.wood=Number(data.wood)||0;state.stone=Number(data.stone)||0;state.seeds=Number(data.seeds)||0;setTime(state.time);setWeather(state.weather,false);$('outline').checked=state.outline;$('autoTime').textContent='时间：'+(state.autoTime?'自动':'手动');$('camera').textContent='视角：'+(state.camera==='follow'?'跟随':'自转');playerVelocity.set(0,0,0);toggleOutlines();updateResourceUI();updateRideUI();updateLocationStatus()}
+  function load(){const raw=localStorage.getItem('floating-isle-save');if(!raw){toast('还没有保存记录');return}try{restoreData(JSON.parse(raw));toast('已读取 '+state.seed)}catch(e){toast('保存文件不可用')}}
+  function exportJSON(){const blob=new Blob([JSON.stringify({...state,seed:$('seed').value},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='floating-isle-save.json';a.click();URL.revokeObjectURL(a.href);toast('JSON 已导出')}
+  function toggleOutlines(){state.outline=$('outline').checked;for(const h of outlines)h.visible=state.outline}
+  $('regen').onclick=buildWorld;$('save').onclick=save;$('load').onclick=load;$('export').onclick=()=>{const blob=new Blob([JSON.stringify(snapshot(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='floating-isle-save.json';a.click();URL.revokeObjectURL(a.href);toast('JSON 已导出')};$('import').onclick=()=>$('importFile').click();$('importFile').onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{restoreData(JSON.parse(reader.result));toast('JSON 世界已导入')}catch(err){toast('JSON 格式不正确')}};reader.readAsText(file)};
+  $('outline').onchange=toggleOutlines;$('camera').onclick=()=>{state.camera=state.camera==='follow'?'orbit':'follow';$('camera').textContent='视角：'+(state.camera==='follow'?'跟随':'自转');toast(state.camera==='follow'?'镜头跟随角色':'镜头开始自转')};$('autoTime').onclick=()=>{state.autoTime=!state.autoTime;$('autoTime').textContent='时间：'+(state.autoTime?'自动':'手动');toast(state.autoTime?'昼夜开始流转':'时间已锁定')};$('time').oninput=e=>{state.autoTime=false;$('autoTime').textContent='时间：手动';setTime(Number(e.target.value));updateLighting(0);updateLocationStatus()};$('weather').onchange=e=>setWeather(e.target.value);$('vehicle').onchange=updateRideUI;$('ride').onclick=toggleRide;$('summon').onclick=summonVehicle;$('zoom').oninput=e=>{cameraSpan=Number(e.target.value);const a=innerWidth/innerHeight;const h=cameraSpan/a;camera.left=-cameraSpan/2;camera.right=cameraSpan/2;camera.top=h/2;camera.bottom=-h/2;camera.updateProjectionMatrix()};$('raise').onclick=()=>sculpt('raise');$('lower').onclick=()=>sculpt('lower');$('smooth').onclick=()=>sculpt('smooth');$('campfire').onclick=()=>placeCraft('campfire');$('bench').onclick=()=>placeCraft('bench');$('plant').onclick=()=>plant();$('shot').onclick=()=>{const a=document.createElement('a');a.download='floating-isle.png';a.href=renderer.domElement.toDataURL('image/png');a.click();toast('截图已保存')};
+  addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;keys.add(e.code);if(e.code==='Space'){e.preventDefault();if(activeFantasyVehicle()?.id==='airship')return;jump()}if(e.code==='KeyE')collect();if(e.code==='KeyV')toggleRide();if(e.code==='KeyP')plant();if(e.code==='KeyC')placeCraft('campfire');if(e.code==='KeyB')placeCraft('bench');if(e.code==='KeyR')sculpt('raise');if(e.code==='KeyF')sculpt('lower');if(e.code==='KeyG')sculpt('smooth')});addEventListener('keyup',e=>keys.delete(e.code));
+  addEventListener('resize',()=>{const a=innerWidth/innerHeight;const h=cameraSpan/a;camera.left=-cameraSpan/2;camera.right=cameraSpan/2;camera.top=h/2;camera.bottom=-h/2;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+  for(const button of document.querySelectorAll('#touchControls [data-dir]')){const code={up:'KeyW',down:'KeyS',left:'KeyA',right:'KeyD'}[button.dataset.dir];button.addEventListener('pointerdown',e=>{e.preventDefault();keys.add(code);button.setPointerCapture(e.pointerId)});for(const event of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(event,()=>keys.delete(code))}for(const button of document.querySelectorAll('#touchControls [data-action]'))button.addEventListener('click',()=>({jump,collect,plant,ride:toggleRide}[button.dataset.action])());
+  buildWorld(); player=makePlayer(); setTime(state.time); updateResourceUI();
+  function loop(){requestAnimationFrame(loop);const dt=Math.min(clock.getDelta(),.04);elapsed+=dt;movePlayer(dt);updateLighting(dt);updateAtmosphere(dt,elapsed);updateFantasyWorld(dt,elapsed,nightAmount);updateCamera(dt);updateDynamics(elapsed);if(elapsed-statusClock>.2){statusClock=elapsed;updateLocationStatus()}renderer.render(scene,camera)} loop();
+})();
+</script>
+</body>
+</html>

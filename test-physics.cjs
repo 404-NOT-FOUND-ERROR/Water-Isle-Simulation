@@ -1,0 +1,8 @@
+const assert=require('assert/strict'),W=require('./sim'),C=require('./campaign');
+// A still lake over uneven ground must remain still; height alone is not motion.
+{const w=new W(41);w.sources=[];w.mask.fill(1);w.roughness=0;for(let j=0;j<w.n;j++)for(let i=0;i<w.n;i++){const k=j*w.n+i;w.h[k]=.4*Math.sin(i*.23)*Math.cos(j*.19);w.w[k]=1.5-w.h[k];}w.qx.fill(0);w.qz.fill(0);w.initialMass=w.mass();const before=w.w.slice();for(let i=0;i<100;i++)w.step(.02,0);assert(Math.max(...w.w.map((v,k)=>Math.abs(v-before[k])))<1e-10);assert(Math.max(...w.vx.map(Math.abs),...w.vz.map(Math.abs))<1e-10);console.log('PASS lake-at-rest balance on uneven ground');}
+// Uniform flow retains momentum even when adjacent water levels are equal.
+{const w=new W(41);w.sources=[];w.mask.fill(1);w.h.fill(0);w.w.fill(1);w.qx.fill(0);w.qz.fill(1.2);w.roughness=0;for(let i=0;i<10;i++)w.step(.01,0);assert(Math.abs(w.qz[w.index(0,0)]-1.2)<1e-10);console.log('PASS current persists across a flat water surface');}
+// A closed levee blocks the wet front; opening a gap releases a directed current.
+{const w=new W(41);w.sources=[];w.mask.fill(1);w.h.fill(0);w.w.fill(0);w.qx.fill(0);w.qz.fill(0);for(let j=0;j<w.n;j++)for(let i=0;i<w.n;i++){if(i<20)w.w[j*w.n+i]=1;if(i===20)w.h[j*w.n+i]=3;}w.initialMass=w.mass();for(let i=0;i<100;i++)w.step(.04,0);assert(w.w[w.index(6,0)]<1e-12);for(let j=18;j<=22;j++)w.h[j*w.n+20]=0;for(let i=0;i<160;i++)w.step(.04,0);assert(w.w[w.index(6,0)]>.02);assert(w.vx[w.index(6,0)]>.1);assert(w.w.every(v=>v>=0&&Number.isFinite(v)));assert(Math.abs(w.mass()-w.initialMass)<1e-7);const mass=w.mass();w.edit(-12,5,4,1,'dig');assert(Math.abs(w.mass()-mass)<1e-10);console.log('PASS levee, breach, wet front and mass conservation');}
+
