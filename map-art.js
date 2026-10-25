@@ -10,7 +10,7 @@ function populateMap(id){
   // Nest the source between two low outcrops; keep the river opening clear.
   for(const [side,z,size] of [[-1,-24,1.7],[1,-23.5,1.4],[-1,-26,1.1],[1,-25.6,1]]){
    const x=m.main(z)+side*(4.5+size*.4);if(Math.hypot(x,z)>27.8)continue;
-   const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(1,1),toon(id===1?0x8b9995:0x8b9c83,{flatShading:true}));
+   const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(1,1),toon(id===1?0x8b9995:0x8b9c83));
    rock.scale.set(size,size*1.4,size*.9);rock.rotation.set(.15,side*.5,.12*side);rock.userData.groundOffset=size*.38;
    rock.position.set(x,terrainHeight(x,z)+rock.userData.groundOffset,z);rock.castShadow=true;rock.receiveShadow=true;ridge.add(rock);props.push(rock);
   }

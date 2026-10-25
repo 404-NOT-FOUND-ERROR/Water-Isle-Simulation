@@ -10,13 +10,23 @@ const filmShots=[
 ];
 const smooth=t=>t*t*(3-2*t);
 function overviewFrame(kind){
- const {w,h,homeHeight}=viewMetrics,narrow=w<=620,play=kind==='play',landscape=play&&!narrow&&h<540;
+ const {w,h,homeHeight}=viewMetrics,narrow=w<=620||(w<=900&&h>w),play=kind==='play',landscape=play&&!narrow&&h<540;
  const gate=play&&!$('gateControls').hidden,dock=gate?$('gateControls'):$('guidanceDock');
- const left=play?(narrow?66:landscape&&gate&&w>760?dock.offsetWidth+94:90):0,right=play?(narrow?12:document.querySelector('.mission').offsetWidth+40):kind==='home'&&!narrow?Math.min(450,w*.4):0;
+ const left=play?(narrow?(w<=620?68:82):landscape&&gate&&w>760?dock.offsetWidth+94:90):0,right=play?(narrow?12:document.querySelector('.mission').offsetWidth+40):kind==='home'&&!narrow?Math.min(450,w*.4):0;
  const top=play?(narrow?document.querySelector('.mission').offsetHeight+80:78):25;
- const bottom=kind==='home'&&narrow?homeHeight+55:play?(narrow?Math.min(h*.38,dock.offsetHeight+20):landscape?12:38):16;
- const areaH=Math.max(80,h-top-bottom);
- const scale=Math.max(1,Math.min((w-left-right-14)/60,areaH/60))*(play?zoom:1),shift=landscape&&!gate?Math.min(90,Math.max(0,(w-left-right-60*scale)/2)):0;
+ let bottom=kind==='home'&&narrow?homeHeight+55:play?(narrow?Math.min(h*.38,dock.offsetHeight+20):landscape?12:38):16;
+ let areaH=Math.max(80,h-top-bottom),scale=Math.max(1,Math.min((w-left-right-14)/60,areaH/60))*(play?zoom:1),shift=landscape&&!gate?Math.min(90,Math.max(0,(w-left-right-60*scale)/2)):0;
+ // Fit the island around the lower-left panel without shrinking wide stages.
+ if(play&&!narrow&&!landscape&&zoom<=1){
+  const edge=dock.offsetLeft+dock.offsetWidth+12,panelTop=dock.offsetTop-12;
+  for(let i=0;i<35;i++){
+   const cx=left+(w-left-right)/2+shift,cy=top+areaH/2;
+   const dx=Math.max(0,cx-edge),dy=Math.max(0,panelTop-cy);
+   if((dx/(30.5*scale))**2+(dy/(28*scale))**2>1.05)break;
+   shift=Math.min(90,Math.max(0,(w-left-right-62*scale)/2));
+   bottom+=6;areaH=Math.max(80,h-top-bottom);scale=Math.max(1,Math.min((w-left-right-14)/60,areaH/60));
+  }
+ }
  return {x:0,y:-2.3,z:0,angle:play?angle:.18,height:70,scale,cx:left+(w-left-right)/2+shift,cy:top+areaH/2};
 }
 function shotFrame(shot){

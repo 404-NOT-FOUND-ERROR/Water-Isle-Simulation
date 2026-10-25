@@ -12,7 +12,13 @@ The game interface is in Simplified Chinese. Documentation is available in Chine
 
 ## Play
 
-Download the repository and open **`index.html`** in a modern browser with WebGL enabled. The roughly 3.1 MB file includes Three.js, procedural models, game code, and initial river states. Gameplay and local saves work offline; further-reading links use the internet.
+Download the repository and open **`index.html`** in a modern browser with WebGL enabled. The roughly 3.5 MB file includes Three.js, procedural models, game code, initial river states, and six photographs rendered from the actual level scenes. Gameplay and local saves work offline; further-reading links use the internet.
+
+Run `node tools/package-dongleya.cjs` to prepare the single HTML, separate landscape and portrait covers, and submission instructions for manual upload to Dongleya. The six islands stay together in one work. `node tools/journey-studio.cjs` generates a local authoring page that renders thumbnails and covers using the game's own models; it is excluded from the shipped game.
+
+The Dongleya 2.8.1 static audit and five viewport checks pass. Manual browser checks include desktop, portrait tablet, phone card, fullscreen phone, landscape phone, level selection, gates, and a complete rain-to-dry result. Physical-device performance has not been measured.
+
+![Journey cards rendered from the actual islands](screenshots/journey-gallery.jpg)
 
 You can also serve this directory locally:
 

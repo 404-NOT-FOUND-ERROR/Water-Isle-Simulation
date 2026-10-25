@@ -62,7 +62,7 @@ $('nextLevelBtn').onclick=$('nextBtn').onclick=nextLevel;
 $('restartBtn').onclick=()=>{$('resultDialog').close();enterLevel(chapter);};
 $('retryBtn').onclick=()=>{$('resultDialog').close();returnToBuilding();};
 $('learnToggle').onclick=()=>{const open=$('guidanceDock').dataset.expanded!=='true';$('guidanceDock').dataset.expanded=String(open);$('learnToggle').setAttribute('aria-expanded',String(open));fit();};
-const compactMission=matchMedia('(max-width:620px), (max-height:540px)');
+const compactMission=matchMedia('(max-width:620px), (max-height:540px), (max-width:900px) and (orientation:portrait)');
 function sizeMission(){$('missionDetails').open=!compactMission.matches;fit();}
 compactMission.addEventListener('change',sizeMission);$('missionDetails').addEventListener('toggle',fit);sizeMission();
 document.addEventListener('keydown',e=>{if(mode!=='play'||tool!=='look'||e.target.closest('button,input,select,dialog')||document.querySelector('dialog[open]'))return;if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();angle+=e.key==='ArrowRight'?.18:-.18;fit();}});

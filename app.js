@@ -104,7 +104,7 @@ const shellData=IslandMesh.shell(island,island.points.map(p=>IslandMesh.sample(w
 const shellGeo=new THREE.BufferGeometry();
 shellGeo.setAttribute('position',new THREE.Float32BufferAttribute(shellData.positions,3));
 shellGeo.setAttribute('color',new THREE.Float32BufferAttribute(shellData.colors,3));shellGeo.setIndex(shellData.indices);shellGeo.computeVertexNormals();
-const islandShell=new THREE.Mesh(shellGeo,toon(0xffffff,{vertexColors:true,flatShading:true}));scene.add(islandShell);
+const islandShell=new THREE.Mesh(shellGeo,toon(0xffffff,{vertexColors:true}));scene.add(islandShell);
 const sea=new THREE.Mesh(new THREE.CircleGeometry(35,96),new THREE.MeshBasicMaterial({color:0x9bcbbd,transparent:true,opacity:.19,side:THREE.DoubleSide,depthWrite:false}));sea.rotation.x=-Math.PI/2;sea.position.y=-15.1;scene.add(sea);
 const seaRings=[];
 for(let i=0;i<2;i++){const m=new THREE.Mesh(new THREE.RingGeometry(32+i*2,32.07+i*2,96),new THREE.MeshBasicMaterial({color:0xf6f6df,transparent:true,opacity:.4,side:THREE.DoubleSide,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.y=-15;scene.add(m);seaRings.push(m);}
@@ -120,4 +120,5 @@ const rain=new THREE.LineSegments(rainGeo,new THREE.LineBasicMaterial({color:0xd
 /* FLOW */
 /* CAMERA */
 /* EXPERIENCE */
+/* AUTHORING_HOOK */
 })();

@@ -29,9 +29,14 @@ if(initial?.hash!==stateHash){
 }
 const seededCampaign=campaign+'\nWaterCampaign.seed('+JSON.stringify(initial.states)+');\n';
 const app=fs.readFileSync(path.join(root,'app.js'),'utf8');
+const journeyArtwork=Array.from({length:6},(_,i)=>{
+ const bytes=fs.readFileSync(path.join(root,'assets/journey/level-'+(i+1)+'.webp'));
+ if(bytes.length<1000||bytes.toString('ascii',8,12)!=='WEBP')throw new Error('Invalid journey artwork for level '+(i+1));
+ return 'data:image/webp;base64,'+bytes.toString('base64');
+});
 let html=fs.readFileSync(path.join(root,'shell.html'),'utf8').replace('/* STYLES */',()=>fs.readFileSync(path.join(root,'styles.css'),'utf8'));
 const notices=fs.readFileSync(path.join(root,'THIRD-PARTY-NOTICES.txt'),'utf8')+'\n\n'+fs.readFileSync(path.join(root,'LICENSE-original'),'utf8');
-html=html.replace('<head>','<!--\n'+notices.replace(/--/g,'—')+'\n-->\n<head>');
+html=html.replace('<head>','<!--\n'+notices.replace(/--/g,'—')+'\n-->\n<head><script>const journeyArtwork='+JSON.stringify(journeyArtwork)+'</script>');
 // Inline the original MIT-licensed Three module in the same module scope.
 // Namespace references refer to its named exports, without a CDN request.
 const exportAt=three.lastIndexOf('export {');

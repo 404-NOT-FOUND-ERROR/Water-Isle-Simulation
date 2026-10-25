@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="eureka:viewport" content='{"mode":"responsive"}'><meta name="theme-color" content="#d7e9dc"><title>给水一条路 · 云铃镇的雨天</title><style>/* STYLES */</style></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="eureka:viewport" content='{"mode":"responsive"}'><meta name="theme-color" content="#d7e9dc"><title>给水一条路</title><style>/* STYLES */</style></head>
 <body data-mode="intro" data-phase="build"><main id="app">
 <section class="stage-wrap" aria-label="云铃镇河谷"><div id="scene"></div><div id="labels"></div><div id="spots" class="play-hud"></div><div id="workBubble" class="play-hud" hidden></div>
 <button id="gateMapBtn" class="gate-map play-hud" hidden>调水闸 ↗</button>
 <div id="phaseNotice" class="phase-notice play-hud" hidden role="status"><strong id="phaseNoticeTitle"></strong><span id="phaseNoticeText"></span></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="opening"><button id="skipIntro" class="skip-intro">跳过 →</button><div class="opening-top">云铃镇 · 一个雨天</div><div class="opening-caption"><h2 id="openingTitle">河水经过小镇，流向远方。</h2><p id="openingText">桥上的早市，刚刚开始。</p><div class="story-progress"><i id="openingProgress"></i></div></div></div>
+<div id="opening" hidden><button id="skipIntro" class="skip-intro">跳过 →</button><div class="opening-top">云铃镇 · 一个雨天</div><div class="opening-caption"><h2 id="openingTitle">河水经过小镇，流向远方。</h2><p id="openingText">桥上的早市，刚刚开始。</p><div class="story-progress"><i id="openingProgress"></i></div></div></div>
 <div id="home" hidden><div class="home-kicker">A LITTLE RIVER. A BIG ADVENTURE.</div><h1>给水<br>一条路</h1><p>下一场雨来之前，<br>你会怎样救回云铃镇？</p><button id="beginBtn" class="primary">回到下雨前 →</button><div class="home-detail"><span>挖河道</span><span>筑护岸</span><span>给水找个家</span></div></div>
 <div id="loading" class="loading"><strong>云铃镇正在醒来</strong><p>河水流过山谷，故事就要开始。</p></div><div id="fallback" class="fallback" hidden><h2>开启岛屿画面</h2><p>请在浏览器设置中开启硬件加速，再打开小岛。</p><button onclick="location.reload()">打开小岛</button></div></section>
 <header><div class="brand"><span class="brand-icon" data-icon="island"></span><strong>给水一条路</strong></div><nav class="header-actions" aria-label="旅程导航"><button id="reportBtn" hidden>回看</button><button id="mapBtn">旅程</button><button id="nextLevelBtn" class="play-hud">下一关 →</button></nav></header>
