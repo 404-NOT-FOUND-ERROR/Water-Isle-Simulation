@@ -1,5 +1,5 @@
 const {spawnSync}=require('node:child_process');
-const suites=['physics','hydraulics','crew','residents','comparison','campaign-v6','gameplay'];
+const suites=['physics','hydraulics','crew','residents','comparison','campaign-v6','gameplay','island','playback'];
 for(const name of suites){
   console.log('\n> '+name);
   const result=spawnSync(process.execPath,['test-'+name+'.cjs'],{cwd:__dirname,stdio:'inherit'});

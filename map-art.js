@@ -1,8 +1,20 @@
 // Reuse the project's model vocabulary, but give each catchment its own settlement.
 const originalDecor=props.filter(p=>!p.userData.townBuilding&&p!==soilPile),mapDecor=new Map();
+const headwaterArt=new Map();
 const damArt=new THREE.Group();scene.add(damArt);let gatePanel=null,gateWheel=null,gateJet=null;
 function populateMap(id){
  const m=WaterCampaign.maps[id];originalDecor.forEach(p=>p.visible=id===0);mapDecor.forEach((g,key)=>g.visible=key===id);
+ headwaterArt.forEach((g,key)=>g.visible=key===id);
+ if(!headwaterArt.has(id)){
+  const ridge=new THREE.Group();scene.add(ridge);headwaterArt.set(id,ridge);
+  // Nest the source between two low outcrops; keep the river opening clear.
+  for(const [side,z,size] of [[-1,-24,1.7],[1,-23.5,1.4],[-1,-26,1.1],[1,-25.6,1]]){
+   const x=m.main(z)+side*(4.5+size*.4);if(Math.hypot(x,z)>27.8)continue;
+   const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(1,1),toon(id===1?0x8b9995:0x8b9c83,{flatShading:true}));
+   rock.scale.set(size,size*1.4,size*.9);rock.rotation.set(.15,side*.5,.12*side);rock.userData.groundOffset=size*.38;
+   rock.position.set(x,terrainHeight(x,z)+rock.userData.groundOffset,z);rock.castShadow=true;rock.receiveShadow=true;ridge.add(rock);props.push(rock);
+  }
+ }
  if(id&&!mapDecor.has(id)){
   const group=new THREE.Group();scene.add(group);mapDecor.set(id,group);seedHash=717+id*347;
   for(let i=0;i<100;i++){const x=(rand()-.5)*52,z=(rand()-.5)*52;if(Math.hypot(x,z)>26||world.sample(world.w,x,z)>.02||Math.abs(x-m.main(z))<5||(m.branch&&z>-6&&Math.abs(x-m.branch(z))<4)||m.houses.some(p=>Math.hypot(x-p[0],z-p[1])<4.3)||Math.hypot(x-m.farm[0],z-m.farm[1])<4.5||Math.hypot(x-m.basin[0],z-m.basin[1])<m.basin[2]+1||(m.dam&&Math.abs(z-m.dam.z)<4))continue;

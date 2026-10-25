@@ -6,9 +6,9 @@
 
 An interactive water-engineering sandbox on floating islands. Shape the terrain, guide a construction crew, and see how a river responds to channels, bridges, dams, and changing weather. Five progressive challenges combine flood protection with water storage and irrigation, followed by a free-building island.
 
-The game interface is in Simplified Chinese. Documentation is available in Chinese and English. Version 7 adds contextual diagrams, live gate operation, crop water use, independent before/after comparisons, and rebalanced engineering choices.
+The game interface is in Simplified Chinese. Documentation is available in Chinese and English. Floating tools, contextual diagrams, live gates, and independent comparisons guide the campaign. The island surface and layered underside share one continuous circular shoreline.
 
-![Live gate controls and contextual guidance](screenshots/gate-guidance.png)
+![Floating tools and continuous island geometry](screenshots/floating-workspace.jpg)
 
 ## Play
 
@@ -25,13 +25,13 @@ Then visit `http://localhost:8080/`. Add `?level=1` through `?level=6` to open a
 ## Controls and engineering
 
 - **Press and hold to build.** Summon the crew to a reachable position and keep digging or filling while held. Drag to change the work site; release to stop. One continuous gesture is one undo step.
-- **Choose a yellow marker or the bottom project menu.** The menu shows every project, prerequisites, and progress at every screen size. Start the highlighted plan; stop to keep partial changes. Completed projects offer the next step or a storm test.
+- **Choose a yellow marker or the left project menu.** The menu shows every project, prerequisites, and progress at every screen size. Start the highlighted plan; stop to keep partial changes. Completed projects offer the next step or a storm test.
 - **Manage soil and work hours.** Excavation adds soil to storage; filling and dam construction consume it. Traveling 20 distance units or moving 18 volume units of earth costs one work hour. Each crew challenge has its own budget.
-- **Inspect the island.** The observation tool supports dragging to rotate. Use the mouse wheel or zoom button to move closer, and the overview button to return to the whole island.
+- **Inspect the island.** The observation tool supports dragging or arrow keys to rotate. Use the mouse wheel or zoom button to move closer, and the overview button to return to the whole island.
 - **Test a storm.** Watch water levels, flow traces, bridge condition, and the objective checklist. The last challenge continues from rain into a dry spell.
-- **Operate the gate.** A persistent bottom gate button opens five clearly labeled settings: closed, 25%, half, 75%, and fully open. Left/right keys change settings. Before construction, the panel links to soil collection and dam building. The live cross-section and island gate animate together, showing storage, discharge, and overtopping. Pause to adjust, then resume.
-- **Follow contextual diagrams.** Guidance changes after borrowing soil, building the dam, connecting an outlet, and entering the dry season. Mobile guidance uses the same diagrams. The gate panel opens after dam completion, when a trial starts, and when rain gives way to dry weather.
-- **Improve your result.** Earn stars for meeting objectives, conserving resources, and retaining a safety margin. Best scores save automatically; construction undo remains available after a trial.
+- **Operate the gate.** A persistent left-side gate button opens five clearly labeled settings: closed, 25%, half, 75%, and fully open. Left/right keys change settings. Before construction, the panel links to soil collection and dam building. The live cross-section and island gate animate together, showing storage, discharge, and overtopping. Pause to adjust, then resume. Fast-forward to the dry phase or the result using the complete simulation; return to construction at any time while keeping your work.
+- **Follow contextual diagrams.** Guidance changes after borrowing soil, building the dam, connecting an outlet, and entering the dry season. The lower-left floating hint expands into the same diagrams on every screen size. The gate panel opens after dam completion, when a trial starts, and when rain gives way to dry weather.
+- **Improve your result.** Earn stars for meeting objectives, conserving resources, and retaining a safety margin. Distinct success and failure panels highlight the outcome and key measurements. Both offer another attempt, a fresh start, and the next island. Best scores save automatically; construction undo remains available after a trial.
 - **Save your island.** Terrain, water, momentum, resources, engineering structures, gate settings, and campaign progress are stored in the browser.
 
 ## Six distinct islands
@@ -47,11 +47,13 @@ Then visit `http://localhost:8080/`. Add `?level=1` through `?level=6` to open a
 
 Windmill Plain combines six objectives: protect the town, keep the bridge open, protect downstream homes, reach 500 water units in storage, supply shallow irrigation during the dry spell, and finish with at least 100 water units remaining. Irrigation requires 24 cumulative simulated seconds; field depth must stay below 0.50 units throughout the test. Crops consume water during the dry spell, so a stagnant puddle cannot earn unlimited irrigation time. Tests run at four times simulation speed.
 
-![Before and after a complete simulation regression](screenshots/gameplay-result.png)
+![Successful rain-to-dry challenge](screenshots/outcome-success.jpg)
+
+![Failure with retry and next-level options](screenshots/outcome-failure.jpg)
 
 ## Compare and learn
 
-Each trial also runs an untouched reference island with the same inflow and time steps. The result shows water depth and flow at peak inflow, marks homes that flooded at any time, and explains the completed projects and gate changes. Water-level histories and the detailed metric table are folded below the maps. There is no prediction quiz.
+Each trial also runs an untouched reference island with the same inflow and time steps. Expand the result to see water depth and flow at peak inflow, marks homes that flooded at any time, and explains the completed projects and gate changes. Water-level histories and the detailed metric table are folded below the maps. There is no prediction quiz.
 
 The [design notes](DESIGN.md) document progression, star criteria, tested alternatives, and mechanism references from Timberborn and Terra Nil. A bypass and a wider bridge channel can each solve the bridge challenge; opening a distributary inlet without an outlet can flood the other bank. In the final challenge, gate operation responds to the change from rain to dry weather.
 
@@ -82,10 +84,10 @@ This regenerates the standalone `index.html`. Initial river states are precomput
 | File | Purpose |
 | --- | --- |
 | `shell.html` | Interface, dialogs, opening sequence, responsive layout |
-| `app.js`, `reused-art.js` | Three.js scene and reused procedural models |
+| `app.js`, `reused-art.js`, `island-mesh.js` | Scene, procedural models, and watertight island shell |
 | `scenery.js`, `map-art.js` | Bridges, dams, settlements, vegetation, crops, and construction feedback |
 | `camera.js` | Cinematic introduction and viewport-aware framing |
-| `experience.js`, `gameplay.js` | Input, construction, objectives, live gates, phase guidance, and saves |
+| `experience.js`, `gameplay.js`, `playback.js` | Trial navigation, outcomes, input, construction, objectives, live gates, phase guidance, and saves |
 | `styles.css`, `visuals.js`, `learning.js` | Responsive controls, motion, shared graphics, and contextual diagrams |
 | `trial.js`, `comparison.js`, `report.js` | Repeatable trials, independent reference, result charts |
 | `resident-navigation.js` | Dry-land evacuation and return routes |
@@ -100,7 +102,7 @@ The current save key is `floating-isle-water-v6`. Older v4/v5 save keys are reta
 node test-all.cjs
 ```
 
-Seven suites cover water dynamics, bridge and sluice behavior, construction resources, resident navigation, independent comparisons, complete campaign solutions, and meaningful strategy failures. `node audit-levels.cjs` prints the balance matrix. No npm dependencies are needed. Generated reports are written to the ignored `test-results/` directory.
+Nine suites cover water dynamics, bridge and sluice behavior, construction resources, resident navigation, independent comparisons, complete campaign solutions, meaningful strategy failures, watertight geometry, and exact equivalence between normal and fast-forwarded trials. `node audit-levels.cjs` prints the balance matrix. No npm dependencies are needed. Generated reports are written to the ignored `test-results/` directory.
 
 Browser checks cover construction, undo and resource restoration, live gates, pause/resume, saving/loading, a full rain-to-dry trial, result comparisons, and mobile viewport layouts.
 

@@ -31,12 +31,12 @@ function openProjects(){
  info('选择工程','<div class="project-picker">'+works.map((w,i)=>{const done=workDone.has(w.id),need=done?'':workRequirement(w);return '<button class="project-option '+(i===selected?'selected':'')+'" data-select="'+i+'"><span class="project-number">'+(done?'✓':String(i+1).padStart(2,'0'))+'</span><span><strong>'+w.name+'</strong><small>'+(need||WaterLearning.works[w.id]?.[1]||w.tip)+'</small></span><em>'+(done?'完成':w.id===next?'下一步':'选择')+'</em></button>';}).join('')+'</div>');
 }
 function setGatePanel(open){
- const el=$('gateControls'),changed=el.hidden===open;el.hidden=!open;
+ const el=$('gateControls'),changed=el.hidden===open;el.hidden=!open;document.body.dataset.gateOpen=String(open);
  for(const id of ['gateBtn','gateMapBtn']){$(id).setAttribute('aria-expanded',String(open));$(id).classList.toggle('active',open);}
  if(open){updateGateView();if(changed)reveal(el);}if(changed)fit();
 }
 function setGate(value){
- if(!hydraulics?.damBuilt)return;
+ if(!hydraulics?.damBuilt||fastForwarding)return;
  const next=Math.max(0,Math.min(1,Math.round(value*4)/4));if(hydraulics.gate===next)return;
  hydraulics.gate=next;
  if(trial&&comparisonRun&&comparisonRun.gates.at(-1)!==Math.round(next*100))comparisonRun.gates.push(Math.round(next*100));
@@ -53,9 +53,9 @@ function updateGateDock(){
 function updateGateView(){
  const h=hydraulics,d=world.map?.dam;if(!d)return;
  const built=h.damBuilt,open=Math.round(h.gate*100),up=built?(h.upstream-d.invert)/(d.crest-d.invert):.65,down=built?(h.downstream-d.invert)/(d.crest-d.invert):.2,flow=built&&open?h.gateFlow:0;
- $('gatePercent').textContent=built?open+'%':'待建';$('gatePause').hidden=!paused;
+ $('gatePercent').textContent=built?open+'%':'待建';$('gatePause').hidden=!paused||fastForwarding;
  const section=$('gateSection');if(!section.firstElementChild)section.innerHTML=WaterLearning.svg('dam',h.gate,up,down);WaterLearning.updateDam(section.firstElementChild,h.gate,up,down,built?flow:1);
- for(const b of $('gateSteps').children){b.disabled=!built;b.setAttribute('aria-pressed',String(built&&+b.dataset.opening===open));}
+ for(const b of $('gateSteps').children){b.disabled=!built||fastForwarding;b.setAttribute('aria-pressed',String(built&&+b.dataset.opening===open));}
  $('gateHint').textContent=built?(flow<-.01?'下游水位更高 · 河水回流':open===0?'关闭闸孔 · 留水蓄洪':open===100?'全开下泄 · 库水排出更快':open<=25?'小开度 · 留水供田':open>=75?'大开度 · 给洪峰留空间':'半开 · 蓄水与下泄'):'先取土筑坝，再调节开度';
  $('gateBuild').hidden=built;$('gateBuild').disabled=!!workPlan;
  $('gateBuild').textContent=workPlan?'施工中':site?.soil<h.damCost?'去取土 →':'去筑坝 →';

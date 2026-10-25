@@ -10,11 +10,14 @@ const filmShots=[
 ];
 const smooth=t=>t*t*(3-2*t);
 function overviewFrame(kind){
- const {w,h,homeHeight}=viewMetrics,sideHome=w>=650&&w<=900&&h>=360&&h<=560,narrow=w<901&&!sideHome;
- const gate=kind==='play'&&w<650&&!$('gateControls').hidden,sideGate=gate&&w>430&&h<450,left=sideGate?$('gateControls').offsetWidth+22:0;
- const top=kind==='play'?(h<300?8:38):25,right=kind==='home'&&!narrow?Math.min(450,w*.4):0,bottom=kind==='home'&&narrow?homeHeight+32:kind==='play'?(gate&&!sideGate?Math.min(240,$('gateControls').offsetHeight+16):40):16;
+ const {w,h,homeHeight}=viewMetrics,narrow=w<=620,play=kind==='play',landscape=play&&!narrow&&h<540;
+ const gate=play&&!$('gateControls').hidden,dock=gate?$('gateControls'):$('guidanceDock');
+ const left=play?(narrow?66:landscape&&gate&&w>760?dock.offsetWidth+94:90):0,right=play?(narrow?12:document.querySelector('.mission').offsetWidth+40):kind==='home'&&!narrow?Math.min(450,w*.4):0;
+ const top=play?(narrow?document.querySelector('.mission').offsetHeight+80:78):25;
+ const bottom=kind==='home'&&narrow?homeHeight+55:play?(narrow?Math.min(h*.38,dock.offsetHeight+20):landscape?12:38):16;
  const areaH=Math.max(80,h-top-bottom);
- return {x:0,y:-1,z:0,angle:kind==='play'?angle:.18,height:70,scale:Math.min((w-left-right-24)/66,areaH/53)*(kind==='play'?zoom:1),cx:left+(w-left-right)/2,cy:top+areaH/2};
+ const scale=Math.max(1,Math.min((w-left-right-14)/60,areaH/60))*(play?zoom:1),shift=landscape&&!gate?Math.min(90,Math.max(0,(w-left-right-60*scale)/2)):0;
+ return {x:0,y:-2.3,z:0,angle:play?angle:.18,height:70,scale,cx:left+(w-left-right)/2+shift,cy:top+areaH/2};
 }
 function shotFrame(shot){
  const {w,h}=viewMetrics,top=30,bottom=h<500?86:112,areaH=Math.max(80,h-top-bottom);

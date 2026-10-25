@@ -77,20 +77,15 @@ for(let i=0;i<6;i++){const row=new THREE.Mesh(new THREE.BoxGeometry(.35,.14,4),s
 // Low stone stepping path to the town; discrete pieces follow later terrain edits.
 for(let i=0;i<12;i++){const x=3+Math.sin(i*.4),z=6+i*.55;const stone=new THREE.Mesh(new THREE.CylinderGeometry(.38,.42,.12,6),fantasyPalette.paleStone);stone.position.set(x,terrainHeight(x,z)+.08,z);scene.add(stone);props.push(stone);}
 let terrain,terrainGeo,waterMesh,waterGeo;
-const nodeIds=[];
+const island=IslandMesh.create(world.n,world.dx),nodeIds=island.points.map(p=>p.k);
+const terrainSample=(field,v)=>IslandMesh.sample(field,island.points[v]);
 {
-  const positions=[],colors=[],n=world.n,d=world.dx;
-  for(let j=0;j<n-1;j++)for(let i=0;i<n-1;i++){
-    const x=(i+.5)*d-32,z=(j+.5)*d-32;
-    if(Math.hypot(x,z)>29.7)continue;
-    const a=j*n+i,b=a+1,c=a+n,e=c+1;
-    for(const k of [a,c,b,b,c,e]){nodeIds.push(k);positions.push((k%n)*d-32,world.h[k],Math.floor(k/n)*d-32);colors.push(.4,.7,.3);}
-  }
+  const positions=island.points.flatMap(p=>[p.x,IslandMesh.sample(world.h,p),p.z]),colors=positions.map(()=>.6);
   terrainGeo=new THREE.BufferGeometry();terrainGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
-  terrainGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-  terrain=new THREE.Mesh(terrainGeo,toon(0xffffff,{vertexColors:true,flatShading:true}));terrain.receiveShadow=true;scene.add(terrain);
+  terrainGeo.setIndex(island.faces);terrainGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  terrain=new THREE.Mesh(terrainGeo,toon(0xffffff,{vertexColors:true}));terrain.receiveShadow=true;scene.add(terrain);
   waterGeo=new THREE.BufferGeometry();waterGeo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
-  waterGeo.setAttribute('depth',new THREE.Float32BufferAttribute(new Float32Array(nodeIds.length),1));
+  waterGeo.setIndex(island.faces);waterGeo.setAttribute('depth',new THREE.Float32BufferAttribute(new Float32Array(nodeIds.length),1));
   waterMesh=new THREE.Mesh(waterGeo,new THREE.ShaderMaterial({
     uniforms:{time:{value:0}},transparent:true,depthWrite:false,side:THREE.DoubleSide,
     vertexShader:`attribute float depth; varying float vDepth; varying vec3 vPos; uniform float time;
@@ -104,13 +99,15 @@ const nodeIds=[];
       gl_FragColor=vec4(c,.88);}`
   }));waterMesh.renderOrder=2;waterMesh.frustumCulled=false;scene.add(waterMesh);
 }
-// Faceted floating underside, derived from the project's low-poly material language.
-for(const [top,bottom,r1,r2,color] of [[-1.5,-6,29.5,29,0xc0a27d],[-6,-11,29,23,0x8b8991],[-11,-15,23,10,0x72778a]]){
- const geo=new THREE.CylinderGeometry(r1,r2,top-bottom,64,1,true);const m=new THREE.Mesh(geo,toon(color,{flatShading:true}));m.position.y=(top+bottom)/2;scene.add(m);
-}
-const sea=new THREE.Mesh(new THREE.CircleGeometry(37,80),new THREE.MeshBasicMaterial({color:0x9bd5c9,transparent:true,opacity:.38,side:THREE.DoubleSide}));sea.rotation.x=-Math.PI/2;sea.position.y=-3;scene.add(sea);
+// The shell begins at the exact rendered shoreline, including both river mouths.
+const shellData=IslandMesh.shell(island,island.points.map(p=>IslandMesh.sample(world.h,p)));
+const shellGeo=new THREE.BufferGeometry();
+shellGeo.setAttribute('position',new THREE.Float32BufferAttribute(shellData.positions,3));
+shellGeo.setAttribute('color',new THREE.Float32BufferAttribute(shellData.colors,3));shellGeo.setIndex(shellData.indices);shellGeo.computeVertexNormals();
+const islandShell=new THREE.Mesh(shellGeo,toon(0xffffff,{vertexColors:true,flatShading:true}));scene.add(islandShell);
+const sea=new THREE.Mesh(new THREE.CircleGeometry(35,96),new THREE.MeshBasicMaterial({color:0x9bcbbd,transparent:true,opacity:.19,side:THREE.DoubleSide,depthWrite:false}));sea.rotation.x=-Math.PI/2;sea.position.y=-15.1;scene.add(sea);
 const seaRings=[];
-for(let i=0;i<3;i++){const m=new THREE.Mesh(new THREE.RingGeometry(32+i*2.1,32.12+i*2.1,80),new THREE.MeshBasicMaterial({color:0xf6f6cf,transparent:true,opacity:.65,side:THREE.DoubleSide}));m.rotation.x=-Math.PI/2;m.position.y=-2.95;scene.add(m);seaRings.push(m);}
+for(let i=0;i<2;i++){const m=new THREE.Mesh(new THREE.RingGeometry(32+i*2,32.07+i*2,96),new THREE.MeshBasicMaterial({color:0xf6f6df,transparent:true,opacity:.4,side:THREE.DoubleSide,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.y=-15;scene.add(m);seaRings.push(m);}
 const ringPositions=new Float32Array(65*3),ringGeo=new THREE.BufferGeometry();ringGeo.setAttribute('position',new THREE.BufferAttribute(ringPositions,3));
 const brushRing=new THREE.Line(ringGeo,new THREE.LineBasicMaterial({color:0xfffcbb,depthTest:false,depthWrite:false,transparent:true,opacity:1}));brushRing.renderOrder=10;brushRing.visible=false;scene.add(brushRing);
 const cursorDot=new THREE.Mesh(new THREE.SphereGeometry(.14,8,6),new THREE.MeshBasicMaterial({color:0xfffcbb,depthTest:false,depthWrite:false,transparent:true,opacity:1}));cursorDot.renderOrder=10;cursorDot.visible=false;scene.add(cursorDot);
